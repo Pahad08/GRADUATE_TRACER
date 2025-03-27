@@ -8,7 +8,6 @@ use App\Models\Province;
 use App\Models\Region;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Reactive;
 
 class GeneralInformation extends Component
 {
@@ -16,7 +15,6 @@ class GeneralInformation extends Component
 
     public GeneralInformationForm $form;
     public $name = '';
-    #[Reactive]
     public $activeTab;
 
     #[On('form-submitted')]
@@ -26,11 +24,10 @@ class GeneralInformation extends Component
         try {
             $this->validate();
             // dispatch an event to send the validated general information
-            $this->dispatch('general_information_validated', general_information: $this->form->all());
+            $this->dispatch('validated-general-information', general_information: $this->form->all());
 
             // dispatch an event to remove general information error
             $this->dispatch('general-information-error', [
-                'general_information_tab' => 'tracer-components.general-information',
                 'general_information_errors' => []
             ]);
         } catch (ValidationException $e) {

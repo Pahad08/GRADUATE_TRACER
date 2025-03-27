@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('degrees', function (Blueprint $table) {
             $table->unsignedBigInteger('degree_id')->autoIncrement();
             $table->primary('degree_id');
-            $table->string('degree_name', length: 100)->index();
+            $table->string('degree_name', length: 100)->nullable()->index();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('suggestions', function (Blueprint $table) {
-            $table->unsignedBigInteger('suggestion_id')->autoIncrement();
-            $table->primary('suggestion_id');
-            $table->unsignedBigInteger('graduate_id');
+        Schema::create('employment_status', function (Blueprint $table) {
+            $table->unsignedBigInteger('employment_status_id')->autoIncrement();
+            $table->primary('employment_status_id');
+            $table->unsignedBigInteger('graduate_id')->nullable();
             $table->foreign('graduate_id')->references('graduate_id')->on('graduates')->cascadeOnDelete();
-            $table->text('suggestions');
+            $table->enum('is_employed', ['yes', 'no', 'never'])->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('suggestions');
+        Schema::dropIfExists('employment');
     }
 };

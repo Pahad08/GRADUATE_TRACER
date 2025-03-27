@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('trainings', function (Blueprint $table) {
             $table->unsignedBigInteger('training_id')->autoIncrement();
             $table->primary('training_id');
-            $table->string('training_name', length: 100)->index();
-            $table->string('duration_and_credits_earned', length: 100);
-            $table->string('training_institution', length: 100);
-            $table->text('reason_for_study');
+            $table->unsignedBigInteger('graduate_id')->nullable();
+            $table->foreign('graduate_id')->references('graduate_id')->on('graduates')->cascadeOnDelete();
+            $table->string('training_name', length: 100)->nullable()->index();
+            $table->string('duration_and_credits_earned', length: 100)->nullable();
+            $table->string('training_institution', length: 100)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

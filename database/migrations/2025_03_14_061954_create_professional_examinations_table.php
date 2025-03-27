@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('professional_examinations', function (Blueprint $table) {
             $table->unsignedBigInteger('professional_examination_id')->autoIncrement();
             $table->primary('professional_examination_id');
-            $table->unsignedBigInteger('graduate_id');
+            $table->unsignedBigInteger('graduate_id')->nullable();
             $table->foreign('graduate_id')->references('graduate_id')->on('graduates')->cascadeOnDelete();
-            $table->string('name_of_examination', length: 100)->index();
-            $table->date('date_taken');
-            $table->string('rating', length: 100);
+            $table->string('name_of_examination', length: 100)->nullable()->index();
+            $table->date('date_taken')->nullable();
+            $table->string('rating', length: 100)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

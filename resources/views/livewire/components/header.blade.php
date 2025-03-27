@@ -17,7 +17,8 @@
         <div x-data="{ errors: {} }"
             x-on:general-information-error.window="errors['tracer-components.general-information']=$event.detail[0]?.general_information_errors;"
             x-on:educational-background-error.window="errors['tracer-components.educational-background']=$event.detail[0]?.educational_background_errors;"
-            x-on:studies-error.window="errors['tracer-components.studies-information']=$event.detail[0]?.studies_errors;">
+            x-on:studies-error.window="errors['tracer-components.studies-information']=$event.detail[0]?.studies_errors;"
+            x-on:employment-data-error.window="errors['tracer-components.employment-data']=$event.detail[0]?.employment_data_errors">
 
             @foreach ($childComponents as $key => $component)
                 <a role="tab" class="tab font-semibold"
@@ -31,7 +32,7 @@
             @endforeach
         </div>
 
-        <label class="tab" for="login-modal">
+        <label class="tab font-semibold" for="login-modal">
             <a for="login-modal"><i class="fa-solid fa-right-to-bracket"></i>&nbsp;Login</i>
             </a>
         </label>

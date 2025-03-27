@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('universities', function (Blueprint $table) {
             $table->unsignedBigInteger('university_id')->autoIncrement();
             $table->primary('university_id');
-            $table->string('university_name', length: 100)->index();
+            $table->string('university_name', length: 100)->nullable()->index();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('universities');
+        Schema::dropIfExists('university');
     }
 };

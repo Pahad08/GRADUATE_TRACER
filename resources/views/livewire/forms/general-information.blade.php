@@ -71,9 +71,10 @@
                         Status </label>
                     <select :class="errors['form.civil_status'] ? 'select-error' : ''" class="select w-full bg-white"
                         wire:model="form.civil_status">
-                        <option selected>Select a civil status</option>
+                        <option>Select a civil status</option>
                         @foreach ($civil_status_selection as $key => $selection)
-                            <option value="{{ $key }}">{{ ucfirst($selection) }}</option>
+                            <option value="{{ $selection }}" wire:key='{{ "selection-" . $key }}'>
+                                {{ ucfirst($selection) }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -115,7 +116,7 @@
                     </select>
                 </div>
 
-                <div class="col-span-1 md:col-span-2">
+                {{-- <div class="col-span-1 md:col-span-2">
                     <label
                         class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">City
                     </label>
@@ -123,26 +124,25 @@
                         wire:model="form.city">
                         <option selected>Select a city</option>
                     </select>
-                </div>
+                </div> --}}
 
-                {{-- <div>
-                    <label class="mb-2 block text-sm font-semibold text-neutral after:text-red-500 after:content-['*']">Location
+                <div>
+                    <label
+                        class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Location
                         of Residence </label>
                     <div class="mb-2 flex gap-4">
                         <label class="flex items-center">
-                            <input type="radio" wire:model="form.location_of_residence"
-                                class="radio @error("form.location_of_residence") radio-error @enderror"
-                                value="City">
+                            <input type="radio" :class="errors['form.location_of_residence'] ? 'radio-error' : ''"
+                                wire:model="form.location_of_residence" class="radio" value="city">
                             <span class="ml-2">City</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="radio" wire:model="form.location_of_residence"
-                                class="radio @error("form.location_of_residence") radio-error @enderror"
-                                value="Municipality">
+                            <input type="radio" :class="errors['form.location_of_residence'] ? 'radio-error' : ''"
+                                wire:model="form.location_of_residence" class="radio" value="municipality">
                             <span class="ml-2">Municipality</span>
                         </label>
                     </div>
-                </div> --}}
+                </div>
             </div>
         </div>
     </div>

@@ -2,6 +2,8 @@
 
 namespace App\Livewire\TracerComponents;
 
+use App\Models\Degree;
+use App\Models\University;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Livewire\Attributes\On;
@@ -11,10 +13,10 @@ class EducationalBackground extends Component
 
     public $educational_attainment = [];
     public $professional_examination = [];
-    public $type = '';
+    public $type = 'undergraduate';
     public $reasons = [
         'input' => '',
-        'checkboxes' => []
+        'checkboxes' => ['Good grades in high school']
     ];
     public $reason_options = [
         "High grades in the course or subject area(s) related to the course",
@@ -35,8 +37,11 @@ class EducationalBackground extends Component
 
     public function mount()
     {
-        $this->educational_attainment[] = ['degree_name' => '', 'university_name' => '', 'year_graduated' => '', 'university_name' => '', 'honor' => ''];
+        $this->educational_attainment[] = ['degree_id' => '', 'university_id' => '', 'year_graduated' => '', 'honor' => ''];
+        $this->educational_attainment[] = ['degree_id' => '1', 'university_id' => '1', 'year_graduated' => '1999', 'honor' => '2121'];
+
         $this->professional_examination[] = ['name_of_examination' => '', 'date_taken' => '', 'rating' => '',];
+        $this->professional_examination[] = ['name_of_examination' => 'dasdad', 'date_taken' => '1999-01-01', 'rating' => '99',];
     }
 
     protected function messages()
@@ -54,8 +59,8 @@ class EducationalBackground extends Component
         $rules = [];
 
         if (empty($this->reasons['input']) && empty($this->reasons['checkboxes'])) {
-            $rules["reasons.checkboxes.*"] = 'required';
-            $rules["reasons.input"] = 'required';
+            $rules["reasons.checkboxes.*"] = 'sometimes|required';
+            $rules["reasons.input"] = 'sometimes|required';
         }
 
         if (!empty($this->reasons['checkboxes']) || !empty($this->reasons['input'])) {
@@ -69,10 +74,10 @@ class EducationalBackground extends Component
             }
             $prefix = "educational_attainment.$key";
 
-            $educationalAttainmentRules["$prefix.degree_name"] = 'required';
-            $educationalAttainmentRules["$prefix.university_name"] = 'required';
-            $educationalAttainmentRules["$prefix.year_graduated"] = 'required|numeric|digits:4|min:1900|max:2100';
-            $educationalAttainmentRules["$prefix.honor"] = 'required';
+            $educationalAttainmentRules["$prefix.degree_name"] = 'sometimes|required';
+            $educationalAttainmentRules["$prefix.university_id"] = 'sometimes|required';
+            $educationalAttainmentRules["$prefix.year_graduated"] = 'sometimes|required|numeric|digits:4|min:1900|max:2100';
+            $educationalAttainmentRules["$prefix.honor"] = 'sometimes|required';
         }
 
         foreach ($this->professional_examination as $key => $value) {
@@ -81,37 +86,37 @@ class EducationalBackground extends Component
             }
             $prefix = "professional_examination.$key";
 
-            $professionalExaminationRules["$prefix.name_of_examination"] = 'required';
-            $professionalExaminationRules["$prefix.date_taken"] = 'required|date';
-            $professionalExaminationRules["$prefix.rating"] = 'required';
+            $professionalExaminationRules["$prefix.name_of_examination"] = 'sometimes|required';
+            $professionalExaminationRules["$prefix.date_taken"] = 'sometimes|required|date';
+            $professionalExaminationRules["$prefix.rating"] = 'sometimes|required';
         }
 
         $mergedValidationRules = array_merge($educationalAttainmentRules, $professionalExaminationRules);
 
         if (empty($mergedValidationRules)) {
-            $rules["educational_attainment.0.degree_name"] = 'required';
-            $rules["educational_attainment.0.university_name"] = 'required';
-            $rules["educational_attainment.0.year_graduated"] = 'required|numeric|digits:4|min:1900|max:2100';
-            $rules["educational_attainment.0.honor"] = 'required';
-            $rules["professional_examination.0.name_of_examination"] = 'required';
-            $rules["professional_examination.0.date_taken"] = 'required|date';
-            $rules["professional_examination.0.rating"] = 'required';
-            $rules["type"] = 'required';
+            $rules["educational_attainment.0.degree_name"] = 'sometimes|required';
+            $rules["educational_attainment.0.university_name"] = 'sometimes|required';
+            $rules["educational_attainment.0.year_graduated"] = 'sometimes|required|numeric|digits:4|min:1900|max:2100';
+            $rules["educational_attainment.0.honor"] = 'sometimes|required';
+            $rules["professional_examination.0.name_of_examination"] = 'sometimes|required';
+            $rules["professional_examination.0.date_taken"] = 'sometimes|required|date';
+            $rules["professional_examination.0.rating"] = 'sometimes|required';
+            $rules["type"] = 'sometimes|required';
 
             return $rules;
         }
 
         if (empty($educationalAttainmentRules)) {
-            $rules["educational_attainment.0.degree_name"] = 'required';
-            $rules["educational_attainment.0.university_name"] = 'required';
-            $rules["educational_attainment.0.year_graduated"] = 'required|numeric|digits:4|min:1900|max:2100';
-            $rules["educational_attainment.0.honor"] = 'required';
+            $rules["educational_attainment.0.degree_name"] = 'sometimes|required';
+            $rules["educational_attainment.0.university_name"] = 'sometimes|required';
+            $rules["educational_attainment.0.year_graduated"] = 'sometimes|required|numeric|digits:4|min:1900|max:2100';
+            $rules["educational_attainment.0.honor"] = 'sometimes|required';
         }
 
         if (empty($professionalExaminationRules)) {
-            $rules["professional_examination.0.name_of_examination"] = 'required';
-            $rules["professional_examination.0.date_taken"] = 'required|date';
-            $rules["professional_examination.0.rating"] = 'required';
+            $rules["professional_examination.0.name_of_examination"] = 'sometimes|required';
+            $rules["professional_examination.0.date_taken"] = 'sometimes|required|date';
+            $rules["professional_examination.0.rating"] = 'sometimes|required';
         }
 
         $rules = array_merge($mergedValidationRules, $rules);
@@ -195,10 +200,9 @@ class EducationalBackground extends Component
     {
         try {
             $this->validate();
-            $this->dispatch('educational-background-validated');
+            $this->dispatch('validated-education-background', educational_background: $this->except('reason_options'));
             // dispatch an event to send the validated educational background
             $this->dispatch('educational-background-error', [
-                'educational_background_tab' => 'tracer-components.educational-background',
                 'educational_background_errors' => []
             ]);
         } catch (ValidationException $e) {
@@ -214,6 +218,9 @@ class EducationalBackground extends Component
 
     public function render()
     {
-        return view('livewire.forms.educational-background');
+        return view('livewire.forms.educational-background', [
+            'universities' => University::all(),
+            'degree_levels' => Degree::all()
+        ]);
     }
 }

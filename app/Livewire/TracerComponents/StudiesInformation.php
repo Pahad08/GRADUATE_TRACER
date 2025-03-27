@@ -12,7 +12,7 @@ class StudiesInformation extends Component
     public $trainings = [];
     public $reasons_for_study = [
         'input' => '',
-        'checkboxes' => []
+        'checkboxes' => ['For promotion']
     ];
 
     public function addTrainingRow()
@@ -36,7 +36,7 @@ class StudiesInformation extends Component
             ];
             $this->trainings[0] = ['training_name' => '', 'duration_and_credits_earned' => '', 'training_institution' => ''];
         } catch (ValidationException $e) {
-            // dispatch an event to add educational attainment error
+            // dispatch an event to add studies information error
             $this->dispatch(
                 'trainings-error',
                 $e->validator->errors()
@@ -64,8 +64,8 @@ class StudiesInformation extends Component
         $rules = [];
 
         if (empty($this->reasons_for_study['input']) && empty($this->reasons_for_study['checkboxes'])) {
-            $rules["reasons_for_study.checkboxes.*"] = 'required';
-            $rules["reasons_for_study.input"] = 'required';
+            $rules["reasons_for_study.checkboxes.*"] = 'sometimes|required';
+            $rules["reasons_for_study.input"] = 'sometimes|required';
         }
 
         if (!empty($this->reasons_for_study['checkboxes']) || !empty($this->reasons_for_study['input'])) {
@@ -79,15 +79,15 @@ class StudiesInformation extends Component
             }
             $prefix = "trainings.$key";
 
-            $training_rules["$prefix.training_name"] = 'required';
-            $training_rules["$prefix.duration_and_credits_earned"] = 'required';
-            $training_rules["$prefix.training_institution"] = 'required';
+            $training_rules["$prefix.training_name"] = 'sometimes|required';
+            $training_rules["$prefix.duration_and_credits_earned"] = 'sometimes|required';
+            $training_rules["$prefix.training_institution"] = 'sometimes|required';
         }
 
         if (empty($training_rules)) {
-            $training_rules["trainings.0.training_name"] = 'required';
-            $training_rules["trainings.0.duration_and_credits_earned"] = 'required';
-            $training_rules["trainings.0.training_institution"] = 'required';
+            $training_rules["trainings.0.training_name"] = 'sometimes|required';
+            $training_rules["trainings.0.duration_and_credits_earned"] = 'sometimes|required';
+            $training_rules["trainings.0.training_institution"] = 'sometimes|required';
         }
 
         $rules = array_merge($rules, $training_rules);
@@ -96,18 +96,17 @@ class StudiesInformation extends Component
     }
 
     #[On('form-submitted')]
-    public function validateEducationalBackground()
+    public function validateStudiesInformation()
     {
         try {
             $this->validate();
-            $this->dispatch('studies-validated');
-            // dispatch an event to send the validated educational background
+            $this->dispatch('validated-studies-information', studies_information: $this->all());
+            // dispatch an event to send the validated studies information
             $this->dispatch('studies-error', [
-                'studies_tab' => 'tracer-components.studies-information',
                 'studies_errors' => []
             ]);
         } catch (ValidationException $e) {
-            // dispatch an event to add educational background error
+            // dispatch an event to add studies information error
             $this->dispatch('studies-error', [
                 'studies_tab' => 'tracer-components.studies-information',
                 'studies_errors' => $e->validator->errors()
@@ -120,6 +119,7 @@ class StudiesInformation extends Component
     public function mount()
     {
         $this->trainings[] = ['training_name' => '', 'duration_and_credits_earned' => '', 'training_institution' => ''];
+        $this->trainings[] = ['training_name' => 'dadad', 'duration_and_credits_earned' => '12', 'training_institution' => 'dasdad'];
     }
 
     public function render()

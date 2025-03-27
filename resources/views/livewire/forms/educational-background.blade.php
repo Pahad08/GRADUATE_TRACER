@@ -1,5 +1,5 @@
 <div class="rounded-none px-3" x-data="{ errors: {} }"
-    x-on:educational-background-error="errors = $event.detail[0].educational_background_errors; console.log(errors)">
+    x-on:educational-background-error="errors = $event.detail[0].educational_background_errors;">
     <div class="card lg:w-250 md:w-230 border-1 border-base-300 mx-auto my-5 max-w-full bg-white">
         <div class="card-body gap-0 rounded-lg shadow-md">
             @foreach ($this->educational_attainment as $key => $row)
@@ -15,13 +15,16 @@
                             </label>
                         @endif
                         <select class="select {{ !$loop->first ? "mt-2" : "" }} w-full bg-white md:rounded-none"
-                            :class="errors['educational_attainment.{{ $key }}.degree_name'] ||
-                                educational_attainment_error['educational_attainment.{{ $key }}.degree_name'] ?
-                                'select-error' :
-                                ''"
-                            wire:model="educational_attainment.{{ $key }}.degree_name">
-                            <option value="" selected>Degree & Specialization</option>
-                            <option value="1">sample</option>
+                            :class="errors['educational_attainment.{{ $key }}.degree_id'] ||
+                                educational_attainment_error['educational_attainment.{{ $key }}.degree_id'] ?
+                                'select-error' : ''"
+                            wire:model="educational_attainment.{{ $key }}.degree_id">
+                            <option value="">Degree & Specialization</option>
+                            @foreach ($degree_levels as $degree_level)
+                                <option value="{{ $degree_level->degree_id }}"
+                                    wire:key={{ "degree-" . $degree_level->degree_id }}>
+                                    {{ $degree_level->degree_name }}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -33,14 +36,17 @@
                             </label>
                         @endif
                         <select class="select {{ !$loop->first ? "mt-2" : "" }} w-full bg-white md:rounded-none"
-                            :class="errors['educational_attainment.{{ $key }}.university_name'] ||
+                            :class="errors['educational_attainment.{{ $key }}.university_id'] ||
                                 educational_attainment_error[
-                                    'educational_attainment.{{ $key }}.university_name'] ? 'select-error' :
+                                    'educational_attainment.{{ $key }}.university_id'] ? 'select-error' :
                                 'md:border-x-0'"
-                            wire:model="educational_attainment.{{ $key }}.university_name">
+                            wire:model="educational_attainment.{{ $key }}.university_id">
                             <option value="" selected>University</option>
-                            <option value="1">sample</option>
-
+                            @foreach ($universities as $university)
+                                <option value="{{ $university->university_id }}"
+                                    wire:key={{ "university-" . $university->university_id }}>
+                                    {{ $university->university_name }}</option>
+                            @endforeach
                         </select>
                     </div>
 

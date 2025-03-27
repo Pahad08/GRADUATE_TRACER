@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reason_for_course', function (Blueprint $table) {
+        Schema::create('employment_reasons', function (Blueprint $table) {
             $table->unsignedBigInteger('reason_id')->autoIncrement();
             $table->primary('reason_id');
-            $table->unsignedBigInteger('graduate_id')->nullable();
-            $table->foreign('graduate_id')->references('graduate_id')->on('graduates')->cascadeOnDelete();
-            $table->text('reason')->nullable()->default('No particular choice or no better idea');
+            $table->unsignedBigInteger('employment_status_id')->nullable();
+            $table->foreign('employment_status_id')->references('employment_status_id')->on('employment_status')->cascadeOnDelete();
+            $table->enum('reason_type', ['unemployment', 'job_retention', 'job_acceptance', 'job_change'])->nullable()->index();
+            $table->text('reason')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reason_for_course');
+        Schema::dropIfExists('current_job_details');
     }
 };

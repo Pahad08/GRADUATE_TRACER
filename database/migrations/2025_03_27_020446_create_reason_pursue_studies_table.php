@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reason_for_course', function (Blueprint $table) {
-            $table->unsignedBigInteger('reason_id')->autoIncrement();
-            $table->primary('reason_id');
+        Schema::create('reason_pursue_studies', function (Blueprint $table) {
+            $table->unsignedBigInteger('reason_pursue_study_id')->autoIncrement();
+            $table->primary('reason_pursue_study_id');
             $table->unsignedBigInteger('graduate_id')->nullable();
             $table->foreign('graduate_id')->references('graduate_id')->on('graduates')->cascadeOnDelete();
-            $table->text('reason')->nullable()->default('No particular choice or no better idea');
+            $table->text('reason_for_study')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reason_for_course');
+        Schema::dropIfExists('reason_pursue_studies');
     }
 };
