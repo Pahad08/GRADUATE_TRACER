@@ -7,19 +7,19 @@ use Livewire\Form;
 
 class EmploymentDataForm extends Form
 {
-    public $is_employed = 'yes';
+    public $is_employed = '';
     public $unemployment_reason = ['input' => '', 'checkboxes' => []];
     public $present_employment_status = 'Contractual';
     public $occupation = 'Clerks';
     public $company_name = 'dsadsad';
     public $industry = 'Education';
     public $place_of_work = 'local';
-    public $is_first_job = '1';
+    public $is_first_job = '';
     public $job_retention = ['input' => '', 'checkboxes' => []];
     public $related_to_course = '';
     public $job_acceptance = ['input' => '', 'checkboxes' => []];
     public $job_change = ['input' => '', 'checkboxes' => []];
-    public $first_job_duration = ['input' => '', 'checkboxes' => []];
+    public $first_job_duration = [];
     public $job_source = ['input' => '', 'checkboxes' => []];
     public $first_job_search_duration = '';
     public $first_job_level = '';
@@ -117,49 +117,43 @@ class EmploymentDataForm extends Form
             'job_retention.checkboxes' => [
                 'sometimes',
                 Rule::requiredIf(
-                    $this->is_employed === 'yes' && !empty($this->is_employed) && $this->is_first_job === '1'
+                    $this->is_employed === 'yes' && !empty($this->is_employed) && $this->is_first_job == '1'
                         && empty($this->job_retention['input'])
                 ),
             ],
             'job_retention.input' => [
                 'sometimes',
                 Rule::requiredIf(
-                    $this->is_employed === 'yes' && !empty($this->is_employed) && $this->is_first_job === '1'
+                    $this->is_employed === 'yes' && !empty($this->is_employed) && $this->is_first_job == '1'
                         && empty($this->job_retention['checkboxes'])
                 ),
             ],
             'related_to_course' => [
                 'sometimes',
-                Rule::requiredIf($this->is_employed == 'yes' && !empty($this->is_employed && $this->is_first_job === '1')),
+                Rule::requiredIf($this->is_employed == 'yes' && !empty($this->is_employed && $this->is_first_job == '1')),
                 'boolean'
             ],
             'job_acceptance.checkboxes' => [
                 'sometimes',
-                Rule::requiredIf($this->is_employed == 'yes' && !empty($this->is_employed && $this->is_first_job === '1') && empty($this->job_acceptance['input'])),
+                Rule::requiredIf($this->is_employed == 'yes' && !empty($this->is_employed && $this->is_first_job == '1') && empty($this->job_acceptance['input'])),
             ],
             'job_acceptance.input' => [
                 'sometimes',
-                Rule::requiredIf($this->is_employed == 'yes' && !empty($this->is_employed && $this->is_first_job === '1') && empty($this->job_acceptance['checkboxes'])),
+                Rule::requiredIf($this->is_employed == 'yes' && !empty($this->is_employed && $this->is_first_job == '1') && empty($this->job_acceptance['checkboxes'])),
             ],
             'job_change.checkboxes' => [
                 'sometimes',
                 Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed)
-                    && $this->is_first_job !== '1' && empty($this->job_change['input'])),
+                    && $this->is_first_job != '1' && empty($this->job_change['input'])),
             ],
             'job_change.input' => [
                 'sometimes',
                 Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed)
-                    && $this->is_first_job !== '1' && empty($this->job_change['checkboxes'])),
+                    && $this->is_first_job != '1' && empty($this->job_change['checkboxes'])),
             ],
-            'first_job_duration.checkboxes' => [
+            'first_job_duration' => [
                 'sometimes',
-                Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed && $this->is_first_job !== '1' && empty($this->first_job_duration['input']))
-                    && $this->is_first_job !== '1'),
-            ],
-            'first_job_duration.input' => [
-                'sometimes',
-                Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed)
-                    && $this->is_first_job !== '1'  && empty($this->first_job_duration['checkboxes'])),
+                Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed && $this->is_first_job != '1') && $this->is_first_job != '1'),
             ],
             'job_source.checkboxes' => [
                 'sometimes',
@@ -193,13 +187,14 @@ class EmploymentDataForm extends Form
             'skills.checkboxes' => [
                 'sometimes',
                 Rule::requiredIf(
-                    $this->is_employed === 'yes' && !empty($this->is_employed)  && empty($this->skills['input']) && $this->is_curriculum_relevant_to_job === 'yes'
+                    $this->is_employed === 'yes' && !empty($this->is_employed)  &&
+                        empty($this->skills['input']) && $this->is_curriculum_relevant_to_job == '1'
                 ),
             ],
             'skills.input' => [
                 'sometimes',
                 Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed)
-                    && empty($this->first_job_duration['checkboxes']) && $this->is_curriculum_relevant_to_job === 'yes'),
+                    && empty($this->first_job_duration['checkboxes']) && $this->is_curriculum_relevant_to_job == '1'),
             ],
             'suggestions.*' => ['sometimes', Rule::requiredIf(count($this->suggestions) == 1)],
         ];

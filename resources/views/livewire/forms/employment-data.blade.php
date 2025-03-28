@@ -1,23 +1,30 @@
-<div class="rounded-none px-3" x-data="{ errors: {}, isEmployed: '' }"
-    x-on:employment-data-error="errors = $event.detail[0]?.employment_data_errors;">
+<div class="rounded-none px-3" x-data="{ isEmployed: '' }">
     <div class="card lg:w-250 md:w-230 border-1 border-base-300 mx-auto my-5 max-w-full bg-white">
         <div class="card-body rounded-lg shadow-md">
             <div class="grid grid-cols-1">
                 <div>
-                    <label class="text-neutral mb-2 block text-sm font-semibold">Are you presently employed?</label>
+                    <label
+                        class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Are
+                        you presently employed? </label>
                     <div class="flex gap-4">
                         <label class="flex items-center">
-                            <input type="radio" :class="errors['form.is_employed'] ? 'input-error' : ''"
+                            <input type="radio"
+                                :class="errors['tracer-components.employment-data'] && errors[
+                                    'tracer-components.employment-data']['form.is_employed'] ? 'radio-error' : ''"
                                 x-model="isEmployed" class="radio" value="yes" wire:model="form.is_employed">
                             <span class="ml-2">Yes</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="radio" :class="errors['form.is_employed'] ? 'input-error' : ''"
+                            <input type="radio"
+                                :class="errors['tracer-components.employment-data'] && errors[
+                                    'tracer-components.employment-data']['form.is_employed'] ? 'radio-error' : ''"
                                 x-model="isEmployed" class="radio" value="no" wire:model="form.is_employed">
                             <span class="ml-2">No</span>
                         </label>
                         <label class="flex items-center">
-                            <input type="radio" :class="errors['form.is_employed'] ? 'input-error' : ''"
+                            <input type="radio"
+                                :class="errors['tracer-components.employment-data'] && errors[
+                                    'tracer-components.employment-data']['form.is_employed'] ? 'radio-error' : ''"
                                 class="radio" x-model="isEmployed" wire:model="form.is_employed" value="never">
                             <span class="ml-2">Never Employed</span>
                         </label>
@@ -28,15 +35,13 @@
                     <div>
                         <div class="divider"></div>
 
-                        <label class="text-neutral mb-2 block text-sm font-semibold">
-                            Please state reason(s) why you are not yet employed.</label>
+                        <label
+                            class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
+                            Please state reason(s) why you are not yet employed. </label>
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                             @foreach ($unemployment_reasons as $key => $reason)
                                 <label class="flex items-center" wire:key="{{ "reason-" . $key }}">
-                                    <input
-                                        :class="errors['form.unemployment_reason.checkboxes'] ?
-                                            'checkbox-error' : ''"
-                                        type="checkbox" class="checkbox" value="{{ $reason }}"
+                                    <input type="checkbox" class="checkbox" value="{{ $reason }}"
                                         wire:model="form.unemployment_reason.checkboxes">
                                     <span class="ml-2">{{ $reason }}</span>
                                 </label>
@@ -45,11 +50,20 @@
 
                         <label class="mt-3 flex items-center">
                             <input type="text" class="input w-full bg-white"
-                                :class="errors['form.unemployment_reason.input'] ?
-                                    'input-error' : ''"
                                 placeholder="Other reason(s), please specify"
                                 wire:model="form.unemployment_reason.input">
                         </label>
+
+                        <template
+                            x-if="(errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.unemployment_reason.input']) ||
+                            (errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.unemployment_reason.checkboxes'])
+                            ">
+                            <div class="mt-1">
+                                <p class="text-error">
+                                    Provide atleast one reason.
+                                </p>
+                            </div>
+                        </template>
                     </div>
                 </template>
 
@@ -64,7 +78,10 @@
                                 @foreach ($employment_status as $key => $status)
                                     <label class="flex items-center" wire:key='{{ "status-" . $key }}'>
                                         <input type="radio"
-                                            :class="errors['form.present_employment_status'] ? 'radio-error' : ''"
+                                            :class="errors['tracer-components.employment-data'] && errors[
+                                                'tracer-components.employment-data'][
+                                                'form.present_employment_status'
+                                            ] ? 'radio-error' : ''"
                                             wire:model="form.present_employment_status" class="radio"
                                             value="{{ $status }}">
                                         <span class="ml-2">{{ $status }}</span>
@@ -79,7 +96,9 @@
                             <label class="text-neutral mb-2 block text-sm font-semibold">Present occupation(Use the
                                 following Phil. Standard Occupational Classification (PSOC), 1992 classification)
                             </label>
-                            <select :class="errors['form.occupation'] ? 'select-error' : ''"
+                            <select
+                                :class="errors['tracer-components.employment-data'] && errors[
+                                    'tracer-components.employment-data']['form.occupation'] ? 'select-error' : ''"
                                 wire:model="form.occupation" class="select w-full bg-white">
                                 <option selected disabled value="">Present occupation</option>
                                 @foreach ($occupations as $key => $occupation)
@@ -95,8 +114,10 @@
                             <label
                                 class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Name
                                 of Company or Organization including address </label>
-                            <input :class="errors['form.company_name'] ? 'input-error' : ''" type="text"
-                                wire:model="form.company_name" class="input w-full bg-white">
+                            <input
+                                :class="errors['tracer-components.employment-data'] && errors[
+                                    'tracer-components.employment-data']['form.company_name'] ? 'input-error' : ''"
+                                type="text" wire:model="form.company_name" class="input w-full bg-white">
                         </div>
 
                         <div class="divider"></div>
@@ -104,7 +125,9 @@
                         <div>
                             <label class="text-neutral mb-2 block text-sm font-semibold">Major line of business of the
                                 company you are presently employed in.</label>
-                            <select :class="errors['form.industry'] ? 'select-error' : ''"
+                            <select
+                                :class="errors['tracer-components.employment-data'] && errors[
+                                    'tracer-components.employment-data']['form.industry'] ? 'select-error' : ''"
                                 class="select w-full bg-white" wire:model="form.industry">
                                 <option selected disabled value="">Major line of business</option>
                                 @foreach ($industries as $key => $industry)
@@ -120,12 +143,18 @@
                             <label class="text-neutral mb-2 block text-sm font-semibold">Place of work</label>
                             <div class="flex gap-4">
                                 <label class="flex items-center">
-                                    <input type="radio" :class="errors['form.place_of_work'] ? 'radio-error' : ''"
+                                    <input type="radio"
+                                        :class="errors['tracer-components.employment-data'] && errors[
+                                                'tracer-components.employment-data']['form.place_of_work'] ?
+                                            'radio-error' : ''"
                                         wire:model='form.place_of_work' class="radio" value="local">
                                     <span class="ml-2">Local</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" :class="errors['form.place_of_work'] ? 'radio-error' : ''"
+                                    <input type="radio"
+                                        :class="errors['tracer-components.employment-data'] && errors[
+                                                'tracer-components.employment-data']['form.place_of_work'] ?
+                                            'radio-error' : ''"
                                         wire:model='form.place_of_work' class="radio" value="abroad">
                                     <span class="ml-2">Abroad</span>
                                 </label>
@@ -139,13 +168,19 @@
                                 college?</label>
                             <div class="flex gap-4">
                                 <label class="flex items-center">
-                                    <input type="radio" :class="errors['form.is_first_job'] ? 'radio-error' : ''"
+                                    <input type="radio"
+                                        :class="errors['tracer-components.employment-data'] && errors[
+                                                'tracer-components.employment-data']['form.is_first_job'] ?
+                                            'radio-error' : ''"
                                         wire:model="form.is_first_job" x-model="isFirstJob" class="radio"
                                         value="1">
                                     <span class="ml-2">Yes</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" :class="errors['form.is_first_job'] ? 'radio-error' : ''"
+                                    <input type="radio"
+                                        :class="errors['tracer-components.employment-data'] && errors[
+                                                'tracer-components.employment-data']['form.is_first_job'] ?
+                                            'radio-error' : ''"
                                         wire:model="form.is_first_job" x-model="isFirstJob" class="radio"
                                         value="0">
                                     <span class="ml-2">No</span>
@@ -163,9 +198,7 @@
                                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                         @foreach ($reasons as $key => $reason)
                                             <label class="flex items-center" wire:key="{{ "reason-" . $key }}">
-                                                <input
-                                                    :class="errors['form.job_retention.checkboxes'] ? 'checkbox-error' : ''"
-                                                    type="checkbox" wire:model='form.job_retention.checkboxes'
+                                                <input type="checkbox" wire:model='form.job_retention.checkboxes'
                                                     value="{{ $reason }}" class="checkbox">
                                                 <span class="ml-2">{{ $reason }}</span>
                                             </label>
@@ -175,9 +208,18 @@
                                     <div class="mt-3 flex items-center">
                                         <input type="text" wire:model='form.job_retention.input'
                                             class="input w-full bg-white"
-                                            :class="errors['form.job_retention.input'] ? 'input-error' : ''"
                                             placeholder="Other reason(s), please specify">
                                     </div>
+
+                                    <template
+                                        x-if="(errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.job_retention.input']) ||
+                                            (errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.job_retention.checkboxes'])">
+                                        <div class="mt-1">
+                                            <p class="text-error">
+                                                Provide atleast one reason.
+                                            </p>
+                                        </div>
+                                    </template>
                                 </div>
 
                                 <div class="divider"></div>
@@ -188,14 +230,18 @@
                                     <div class="flex gap-4">
                                         <label class="flex items-center">
                                             <input type="radio"
-                                                :class="errors['form.related_to_course'] ? 'radio-error' : ''"
+                                                :class="errors['tracer-components.employment-data'] && errors[
+                                                        'tracer-components.employment-data']['form.related_to_course'] ?
+                                                    'radio-error' : ''"
                                                 wire:model="form.related_to_course" x-model="isRelated"
                                                 class="radio" value="1">
                                             <span class="ml-2">Yes</span>
                                         </label>
                                         <label class="flex items-center">
                                             <input type="radio"
-                                                :class="errors['form.related_to_course'] ? 'radio-error' : ''"
+                                                :class="errors['tracer-components.employment-data'] && errors[
+                                                        'tracer-components.employment-data']['form.related_to_course'] ?
+                                                    'radio-error' : ''"
                                                 wire:model="form.related_to_course" x-model="isRelated"
                                                 class="radio" value="0">
                                             <span class="ml-2">No</span>
@@ -213,9 +259,7 @@
                                         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                             @foreach ($reasons as $key => $reason)
                                                 <label class="flex items-center" wire:key="{{ "reason-" . $key }}">
-                                                    <input type="checkbox"
-                                                        :class="errors['form.job_acceptance.checkboxes'] ? 'checkbox-error' : ''"
-                                                        wire:model='form.job_acceptance.checkboxes'
+                                                    <input type="checkbox" wire:model='form.job_acceptance.checkboxes'
                                                         value="{{ $reason }}" class="checkbox">
                                                     <span class="ml-2">{{ $reason }}</span>
                                                 </label>
@@ -224,10 +268,19 @@
 
                                         <div class="mt-3 flex items-center">
                                             <input type="text" wire:model='form.job_acceptance.input'
-                                                :class="errors['form.job_acceptance.input'] ? 'input-error' : ''"
                                                 class="input w-full bg-white"
                                                 placeholder="Other reason(s), please specify">
                                         </div>
+
+                                        <template
+                                            x-if="(errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.job_acceptance.input']) ||
+                                                  (errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.job_acceptance.checkboxes'])">
+                                            <div class="mt-1">
+                                                <p class="text-error">
+                                                    Provide atleast one reason.
+                                                </p>
+                                            </div>
+                                        </template>
                                     </div>
                                 </template>
                             </div>
@@ -245,9 +298,7 @@
                                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                         @foreach ($reasons as $key => $reason)
                                             <label class="flex items-center" wire:key="{{ "reason-" . $key }}">
-                                                <input
-                                                    :class="errors['form.job_change.checkboxes'] ? 'checkbox-error' : ''"
-                                                    type="checkbox" wire:model='form.job_change.checkboxes'
+                                                <input type="checkbox" wire:model='form.job_change.checkboxes'
                                                     class="checkbox" value="{{ $reason }}">
                                                 <span class="ml-2">{{ $reason }}</span>
                                             </label>
@@ -256,10 +307,19 @@
 
                                     <div class="mt-3 flex items-center">
                                         <input type="text" wire:model='form.job_change.input'
-                                            :class="errors['form.job_change.input'] ? 'input-error' : ''"
                                             class="input w-full bg-white"
                                             placeholder="Other reason(s), please specify">
                                     </div>
+
+                                    <template
+                                        x-if="(errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.job_change.input']) ||
+                                                  (errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.job_change.checkboxes'])">
+                                        <div class="mt-1">
+                                            <p class="text-error">
+                                                Provide atleast one reason.
+                                            </p>
+                                        </div>
+                                    </template>
                                 </div>
 
                                 <div class="divider"></div>
@@ -271,20 +331,26 @@
                                         @foreach ($job_change_reasons as $key => $reason)
                                             <label class="flex items-center"
                                                 wire:key="{{ "job-change-reason-" . $key }}">
-                                                <input type="checkbox" wire:model="form.first_job_duration.checkboxes"
-                                                    :class="errors['form.job_duration.checkboxes'] ? 'checkbox-error' : ''"
-                                                    class="checkbox" value="{{ $reason }}">
+                                                <input type="radio" wire:model="form.first_job_duration"
+                                                    class="radio" value="{{ $reason }}">
                                                 <span class="ml-2">{{ $reason }}</span>
                                             </label>
                                         @endforeach
                                     </div>
 
                                     <div class="mt-3 flex items-center">
-                                        <input type="text" wire:model='form.first_job_duration.input'
-                                            class="input w-full bg-white"
-                                            :class="errors['form.job_duration.checkboxes'] ? 'input-error' : ''"
-                                            placeholder="Other reason(s), please specify">
+                                        <input type="text" wire:model='form.first_job_duration'
+                                            class="input w-full bg-white" placeholder="Others, please specify">
                                     </div>
+
+                                    <template
+                                        x-if="(errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.first_job_duration'])">
+                                        <div class="mt-1">
+                                            <p class="text-error">
+                                                Provide atleast one.
+                                            </p>
+                                        </div>
+                                    </template>
                                 </div>
                             </div>
                         </template>
@@ -309,6 +375,16 @@
                                     :class="errors['form.job_source.input'] ? 'input-error' : ''"
                                     class="input w-full bg-white" placeholder="Other reason(s), please specify">
                             </div>
+                            <template
+                                x-if="(errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.job_source.input']) ||
+                            (errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.job_source.checkboxes'])
+                            ">
+                                <div class="mt-1">
+                                    <p class="text-error">
+                                        Provide atleast one reason.
+                                    </p>
+                                </div>
+                            </template>
                         </div>
 
                         <div class="divider"></div>
@@ -333,6 +409,15 @@
                                     :class="errors['form.first_job_search_duration'] ? 'input-error' : ''"
                                     class="input w-full bg-white">
                             </div>
+
+                            <template
+                                x-if="(errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.first_job_search_duration'])">
+                                <div class="mt-1">
+                                    <p class="text-error">
+                                        Provide atleast one.
+                                    </p>
+                                </div>
+                            </template>
                         </div>
 
                         <div class="divider"></div>
@@ -346,7 +431,10 @@
                                         @foreach ($job_levels as $key => $job_level)
                                             <label class="flex items-center" wire:key='{{ "job-level-" . $key }}'>
                                                 <input type="radio" wire:model="form.first_job_level"
-                                                    :class="errors['form.first_job_level'] ? 'radio-error' : ''"
+                                                    :class="errors['tracer-components.employment-data'] && errors[
+                                                        'tracer-components.employment-data'][
+                                                        'form.first_job_level'
+                                                    ] ? 'radio-error' : ''"
                                                     class="radio" value="{{ $job_level }}">
                                                 <span class="ml-2">{{ $job_level }}</span>
                                             </label>
@@ -361,7 +449,10 @@
                                         @foreach ($job_levels as $key => $job_level)
                                             <label class="flex items-center" wire:key='{{ "job-level-" . $key }}'>
                                                 <input type="radio" wire:model="form.current_job_level"
-                                                    :class="errors['form.current_job_level'] ? 'radio-error' : ''"
+                                                    :class="errors['tracer-components.employment-data'] && errors[
+                                                        'tracer-components.employment-data'][
+                                                        'form.current_job_level'
+                                                    ] ? 'radio-error' : ''"
                                                     class="radio" value="{{ $job_level }}">
                                                 <span class="ml-2">{{ $job_level }}</span>
                                             </label>
@@ -380,7 +471,10 @@
                                 @foreach ($salaryRanges as $key => $range)
                                     <label class="flex items-center" wire:key='{{ "range-" . $key }}'>
                                         <input type="radio" wire:model="form.first_job_initial_gross"
-                                            :class="errors['form.first_job_initial_gross'] ? 'radio-error' : ''"
+                                            :class="errors['tracer-components.employment-data'] && errors[
+                                                'tracer-components.employment-data'][
+                                                'form.first_job_initial_gross'
+                                            ] ? 'radio-error' : ''"
                                             class="radio" value="{{ $range }}">
                                         <span class="ml-2">{{ $range }}</span>
                                     </label>
@@ -397,13 +491,19 @@
                             <div class="flex gap-4">
                                 <label class="flex items-center">
                                     <input type="radio" class="radio" x-model="is_curriculum_relevant_to_job"
-                                        :class="errors['form.is_curriculum_relevant_to_job'] ? 'radio-error' : ''"
+                                        :class="errors['tracer-components.employment-data'] && errors[
+                                            'tracer-components.employment-data'][
+                                            'form.is_curriculum_relevant_to_job'
+                                        ] ? 'radio-error' : ''"
                                         value="1" wire:model="form.is_curriculum_relevant_to_job">
                                     <span class="ml-2">Yes</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="radio" class="radio" x-model="is_curriculum_relevant_to_job"
-                                        :class="errors['form.is_curriculum_relevant_to_job'] ? 'radio-error' : ''"
+                                        :class="errors['tracer-components.employment-data'] && errors[
+                                            'tracer-components.employment-data'][
+                                            'form.is_curriculum_relevant_to_job'
+                                        ] ? 'radio-error' : ''"
                                         value="0" wire:model="form.is_curriculum_relevant_to_job">
                                     <span class="ml-2">No</span>
                                 </label>
@@ -421,7 +521,6 @@
                                     @foreach ($skills as $key => $skill)
                                         <label class="flex items-center" wire:key="{{ "skill-" . $key }}">
                                             <input type="checkbox" wire:model='form.skills.checkboxes'
-                                                :class="errors['form.skilss.checkboxes'] ? 'checkbox-error' : ''"
                                                 value="{{ $skill }}" class="checkbox">
                                             <span class="ml-2">{{ $skill }}</span>
                                         </label>
@@ -430,9 +529,18 @@
 
                                 <div class="mt-3 flex items-center">
                                     <input type="text" wire:model='form.skills.input'
-                                        :class="errors['form.skills.input'] ? 'input-error' : ''"
                                         class="input w-full bg-white" placeholder="Other reason(s), please specify">
                                 </div>
+
+                                <template
+                                    x-if="(errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.skills.input']) ||
+                                                (errors['tracer-components.employment-data'] && errors['tracer-components.employment-data']['form.skills.checkboxes'])">
+                                    <div class="mt-1">
+                                        <p class="text-error">
+                                            Provide atleast one reason.
+                                        </p>
+                                    </div>
+                                </template>
                             </div>
                         </template>
                     </div>
@@ -449,8 +557,11 @@
                             wire:key="{{ "suggestion-" . $key }}">
                             <div class="col-span-2">
                                 <input type="text"
-                                    :class="errors['form.suggestions.{{ $key }}'] ||
-                                        suggestion_error['form.suggestions.{{ $key }}'] ?
+                                    :class="(errors['tracer-components.employment-data'] && errors[
+                                        'tracer-components.employment-data'][
+                                        'form.suggestions.{{ $key }}'
+                                    ]) ||
+                                    suggestion_error['form.suggestions.{{ $key }}'] ?
                                         'input-error' :
                                         'focus:border-gray-300'"
                                     wire:model="form.suggestions.{{ $key }}"

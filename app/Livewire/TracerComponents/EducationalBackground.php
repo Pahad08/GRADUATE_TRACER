@@ -74,7 +74,7 @@ class EducationalBackground extends Component
             }
             $prefix = "educational_attainment.$key";
 
-            $educationalAttainmentRules["$prefix.degree_name"] = 'sometimes|required';
+            $educationalAttainmentRules["$prefix.degree_id"] = 'sometimes|required';
             $educationalAttainmentRules["$prefix.university_id"] = 'sometimes|required';
             $educationalAttainmentRules["$prefix.year_graduated"] = 'sometimes|required|numeric|digits:4|min:1900|max:2100';
             $educationalAttainmentRules["$prefix.honor"] = 'sometimes|required';
@@ -94,8 +94,8 @@ class EducationalBackground extends Component
         $mergedValidationRules = array_merge($educationalAttainmentRules, $professionalExaminationRules);
 
         if (empty($mergedValidationRules)) {
-            $rules["educational_attainment.0.degree_name"] = 'sometimes|required';
-            $rules["educational_attainment.0.university_name"] = 'sometimes|required';
+            $rules["educational_attainment.0.degree_id"] = 'sometimes|required';
+            $rules["educational_attainment.0.university_id"] = 'sometimes|required';
             $rules["educational_attainment.0.year_graduated"] = 'sometimes|required|numeric|digits:4|min:1900|max:2100';
             $rules["educational_attainment.0.honor"] = 'sometimes|required';
             $rules["professional_examination.0.name_of_examination"] = 'sometimes|required';
@@ -107,8 +107,8 @@ class EducationalBackground extends Component
         }
 
         if (empty($educationalAttainmentRules)) {
-            $rules["educational_attainment.0.degree_name"] = 'sometimes|required';
-            $rules["educational_attainment.0.university_name"] = 'sometimes|required';
+            $rules["educational_attainment.0.degree_id"] = 'sometimes|required';
+            $rules["educational_attainment.0.university_id"] = 'sometimes|required';
             $rules["educational_attainment.0.year_graduated"] = 'sometimes|required|numeric|digits:4|min:1900|max:2100';
             $rules["educational_attainment.0.honor"] = 'sometimes|required';
         }
@@ -119,7 +119,9 @@ class EducationalBackground extends Component
             $rules["professional_examination.0.rating"] = 'sometimes|required';
         }
 
-        $rules = array_merge($mergedValidationRules, $rules);
+        $rules = array_merge($mergedValidationRules, $rules, [
+            'type' => 'sometimes|required'
+        ]);
 
         return $rules;
     }
@@ -128,9 +130,9 @@ class EducationalBackground extends Component
     {
         try {
             $this->validate([
-                'educational_attainment.*.degree_name' => 'required',
-                'educational_attainment.*.university_name' => 'required',
-                'educational_attainment.*.year_graduated' => 'required|numeric|digits:4|min:1900|max:2100',
+                'educational_attainment.*.degree_id' => 'required',
+                'educational_attainment.*.university_id' => 'required',
+                'educational_attainment.*.year_graduated' => 'required|numeric|digits:4',
                 'educational_attainment.*.honor' => 'required',
             ]);
             $this->dispatch(
@@ -138,10 +140,9 @@ class EducationalBackground extends Component
                 []
             );
             $this->educational_attainment[] = [
-                'degree_name' => $this->educational_attainment[0]['degree_name'],
-                'university_name' =>  $this->educational_attainment[0]['university_name'],
+                'degree_id' => $this->educational_attainment[0]['degree_id'],
+                'university_id' =>  $this->educational_attainment[0]['university_id'],
                 'year_graduated' =>  $this->educational_attainment[0]['year_graduated'],
-                'university_name' =>  $this->educational_attainment[0]['university_name'],
                 'honor' => $this->educational_attainment[0]['honor'],
             ];
             $this->educational_attainment[0] = ['degree_name' => '', 'university_name' => '', 'year_graduated' => '', 'university_name' => '', 'honor' => ''];

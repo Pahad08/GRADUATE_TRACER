@@ -1,5 +1,4 @@
-<div class="rounded-none px-3" x-data="{ errors: {} }"
-    x-on:educational-background-error="errors = $event.detail[0].educational_background_errors;">
+<div class="rounded-none px-3">
     <div class="card lg:w-250 md:w-230 border-1 border-base-300 mx-auto my-5 max-w-full bg-white">
         <div class="card-body gap-0 rounded-lg shadow-md">
             @foreach ($this->educational_attainment as $key => $row)
@@ -15,8 +14,11 @@
                             </label>
                         @endif
                         <select class="select {{ !$loop->first ? "mt-2" : "" }} w-full bg-white md:rounded-none"
-                            :class="errors['educational_attainment.{{ $key }}.degree_id'] ||
-                                educational_attainment_error['educational_attainment.{{ $key }}.degree_id'] ?
+                            :class="(errors['tracer-components.educational-background'] && errors[
+                                'tracer-components.educational-background'][
+                                'educational_attainment.{{ $key }}.degree_id'
+                            ]) ||
+                            educational_attainment_error['educational_attainment.{{ $key }}.degree_id'] ?
                                 'select-error' : ''"
                             wire:model="educational_attainment.{{ $key }}.degree_id">
                             <option value="">Degree & Specialization</option>
@@ -36,8 +38,11 @@
                             </label>
                         @endif
                         <select class="select {{ !$loop->first ? "mt-2" : "" }} w-full bg-white md:rounded-none"
-                            :class="errors['educational_attainment.{{ $key }}.university_id'] ||
-                                educational_attainment_error[
+                            :class="(errors['tracer-components.educational-background'] && errors[
+                                'tracer-components.educational-background'][
+                                'educational_attainment.{{ $key }}.university_id'
+                            ]) ||
+                            educational_attainment_error[
                                     'educational_attainment.{{ $key }}.university_id'] ? 'select-error' :
                                 'md:border-x-0'"
                             wire:model="educational_attainment.{{ $key }}.university_id">
@@ -59,8 +64,11 @@
                         @endif
                         <input type="number" min="1900" max="2100" step="1"
                             class="input {{ !$loop->first ? "mt-2" : "" }} w-full bg-white md:rounded-none"
-                            :class="errors['educational_attainment.{{ $key }}.year_graduated'] ||
-                                educational_attainment_error[
+                            :class="(errors['tracer-components.educational-background'] && errors[
+                                'tracer-components.educational-background'][
+                                'educational_attainment.{{ $key }}.year_graduated'
+                            ]) ||
+                            educational_attainment_error[
                                     'educational_attainment.{{ $key }}.year_graduated'] ? 'input-error' :
                                 'md:border-r-0'"
                             wire:model="educational_attainment.{{ $key }}.year_graduated">
@@ -75,7 +83,10 @@
                         @endif
                         <input type="text"
                             class="input {{ !$loop->first ? "mt-2" : "" }} w-full bg-white md:rounded-none"
-                            :class="errors['educational_attainment.{{ $key }}.honor'] || educational_attainment_error[
+                            :class="(errors['tracer-components.educational-background'] && errors[
+                                'tracer-components.educational-background'][
+                                'educational_attainment.{{ $key }}.honor'
+                            ]) || educational_attainment_error[
                                 'educational_attainment.{{ $key }}.honor'] ? 'input-error' : ''"
                             wire:model="educational_attainment.{{ $key }}.honor">
                     </div>
@@ -120,8 +131,11 @@
                         @endif
                         <input type="text"
                             wire:model="professional_examination.{{ $key }}.name_of_examination"
-                            :class="errors['professional_examination.{{ $key }}.name_of_examination'] ||
-                                professional_examination_error[
+                            :class="(errors['tracer-components.educational-background'] && errors[
+                                'tracer-components.educational-background'][
+                                'professional_examination.{{ $key }}.name_of_examination'
+                            ]) ||
+                            professional_examination_error[
                                     'professional_examination.{{ $key }}.name_of_examination'] ?
                                 'input-error' : ''"
                             class="input {{ !$loop->first ? "mt-2" : "" }} w-full bg-white md:rounded-none">
@@ -135,8 +149,11 @@
                             </label>
                         @endif
                         <input type="date" wire:model="professional_examination.{{ $key }}.date_taken"
-                            :class="errors['professional_examination.{{ $key }}.date_taken'] ||
-                                professional_examination_error[
+                            :class="(errors['tracer-components.educational-background'] && errors[
+                                'tracer-components.educational-background'][
+                                'professional_examination.{{ $key }}.date_taken'
+                            ]) ||
+                            professional_examination_error[
                                     'professional_examination.{{ $key }}.date_taken'] ? 'input-error' :
                                 'md:border-x-0'"
                             class="input {{ !$loop->first ? "mt-2" : "" }} {{ $errors->has("professional_examination.$key.date_taken") ? "input-error" : "md:border-x-0" }} w-full bg-white md:rounded-none md:border-x-0">
@@ -150,9 +167,12 @@
                             </label>
                         @endif
                         <input type="text" wire:model="professional_examination.{{ $key }}.rating"
-                            :class="errors['professional_examination.{{ $key }}.rating'] ||
-                                professional_examination_error[
-                                    'professional_examination.{{ $key }}.rating'] ? 'input-error' : ''"
+                            :class="(errors['tracer-components.educational-background'] && errors[
+                                'tracer-components.educational-background'][
+                                'professional_examination.{{ $key }}.rating'
+                            ]) ||
+                            professional_examination_error[
+                                'professional_examination.{{ $key }}.rating'] ? 'input-error' : ''"
                             class="input {{ !$loop->first ? "mt-2" : "" }} {{ $errors->has("professional_examination.$key.rating") ? "input-error" : "" }} w-full bg-white md:rounded-none">
                     </div>
 
@@ -190,14 +210,16 @@
                 <div class="flex items-center gap-4">
                     <label class="flex items-center">
                         <input type="radio" wire:model="type"
-                            :class="errors['type'] ?
-                                'radio-error' : ''" class="radio"
-                            value="undergraduate">
+                            :class="errors['tracer-components.educational-background'] && errors[
+                                    'tracer-components.educational-background']['type'] ?
+                                'radio-error' : ''"
+                            class="radio" value="undergraduate">
                         <span class="ml-2">Undergraduate</span>
                     </label>
                     <label class="flex items-center">
                         <input type="radio" wire:model="type" class="radio"
-                            :class="errors['type'] ?
+                            :class="errors['tracer-components.educational-background'] && errors[
+                                    'tracer-components.educational-background']['type'] ?
                                 'radio-error' : ''"
                             value="graduate">
                         <span class="ml-2">Graduate</span>
@@ -223,15 +245,21 @@
                         class="input col-span-1 w-full bg-white md:col-span-2">
                 </div>
 
-                <template x-if="errors['reasons.input']">
+                <template
+                    x-if="errors['tracer-components.educational-background'] && errors['tracer-components.educational-background']['reasons.input']">
                     <div class="mt-1">
-                        <p class="text-error" x-text="errors['reasons.input']"></p>
+                        <p class="text-error"
+                            x-text="errors['tracer-components.educational-background'] && errors['tracer-components.educational-background']['reasons.input']">
+                        </p>
                     </div>
                 </template>
 
-                <template x-if="errors['reasons.checkboxes']">
+                <template
+                    x-if="errors['tracer-components.educational-background'] && errors['tracer-components.educational-background']['reasons.checkboxes']">
                     <div class="mt-1">
-                        <p class="text-error" x-text="errors['reasons.checkboxes']"></p>
+                        <p class="text-error"
+                            x-text="errors['tracer-components.educational-background'] && errors['tracer-components.educational-background']['reasons.checkboxes']">
+                        </p>
                     </div>
                 </template>
             </div>

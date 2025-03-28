@@ -14,18 +14,13 @@
     </div>
 
     <div class="tabs bg-neutral-content items-start justify-between">
-        <div x-data="{ errors: {} }"
-            x-on:general-information-error.window="errors['tracer-components.general-information']=$event.detail[0]?.general_information_errors;"
-            x-on:educational-background-error.window="errors['tracer-components.educational-background']=$event.detail[0]?.educational_background_errors;"
-            x-on:studies-error.window="errors['tracer-components.studies-information']=$event.detail[0]?.studies_errors;"
-            x-on:employment-data-error.window="errors['tracer-components.employment-data']=$event.detail[0]?.employment_data_errors">
-
+        <div>
+            {{-- loop the tabs --}}
             @foreach ($childComponents as $key => $component)
                 <a role="tab" class="tab font-semibold"
                     :class="{
                         'tab-active': activeTab === '{{ $key }}',
-                        'text-error! hover:text-error': errors.hasOwnProperty('{{ $key }}') && Object.keys(
-                            errors['{{ $key }}']).length > 0
+                        'text-error! hover:text-error': errors.hasOwnProperty('{{ $key }}')
                     }"
                     x-on:click="activeTab = '{{ $key }}'"><i
                         class="fa-solid {{ $component["icon"] }}"></i>&nbsp{{ $component["title"] }}</a>

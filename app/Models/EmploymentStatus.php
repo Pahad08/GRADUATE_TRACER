@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EmploymentStatus extends Model
@@ -13,6 +14,11 @@ class EmploymentStatus extends Model
 
     public function EmploymentReason(): HasMany
     {
-        return $this->hasMany(EmploymentReason::class);
+        return $this->hasMany(EmploymentReason::class, 'employment_status_id');
+    }
+
+    public function EmploymentDetails(): BelongsTo
+    {
+        return $this->belongsTo(EmploymentDetails::class, 'employment_status_id');
     }
 }

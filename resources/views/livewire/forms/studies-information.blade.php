@@ -1,4 +1,4 @@
-<div class="rounded-none px-3" x-data="{ errors: {} }" x-on:studies-error="errors = $event.detail[0].studies_errors;">
+<div class="rounded-none px-3">
     <div class="card lg:w-250 md:w-230 border-1 border-base-300 mx-auto my-5 max-w-full bg-white">
         <div class="card-body rounded-lg shadow-md">
             <div class="grid grid-cols-1">
@@ -20,7 +20,10 @@
                                     </label>
                                 @endif
                                 <input type="text" wire:model="trainings.{{ $key }}.training_name"
-                                    :class="errors['trainings.{{ $key }}.training_name'] || trainings_errors[
+                                    :class="(errors['tracer-components.studies-information'] && errors[
+                                        'tracer-components.studies-information'][
+                                        'trainings.{{ $key }}.training_name'
+                                    ]) || trainings_errors[
                                             'trainings.{{ $key }}.training_name'] ?
                                         'input-error' : ''"
                                     class="input {{ !$loop->first ? "mt-2" : "" }} w-full bg-white md:rounded-none">
@@ -34,8 +37,11 @@
                                     </label>
                                 @endif
                                 <input type="text"
-                                    :class="errors['trainings.{{ $key }}.duration_and_credits_earned'] ||
-                                        trainings_errors['trainings.{{ $key }}.duration_and_credits_earned'] ?
+                                    :class="(errors['tracer-components.studies-information'] && errors[
+                                        'tracer-components.studies-information'][
+                                        'trainings.{{ $key }}.duration_and_credits_earned'
+                                    ]) ||
+                                    trainings_errors['trainings.{{ $key }}.duration_and_credits_earned'] ?
                                         'input-error' : ''"
                                     wire:model="trainings.{{ $key }}.duration_and_credits_earned"
                                     class="input {{ !$loop->first ? "mt-2" : "" }} w-full bg-white md:rounded-none md:border-x-0">
@@ -49,7 +55,10 @@
                                     </label>
                                 @endif
                                 <input type="text" wire:model="trainings.{{ $key }}.training_institution"
-                                    :class="errors['trainings.{{ $key }}.training_institution'] || trainings_errors[
+                                    :class="(errors['tracer-components.studies-information'] && errors[
+                                        'tracer-components.studies-information'][
+                                        'trainings.{{ $key }}.training_institution'
+                                    ]) || trainings_errors[
                                             'trainings.{{ $key }}.training_institution'] ?
                                         'input-error' : ''"
                                     class="input {{ !$loop->first ? "mt-2" : "" }} w-full bg-white md:rounded-none">
@@ -80,7 +89,6 @@
                     @endforeach
                 </div>
 
-
                 <div class="divider"></div>
 
                 <div class="mt-2">
@@ -105,15 +113,20 @@
                             class="input mt-3 w-full bg-white md:col-span-2">
                     </div>
 
-                    <template x-if="errors['reasons_for_study.input']">
+                    <template
+                        x-if="errors['tracer-components.studies-information'] && errors['tracer-components.studies-information']['reasons_for_study.input']">
                         <div class="mt-1">
-                            <p class="text-error" x-text="errors['reasons_for_study.input']"></p>
+                            <p class="text-error"
+                                x-text="errors['tracer-components.studies-information']['reasons_for_study.input']"></p>
                         </div>
                     </template>
 
-                    <template x-if="errors['reasons_for_study.checkboxes']">
+                    <template
+                        x-if="errors['tracer-components.studies-information'] && errors['tracer-components.studies-information']['reasons_for_study.checkboxes']">
                         <div class="mt-1">
-                            <p class="text-error" x-text="errors['reasons_for_study.checkboxes']"></p>
+                            <p class="text-error"
+                                x-text="errors['tracer-components.studies-information']['reasons_for_study.checkboxes']">
+                            </p>
                         </div>
                     </template>
                 </div>

@@ -91,9 +91,9 @@ class EmploymentData extends Component
         "3 years to less than 4 years",
     ];
     public $job_levels = [
-        "Rank or Clerical",
-        "Professional, Technical or Supervisory",
-        "Managerial or Executive",
+        "Rank/Clerical",
+        "Professional/Technical/Supervisory",
+        "Managerial/Executive",
         'Self-employed'
     ];
     public $salaryRanges = [
