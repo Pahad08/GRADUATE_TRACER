@@ -4,6 +4,11 @@ namespace App\Livewire\TracerComponents;
 
 use App\Livewire\Forms\EmploymentDataForm;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\On;
+use App\Models\CustomQuestion;
+use App\Models\QuestionVisibility;
+use Illuminate\Support\Str;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class EmploymentData extends Component
@@ -31,7 +36,7 @@ class EmploymentData extends Component
         "Lack of work experience"
     ];
     public $employment_status = [
-        "Regular or Permanent",
+        "Regular/Permanent",
         "Contractual",
         "Temporary",
         "Self-employed",
@@ -65,7 +70,7 @@ class EmploymentData extends Component
         "Peer influence",
         "Family influence"
     ];
-    public $job_change_reasons = [
+    public $first_job_durations = [
         "Less than a month",
         "1 to 6 months",
         "7 to 11 months",
@@ -83,12 +88,12 @@ class EmploymentData extends Component
         "Job Fair or Public Employment Service Office (PESO)"
     ];
     public $first_job_search_durations = [
-        "Less than a month",
-        "1 to 6 months",
-        "7 to 11 months",
-        "1 year to less than 2 years",
-        "2 years to less than 3 years",
-        "3 years to less than 4 years",
+        "Less than a month" => 'Less than a month',
+        "1 to 6 months" => '1 to 6 months',
+        "7 to 11 months" => "7 to 11 months",
+        "1 year to less than 2 years" => '1 to 2 years',
+        "2 years to less than 3 years" => '2 to 3 years',
+        "3 years to less than 4 years" => '3 to 4 years',
     ];
     public $job_levels = [
         "Rank/Clerical",
@@ -97,12 +102,12 @@ class EmploymentData extends Component
         'Self-employed'
     ];
     public $salaryRanges = [
-        "Below P 5,000.00",
-        "P 5,000.00 to less than P 10,000.00",
-        "P 10,000.00 to less than P 15,000.00",
-        "P 15,000.00 to less than P 20,000.00",
-        "P 20,000.00 to less than P 25,000.00",
-        "P 25,000.00 and above"
+        "Below 5,000.00" => 'Below 5000',
+        "₱5,000.00 to less than ₱10,000.00" => '5000-10000',
+        "₱10,000.00 to less than ₱15,000.00" => '10000-15000',
+        "₱15,000.00 to less than ₱20,000.00" => '15000-20000',
+        "₱20,000.00 to less than ₱25,000.00" => '20000-25000',
+        "₱25,000.00 and above" => '25000 and above'
     ];
     public $skills = [
         "Communication skills",
@@ -117,20 +122,26 @@ class EmploymentData extends Component
         try {
             $this->validate();
             $data_to_dispatch = $this->form->is_employed === 'yes' ? $this->form->except(['unemployment_reason'])
-                : $this->form->only(['unemployment_reason', 'is_employed']);
+                : $this->form->only(['unemployment_reason', 'is_employed', 'suggestions', 'custom_questions']);
             $this->dispatch('validated-employment-data', employment_data: $data_to_dispatch);
-            // dispatch an event to send the validated employment data
+
             $this->dispatch('employment-data-error', [
-                'employment_data_errors' => []
+                'employment_data_tab' => '',
             ]);
         } catch (ValidationException $e) {
-            // dispatch an event to add employment data error
+            $this->resetValidation();
+            $errors = $e->validator->errors()->toArray();
+
+            // loop errors and add them to the component
+            foreach ($errors as $field => $messages) {
+                foreach ($messages as $message) {
+                    $this->addError($field, $message);
+                }
+            }
+
             $this->dispatch('employment-data-error', [
                 'employment_data_tab' => 'tracer-components.employment-data',
-                'employment_data_errors' => $e->validator->errors()
             ]);
-        } finally {
-            $this->skipRender();
         }
     }
 
@@ -140,17 +151,15 @@ class EmploymentData extends Component
             $this->form->validateSuggestion();
             $this->form->suggestions[] = $this->form->suggestions[0];
             $this->form->suggestions[0] = '';
-
-            $this->dispatch(
-                'suggestion-error',
-                []
-            );
         } catch (ValidationException $e) {
-            // dispatch an event to add suggestion error
-            $this->dispatch(
-                'suggestion-error',
-                $e->validator->errors()
-            );
+            $errors = $e->validator->errors()->toArray();
+
+            // loop errors and add them to the component
+            foreach ($errors as $field => $messages) {
+                foreach ($messages as $message) {
+                    $this->addError($field, $message);
+                }
+            }
         }
     }
 
@@ -163,7 +172,33 @@ class EmploymentData extends Component
     public function mount()
     {
         $this->form->suggestions[] = '';
-        $this->form->suggestions[] = 'dasdad';
+        $questions = CustomQuestion::with(['questionVisibility', 'questionOption'])
+            ->whereHas('questionVisibility', function ($query) {
+                $query->where('section_name', 'EMPLOYMENT_DATA')->where('is_visible', true);
+            })
+            ->get();
+
+        $this->form->custom_questions = $questions->mapWithKeys(function ($question) {
+            $key = Str::slug($question->label, '_');
+
+            $value = $question->questionOption->isNotEmpty() ? [] : '';
+
+            return [$key => $value];
+        })->toArray();
+    }
+
+    #[On('graduate-created')]
+    public function resetEmploymentData()
+    {
+        $this->form->reset();
+        $this->form->suggestions[] = '';
+    }
+
+    #[Computed]
+    public function questionVisibility()
+    {
+        return QuestionVisibility::with('question.questionOption')->where('section_name', 'EMPLOYMENT_DATA')
+            ->where('is_visible', true)->orderBy('question_order')->get()->keyBy('question_key');
     }
 
     public function render()

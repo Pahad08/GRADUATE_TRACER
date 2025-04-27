@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('employment_details', function (Blueprint $table) {
-            $table->unsignedBigInteger('employment_details_id')->autoIncrement();
+            $table->integer('employment_details_id')->autoIncrement();
             $table->primary('employment_details_id');
-            $table->unsignedBigInteger('employment_status_id')->nullable();
+            $table->integer('employment_status_id')->nullable();
             $table->foreign('employment_status_id')->references('employment_status_id')->on('employment_status')->cascadeOnDelete();
-            $table->enum('present_employment_status', ['Regular or permanent', 'Contractual', 'Temporary', 'Self employed', 'Casual'])->nullable();
+            $table->enum('present_employment_status', ['Regular/permanent', 'Contractual', 'Temporary', 'Self employed', 'Casual'])->nullable();
             $table->enum('occupation', [
                 'Officials of Government and Special-Interest Organizations',
                 'Professionals',
@@ -29,7 +29,7 @@ return new class extends Migration
                 'Laborers and Unskilled Workers',
                 'Special Occupation'
             ])->nullable()->index();
-            $table->string('company_name', length: 100)->nullable();
+            $table->string('company_name', length: 100)->nullable()->index();
             $table->enum('industry', [
                 'Agriculture',
                 'Fishing',
@@ -49,13 +49,12 @@ return new class extends Migration
                 'Private Households',
                 'Extra-territorial'
             ])->nullable()->index();
-            $table->enum('first_job_level', ['Rank or Clerical', 'Professional/Technical/Supervisory', 'Managerial/Executive'])->nullable();
-            $table->enum('current_job_level', ['Rank or Clerical', 'Professional/Technical/Supervisory', 'Managerial/Executive'])->nullable();
-            $table->string('first_job_initial_gross', length: 100)->nullable();
             $table->enum('work_location', ['local', 'abroad'])->nullable()->index();
-            $table->boolean('is_first_job');
-            $table->boolean('related_to_course');
-            $table->boolean('is_curriculum_relevant_to_job');
+            $table->boolean('is_first_job')->index();
+            $table->boolean('is_curriculum_relevant_to_job')->index();
+            $table->boolean('is_related_to_course')->index();
+            $table->enum('first_job_level', ['Rank/Clerical', 'Professional/Technical/Supervisory', 'Managerial/Executive'])->index()->nullable();
+            $table->enum('current_job_level', ['Rank/Clerical', 'Professional/Technical/Supervisory', 'Managerial/Executive'])->index()->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

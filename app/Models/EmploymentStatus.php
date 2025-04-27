@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class EmploymentStatus extends Model
 {
@@ -12,13 +12,13 @@ class EmploymentStatus extends Model
     protected $table = 'employment_status';
     protected $guarded = ['employment_status_id', 'deleted_at', 'created_at', 'updated_at'];
 
-    public function EmploymentReason(): HasMany
+    public function employmentDetails(): HasOne
     {
-        return $this->hasMany(EmploymentReason::class, 'employment_status_id');
+        return $this->hasOne(EmploymentDetails::class, 'employment_status_id');
     }
 
-    public function EmploymentDetails(): BelongsTo
+    public function unemploymentReason(): HasMany
     {
-        return $this->belongsTo(EmploymentDetails::class, 'employment_status_id');
+        return $this->hasMany(UnemploymentReason::class, 'employment_status_id');
     }
 }

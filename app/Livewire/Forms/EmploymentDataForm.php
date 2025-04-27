@@ -28,6 +28,7 @@ class EmploymentDataForm extends Form
     public $is_curriculum_relevant_to_job = '';
     public $skills = ['input' => '', 'checkboxes' => []];
     public $suggestions = [];
+    public $custom_questions = [];
 
     //options
     protected $occupations = [
@@ -42,9 +43,8 @@ class EmploymentDataForm extends Form
         "Laborers and Unskilled Workers",
         "Special Occupation"
     ];
-
     protected $employment_status = [
-        "Regular or Permanent",
+        "Regular/Permanent",
         "Contractual",
         "Temporary",
         "Self-employed",
@@ -135,25 +135,25 @@ class EmploymentDataForm extends Form
             ],
             'job_acceptance.checkboxes' => [
                 'sometimes',
-                Rule::requiredIf($this->is_employed == 'yes' && !empty($this->is_employed && $this->is_first_job == '1') && empty($this->job_acceptance['input'])),
+                Rule::requiredIf($this->is_employed == 'yes' && !empty($this->is_employed)  && $this->related_to_course == '1' && empty($this->job_acceptance['input'])),
             ],
             'job_acceptance.input' => [
                 'sometimes',
-                Rule::requiredIf($this->is_employed == 'yes' && !empty($this->is_employed && $this->is_first_job == '1') && empty($this->job_acceptance['checkboxes'])),
+                Rule::requiredIf($this->is_employed == 'yes' && !empty($this->is_employed) && $this->related_to_course == '1' && empty($this->job_acceptance['checkboxes'])),
             ],
             'job_change.checkboxes' => [
                 'sometimes',
-                Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed)
-                    && $this->is_first_job != '1' && empty($this->job_change['input'])),
+                Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed) && $this->is_first_job == '0'
+                    && empty($this->job_change['input'])),
             ],
             'job_change.input' => [
                 'sometimes',
-                Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed)
-                    && $this->is_first_job != '1' && empty($this->job_change['checkboxes'])),
+                Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed) && $this->is_first_job == '0'
+                    && empty($this->job_change['checkboxes'])),
             ],
             'first_job_duration' => [
                 'sometimes',
-                Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed && $this->is_first_job != '1') && $this->is_first_job != '1'),
+                Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed) && $this->is_first_job == '0'),
             ],
             'job_source.checkboxes' => [
                 'sometimes',
@@ -194,9 +194,13 @@ class EmploymentDataForm extends Form
             'skills.input' => [
                 'sometimes',
                 Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed)
-                    && empty($this->first_job_duration['checkboxes']) && $this->is_curriculum_relevant_to_job == '1'),
+                    && empty($this->skills['checkboxes']) && $this->is_curriculum_relevant_to_job == '1'),
             ],
             'suggestions.*' => ['sometimes', Rule::requiredIf(count($this->suggestions) == 1)],
+            'custom_questions.*' => [
+                'sometimes',
+                Rule::requiredIf(count($this->custom_questions) > 0),
+            ]
         ];
     }
 

@@ -2,23 +2,24 @@
 
 namespace App\Livewire\Forms;
 
+
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 
 class GeneralInformationForm extends Form
 {
-    public $f_name = 'fahad';
-    public $l_name = 'bagundang';
-    public $permanent_address = 'tacurong city';
-    public $email_address = 'fahad@gmail.com';
-    public $contact_number = '32131313';
-    public $sex = 'male';
-    public $civil_status = 'single';
-    public $birthdate = '1999-01-01';
-    public $region_id = 1;
-    public $province_id = 1;
-    public $location_of_residence = 'city';
-    // public $city;
+    public $f_name = '';
+    public $l_name = '';
+    public $permanent_address = '';
+    public $email_address = '';
+    public $contact_number = '';
+    public $sex = '';
+    public $civil_status = '';
+    public $birthdate = '';
+    public $region = '';
+    public $province = '';
+    public $location_of_residence = '';
+    public $custom_questions = [];
 
     protected function rules()
     {
@@ -61,22 +62,25 @@ class GeneralInformationForm extends Form
                 'required',
                 'date'
             ],
-            'region_id' => [
+            'region' => [
                 'sometimes',
                 'required',
-                'exists:regions'
+                'exists:regions,region_id'
             ],
-            'province_id' => [
+            'province' => [
                 'sometimes',
                 'required',
-                'exists:provinces'
+                'exists:provinces,province_id'
             ],
             'location_of_residence' => [
                 'sometimes',
                 'required',
                 Rule::in(['city', 'municipality'])
             ],
-            // 'city' => []
+            'custom_questions.*' => [
+                'sometimes',
+                Rule::requiredIf(count($this->custom_questions) > 0),
+            ]
         ];
     }
 }

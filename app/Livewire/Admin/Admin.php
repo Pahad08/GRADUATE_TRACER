@@ -4,10 +4,10 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 
-class Index extends Component
+class Admin extends Component
 {
     public function render()
     {
-        return view('livewire.admin.index');
+        return view('livewire.admin.admin');
     }
 }

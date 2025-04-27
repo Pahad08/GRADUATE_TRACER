@@ -14,22 +14,33 @@
     </div>
 
     <div class="tabs bg-neutral-content items-start justify-between">
-        <div>
+        <div class="hidden md:block">
             {{-- loop the tabs --}}
             @foreach ($childComponents as $key => $component)
                 <a role="tab" class="tab font-semibold"
                     :class="{
                         'tab-active': activeTab === '{{ $key }}',
-                        'text-error! hover:text-error': errors.hasOwnProperty('{{ $key }}')
+                        'text-error! hover:text-error': errorTabs.hasOwnProperty('{{ $key }}')
                     }"
                     x-on:click="activeTab = '{{ $key }}'"><i
                         class="fa-solid {{ $component["icon"] }}"></i>&nbsp{{ $component["title"] }}</a>
             @endforeach
         </div>
 
-        <label class="tab font-semibold" for="login-modal">
-            <a for="login-modal"><i class="fa-solid fa-right-to-bracket"></i>&nbsp;Login</i>
-            </a>
-        </label>
+        <div class="tab dropdown dropdown-right px-0 font-semibold md:hidden">
+            <div tabindex="0" class="tab"><i class="fa-solid fa-caret-down mr-2"></i> Menu</div>
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-75 p-2 shadow-sm">
+                @foreach ($childComponents as $key => $component)
+                    <a role="tab" class="tab justify-start font-semibold"
+                        :class="{
+                            'tab-active': activeTab === '{{ $key }}',
+                            'text-error! hover:text-error': errorTabs.hasOwnProperty('{{ $key }}'),
+                        
+                        }"
+                        x-on:click="activeTab = '{{ $key }}'"><i
+                            class="fa-solid {{ $component["icon"] }}"></i>&nbsp{{ $component["title"] }}</a>
+                @endforeach
+            </ul>
+        </div>
     </div>
 </div>

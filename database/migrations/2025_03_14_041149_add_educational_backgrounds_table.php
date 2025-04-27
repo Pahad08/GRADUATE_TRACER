@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('educational_backgrounds', function (Blueprint $table) {
-            $table->unsignedBigInteger('education_background_id')->autoIncrement();
-            $table->primary('education_background_id');
-            $table->unsignedBigInteger('graduate_id')->nullable();
+            $table->integer('educational_background_id')->autoIncrement();
+            $table->primary('educational_background_id');
+            $table->integer('graduate_id')->nullable();
             $table->foreign('graduate_id')->references('graduate_id')->on('graduates')->cascadeOnDelete();
-            $table->unsignedBigInteger('degree_id')->nullable();
+            $table->integer('degree_id')->nullable();
             $table->foreign('degree_id')->references('degree_id')->on('degrees')->cascadeOnDelete();
-            $table->unsignedBigInteger('university_id')->nullable();
+            $table->integer('university_id')->nullable();
             $table->foreign('university_id')->references('university_id')->on('universities')->cascadeOnDelete();
             $table->year('year_graduated')->nullable()->index();
             $table->string('honor', length: 100)->nullable();

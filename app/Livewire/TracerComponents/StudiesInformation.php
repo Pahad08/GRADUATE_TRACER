@@ -2,18 +2,20 @@
 
 namespace App\Livewire\TracerComponents;
 
+use App\Models\CustomQuestion;
+use App\Models\QuestionVisibility;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class StudiesInformation extends Component
 {
 
     public $trainings = [];
-    public $reasons_for_study = [
-        'input' => '',
-        'checkboxes' => ['For promotion']
-    ];
+    public $custom_questions = [];
+    public $reasons_for_study = [];
 
     public function addTrainingRow()
     {
@@ -24,11 +26,6 @@ class StudiesInformation extends Component
                 'trainings.*.training_institution' => 'required',
             ]);
 
-            $this->dispatch(
-                'trainings-error',
-                []
-            );
-
             $this->trainings[] = [
                 'training_name' => $this->trainings[0]['training_name'],
                 'duration_and_credits_earned' =>  $this->trainings[0]['duration_and_credits_earned'],
@@ -36,11 +33,14 @@ class StudiesInformation extends Component
             ];
             $this->trainings[0] = ['training_name' => '', 'duration_and_credits_earned' => '', 'training_institution' => ''];
         } catch (ValidationException $e) {
-            // dispatch an event to add studies information error
-            $this->dispatch(
-                'trainings-error',
-                $e->validator->errors()
-            );
+            $errors = $e->validator->errors()->toArray();
+
+            // loop errors and add them to the component
+            foreach ($errors as $field => $messages) {
+                foreach ($messages as $message) {
+                    $this->addError($field, $message);
+                }
+            }
         }
     }
 
@@ -92,6 +92,9 @@ class StudiesInformation extends Component
 
         $rules = array_merge($rules, $training_rules);
 
+        if (!empty($this->custom_questions)) {
+            $rules["custom_questions.*"] = 'required';
+        }
         return $rules;
     }
 
@@ -100,30 +103,68 @@ class StudiesInformation extends Component
     {
         try {
             $this->validate();
+
             $this->dispatch('validated-studies-information', studies_information: $this->all());
-            // dispatch an event to send the validated studies information
+
             $this->dispatch('studies-error', [
-                'studies_errors' => []
+                'studies_tab' => '',
             ]);
         } catch (ValidationException $e) {
-            // dispatch an event to add studies information error
+            $this->resetValidation();
+            $errors = $e->validator->errors()->toArray();
+
+            // loop errors and add them to the component
+            foreach ($errors as $field => $messages) {
+                foreach ($messages as $message) {
+                    $this->addError($field, $message);
+                }
+            }
+
+            // dispatch an event to add general information error
             $this->dispatch('studies-error', [
                 'studies_tab' => 'tracer-components.studies-information',
-                'studies_errors' => $e->validator->errors()
             ]);
-        } finally {
-            $this->skipRender();
         }
+    }
+
+    #[On('graduate-created')]
+    public function resetStudiesInformation()
+    {
+        $this->reset(['reasons_for_study']);
+        $this->trainings = array_slice($this->trainings, 0, 1);
+    }
+
+    #[Computed()]
+    public function questionVisibility()
+    {
+        return QuestionVisibility::with('question.questionOption')->where('section_name', 'TRAININGS_STUDIES')
+            ->where('is_visible', true)->orderBy('question_order')->get();
     }
 
     public function mount()
     {
         $this->trainings[] = ['training_name' => '', 'duration_and_credits_earned' => '', 'training_institution' => ''];
-        $this->trainings[] = ['training_name' => 'dadad', 'duration_and_credits_earned' => '12', 'training_institution' => 'dasdad'];
+
+        $this->reasons_for_study =   ['input' => '', 'checkboxes' => ['']];
+
+        $questions = CustomQuestion::with(['questionVisibility', 'questionOption'])
+            ->whereHas('questionVisibility', function ($query) {
+                $query->where('section_name', 'TRAININGS_STUDIES')->where('is_visible', true);
+            })->get();
+
+        $this->custom_questions = $questions->mapWithKeys(function ($question) {
+            $key = Str::slug($question->label, '_');
+
+            $value = $question->questionOption->isNotEmpty() ? [] : '';
+
+            return [$key => $value];
+        })->toArray();
     }
 
     public function render()
     {
+
+
         return view('livewire.forms.studies-information');
     }
 }

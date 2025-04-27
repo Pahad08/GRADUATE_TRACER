@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('trainings', function (Blueprint $table) {
-            $table->unsignedBigInteger('training_id')->autoIncrement();
+            $table->integer('training_id')->autoIncrement();
             $table->primary('training_id');
-            $table->unsignedBigInteger('graduate_id')->nullable();
+            $table->integer('graduate_id')->nullable();
             $table->foreign('graduate_id')->references('graduate_id')->on('graduates')->cascadeOnDelete();
             $table->string('training_name', length: 100)->nullable()->index();
             $table->string('duration_and_credits_earned', length: 100)->nullable();

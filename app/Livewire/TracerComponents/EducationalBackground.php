@@ -2,22 +2,23 @@
 
 namespace App\Livewire\TracerComponents;
 
+use App\Models\CustomQuestion;
 use App\Models\Degree;
+use App\Models\QuestionVisibility;
 use App\Models\University;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Illuminate\Support\Str;
 
 class EducationalBackground extends Component
 {
 
     public $educational_attainment = [];
     public $professional_examination = [];
-    public $type = 'undergraduate';
-    public $reasons = [
-        'input' => '',
-        'checkboxes' => ['Good grades in high school']
-    ];
+    public $reasons_for_undergraduate = [];
+    public $reasons_for_graduate = [];
     public $reason_options = [
         "High grades in the course or subject area(s) related to the course",
         "Good grades in high school",
@@ -34,21 +35,16 @@ class EducationalBackground extends Component
         "Opportunity for employment abroad",
         "No particular choice or no better idea",
     ];
-
-    public function mount()
-    {
-        $this->educational_attainment[] = ['degree_id' => '', 'university_id' => '', 'year_graduated' => '', 'honor' => ''];
-        $this->educational_attainment[] = ['degree_id' => '1', 'university_id' => '1', 'year_graduated' => '1999', 'honor' => '2121'];
-
-        $this->professional_examination[] = ['name_of_examination' => '', 'date_taken' => '', 'rating' => '',];
-        $this->professional_examination[] = ['name_of_examination' => 'dasdad', 'date_taken' => '1999-01-01', 'rating' => '99',];
-    }
+    public $custom_questions = [];
+    public $has_baccalaureate = 'no';
 
     protected function messages()
     {
         return [
-            'reasons.checkboxes' => 'Provide atleast one reason',
-            'reasons.input' => 'Provide atleast one reason',
+            'reasons_for_undergraduate.checkboxes' => 'Provide atleast one reason',
+            'reasons_for_undergraduate.input' => 'Provide atleast one reason',
+            'reasons_for_graduate.checkboxes' => 'Provide atleast one reason',
+            'reasons_for_graduate.input' => 'Provide atleast one reason',
         ];
     }
 
@@ -58,26 +54,33 @@ class EducationalBackground extends Component
         $professionalExaminationRules = [];
         $rules = [];
 
-        if (empty($this->reasons['input']) && empty($this->reasons['checkboxes'])) {
-            $rules["reasons.checkboxes.*"] = 'sometimes|required';
-            $rules["reasons.input"] = 'sometimes|required';
+        if (
+            empty($this->reasons_for_graduate['input']) && empty($this->reasons_for_graduate['checkboxes']) &&
+            empty($this->reasons_for_undergraduate['input']) && empty($this->reasons_for_undergraduate['checkboxes'])
+        ) {
+            $rules["reasons_for_graduate.checkboxes.*"] = 'sometimes|required';
+            $rules["reasons_for_graduate.input"] = 'sometimes|required';
         }
 
-        if (!empty($this->reasons['checkboxes']) || !empty($this->reasons['input'])) {
-            $rules["reasons.checkboxes.*"] = 'nullable';
-            $rules["reasons.input"] = 'nullable';
+        if (!empty($this->reasons_for_graduate['checkboxes']) || !empty($this->reasons_for_graduate['input'])) {
+            $rules["reasons_for_undergraduate.checkboxes.*"] = 'nullable';
+            $rules["reasons_for_undergraduate.input"] = 'nullable';
         }
 
-        foreach ($this->educational_attainment as $key => $value) {
-            if ($key === 0) {
-                continue;
+        if (!empty($this->reasons_for_undergraduate['checkboxes']) || !empty($this->reasons_for_undergraduate['input'])) {
+            $rules["reasons_for_graduate.checkboxes.*"] = 'nullable';
+            $rules["reasons_for_graduate.input"] = 'nullable';
+        }
+
+        if ($this->has_baccalaureate == 'yes') {
+            foreach ($this->educational_attainment as $key => $value) {
+                $prefix = "educational_attainment.$key";
+
+                $educationalAttainmentRules["$prefix.degree_id"] = 'sometimes|required';
+                $educationalAttainmentRules["$prefix.university_id"] = 'sometimes|required';
+                $educationalAttainmentRules["$prefix.year_graduated"] = ['sometimes', 'required', 'integer', 'digits:4', 'max:' . date('Y')];
+                $educationalAttainmentRules["$prefix.honor.*"] = 'nullable';
             }
-            $prefix = "educational_attainment.$key";
-
-            $educationalAttainmentRules["$prefix.degree_id"] = 'sometimes|required';
-            $educationalAttainmentRules["$prefix.university_id"] = 'sometimes|required';
-            $educationalAttainmentRules["$prefix.year_graduated"] = 'sometimes|required|numeric|digits:4|min:1900|max:2100';
-            $educationalAttainmentRules["$prefix.honor"] = 'sometimes|required';
         }
 
         foreach ($this->professional_examination as $key => $value) {
@@ -94,23 +97,27 @@ class EducationalBackground extends Component
         $mergedValidationRules = array_merge($educationalAttainmentRules, $professionalExaminationRules);
 
         if (empty($mergedValidationRules)) {
-            $rules["educational_attainment.0.degree_id"] = 'sometimes|required';
-            $rules["educational_attainment.0.university_id"] = 'sometimes|required';
-            $rules["educational_attainment.0.year_graduated"] = 'sometimes|required|numeric|digits:4|min:1900|max:2100';
-            $rules["educational_attainment.0.honor"] = 'sometimes|required';
             $rules["professional_examination.0.name_of_examination"] = 'sometimes|required';
             $rules["professional_examination.0.date_taken"] = 'sometimes|required|date';
             $rules["professional_examination.0.rating"] = 'sometimes|required';
-            $rules["type"] = 'sometimes|required';
+
+            if ($this->has_baccalaureate == 'yes') {
+                $rules["educational_attainment.0.degree_id"] = 'sometimes|required';
+                $rules["educational_attainment.0.university_id"] = 'sometimes|required';
+                $rules["educational_attainment.0.year_graduated"] = 'sometimes|required|numeric|digits:4|min:1900|max:2100';
+                $rules["educational_attainment.0.honor"] = 'nullable';
+            }
 
             return $rules;
         }
 
         if (empty($educationalAttainmentRules)) {
-            $rules["educational_attainment.0.degree_id"] = 'sometimes|required';
-            $rules["educational_attainment.0.university_id"] = 'sometimes|required';
-            $rules["educational_attainment.0.year_graduated"] = 'sometimes|required|numeric|digits:4|min:1900|max:2100';
-            $rules["educational_attainment.0.honor"] = 'sometimes|required';
+            if ($this->has_baccalaureate == 'yes') {
+                $rules["educational_attainment.0.degree_id"] = 'sometimes|required';
+                $rules["educational_attainment.0.university_id"] = 'sometimes|required';
+                $rules["educational_attainment.0.year_graduated"] = 'sometimes|required|numeric|digits:4|min:1900|max:2100';
+                $rules["educational_attainment.0.honor.*"] = 'nullable';
+            }
         }
 
         if (empty($professionalExaminationRules)) {
@@ -119,55 +126,34 @@ class EducationalBackground extends Component
             $rules["professional_examination.0.rating"] = 'sometimes|required';
         }
 
-        $rules = array_merge($mergedValidationRules, $rules, [
-            'type' => 'sometimes|required'
-        ]);
+        if (!empty($this->custom_questions)) {
+            $rules["custom_questions.*"] = 'required';
+        }
 
-        return $rules;
+        return array_merge($rules, $mergedValidationRules);
     }
 
     public function addEducationAttainmentRow()
     {
-        try {
-            $this->validate([
-                'educational_attainment.*.degree_id' => 'required',
-                'educational_attainment.*.university_id' => 'required',
-                'educational_attainment.*.year_graduated' => 'required|numeric|digits:4',
-                'educational_attainment.*.honor' => 'required',
-            ]);
-            $this->dispatch(
-                'educational-attainment-error',
-                []
-            );
-            $this->educational_attainment[] = [
-                'degree_id' => $this->educational_attainment[0]['degree_id'],
-                'university_id' =>  $this->educational_attainment[0]['university_id'],
-                'year_graduated' =>  $this->educational_attainment[0]['year_graduated'],
-                'honor' => $this->educational_attainment[0]['honor'],
-            ];
-            $this->educational_attainment[0] = ['degree_name' => '', 'university_name' => '', 'year_graduated' => '', 'university_name' => '', 'honor' => ''];
-        } catch (ValidationException $e) {
-            // dispatch an event to add educational attainment error
-            $this->dispatch(
-                'educational-attainment-error',
-                $e->validator->errors()
-            );
-        }
+
+        $this->educational_attainment[] = ['degree_id' => '', 'university_id' => '', 'year_graduated' => '', 'honor' => ['']];
+        // $this->educational_attainment[] = [
+        //     'degree_id' => $this->educational_attainment[0]['degree_id'],
+        //     'university_id' =>  $this->educational_attainment[0]['university_id'],
+        //     'year_graduated' =>  $this->educational_attainment[0]['year_graduated'],
+        //     'honor' => $this->educational_attainment[0]['honor'],
+        // ];
+        // $this->educational_attainment[0] = ['degree_name' => '', 'university_name' => '', 'year_graduated' => '', 'university_name' => '', 'honor' => ''];
     }
 
     public function addProfessionalExaminationRow()
     {
-
         try {
             $this->validate([
                 'professional_examination.*.name_of_examination' => 'required',
                 'professional_examination.*.date_taken' => 'required|date',
                 'professional_examination.*.rating' => 'required'
             ]);
-            $this->dispatch(
-                'professional-examination-error',
-                []
-            );
 
             $this->professional_examination[] = [
                 'name_of_examination' => $this->professional_examination[0]['name_of_examination'],
@@ -176,11 +162,14 @@ class EducationalBackground extends Component
             ];
             $this->professional_examination[0] = ['name_of_examination' => '', 'date_taken' => '', 'rating' => '',];
         } catch (ValidationException $e) {
-            // dispatch an event to add professional examination error
-            $this->dispatch(
-                'professional-examination-error',
-                $e->validator->errors()
-            );
+            $errors = $e->validator->errors()->toArray();
+
+            // loop errors and add them to the component
+            foreach ($errors as $field => $messages) {
+                foreach ($messages as $message) {
+                    $this->addError($field, $message);
+                }
+            }
         }
     }
 
@@ -201,27 +190,119 @@ class EducationalBackground extends Component
     {
         try {
             $this->validate();
-            $this->dispatch('validated-education-background', educational_background: $this->except('reason_options'));
-            // dispatch an event to send the validated educational background
+            // dispatch an event to the tracking form parent
+            $this->dispatch('validated-education-background', educational_background: $this->except(['reason_options', 'has_baccalaureate']));
+            // dispatch an event to clear the errors
             $this->dispatch('educational-background-error', [
-                'educational_background_errors' => []
+                'educational_background_tab' => ''
             ]);
         } catch (ValidationException $e) {
-            // dispatch an event to add educational background error
+            $errors = $e->validator->errors()->toArray();
+            // loop errors and add them to the component
+            foreach ($errors as $field => $messages) {
+                foreach ($messages as $message) {
+                    $this->addError($field, $message);
+                }
+            }
             $this->dispatch('educational-background-error', [
                 'educational_background_tab' => 'tracer-components.educational-background',
-                'educational_background_errors' => $e->validator->errors()
             ]);
-        } finally {
-            $this->skipRender();
         }
+    }
+
+    #[On('graduate-created')]
+    public function resetEducationalBackground()
+    {
+        $this->reasons_for_undergraduate = [
+            'input' => '',
+            'checkboxes' => ['Good grades in high school']
+        ];
+
+        $this->reasons_for_graduate = [
+            'input' => '',
+            'checkboxes' => ['Good grades in high school']
+        ];
+        $this->educational_attainment = array_slice($this->educational_attainment, 0, 1);
+        $this->professional_examination = array_slice($this->professional_examination, 0, 1);
+    }
+
+    #[Computed()]
+    public function questionVisibility()
+    {
+        return QuestionVisibility::with('question.questionOption')->where('section_name', 'EDUCATIONAL_BACKGROUND')
+            ->where('is_visible', true)->orderBy('question_order')->get();
+    }
+
+    public function addHonor($key)
+    {
+        try {
+            $this->validate([
+                'educational_attainment.' . $key . '.honor.0' => 'required',
+
+            ]);
+            $this->educational_attainment[$key]['honor'][] = $this->educational_attainment[$key]['honor'][0];
+            $this->educational_attainment[$key]['honor'][0] = '';
+        } catch (ValidationException $e) {
+            $errors = $e->validator->errors()->toArray();
+            // loop errors and add them to the component
+            foreach ($errors as $field => $messages) {
+                foreach ($messages as $message) {
+                    $this->addError($field, $message);
+                }
+            }
+        }
+    }
+
+    public function removeHonor($key, $honor_key)
+    {
+        if (!isset($this->educational_attainment[$key]['honor'][$honor_key])) {
+            return;
+        }
+        unset($this->educational_attainment[$key]['honor'][$honor_key]);
+    }
+
+    public function removeRow($key)
+    {
+        if (!isset($this->educational_attainment[$key])) {
+            return;
+        }
+        unset($this->educational_attainment[$key]);
+    }
+
+    public function mount()
+    {
+        $this->reasons_for_undergraduate = [
+            'input' => '',
+            'checkboxes' => ['']
+        ];
+
+        $this->reasons_for_graduate = [
+            'input' => '',
+            'checkboxes' => []
+        ];
+        $this->educational_attainment[] = ['degree_id' => '', 'university_id' => '', 'year_graduated' => '', 'honor' => ['']];
+
+        $this->professional_examination[] = ['name_of_examination' => '', 'date_taken' => '', 'rating' => '',];
+
+
+        $questions = CustomQuestion::with(['questionVisibility', 'questionOption'])
+            ->whereHas('questionVisibility', function ($query) {
+                $query->where('section_name', 'EDUCATIONAL_BACKGROUND')
+                    ->where('is_visible', true);
+            })
+            ->get();
+
+        $this->custom_questions = $questions->mapWithKeys(function ($question) {
+            $key = Str::slug($question->label, '_');
+
+            $value = $question->questionOption->isNotEmpty() ? [] : '';
+
+            return [$key => $value];
+        })->toArray();
     }
 
     public function render()
     {
-        return view('livewire.forms.educational-background', [
-            'universities' => University::all(),
-            'degree_levels' => Degree::all()
-        ]);
+        return view('livewire.forms.educational-background');
     }
 }

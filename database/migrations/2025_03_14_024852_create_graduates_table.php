@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('graduates', function (Blueprint $table) {
-            $table->unsignedBigInteger('graduate_id')->autoIncrement();
+            $table->integer('graduate_id')->autoIncrement();
             $table->primary('graduate_id');
             $table->string('f_name', length: 100)->nullable()->index();
             $table->string('l_name', length: 100)->nullable()->index();
@@ -22,12 +22,11 @@ return new class extends Migration
             $table->enum('civil_status', ['single', 'married', 'separated', 'single parent', 'widow'])->nullable()->index();
             $table->enum('sex', ['male', 'female'])->nullable()->index();
             $table->date('birthdate')->nullable();
-            $table->unsignedBigInteger('region_id')->nullable();
+            $table->integer('region_id')->nullable();
             $table->foreign('region_id')->references('region_id')->on('regions')->cascadeOnDelete();
-            $table->unsignedBigInteger('province_id')->nullable();
+            $table->integer('province_id')->nullable();
             $table->foreign('province_id')->references('province_id')->on('provinces')->cascadeOnDelete();
-            $table->enum('degree_level', ['graduate', 'undergraduate'])->nullable()->index();
-            $table->string('city', length: 100)->nullable();
+            $table->string('location_of_residence', length: 100)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

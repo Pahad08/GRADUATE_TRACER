@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('suggestions', function (Blueprint $table) {
-            $table->unsignedBigInteger('suggestion_id')->autoIncrement();
-            $table->primary('suggestion_id');
-            $table->unsignedBigInteger('graduate_id')->nullable();
+        Schema::create('responses', function (Blueprint $table) {
+            $table->integer('response_id')->autoIncrement();
+            $table->primary('response_id');
+            $table->integer('custom_question_id');
+            $table->foreign('custom_question_id')->references('custom_question_id')->on('custom_questions')->cascadeOnDelete();
+            $table->integer('graduate_id');
             $table->foreign('graduate_id')->references('graduate_id')->on('graduates')->cascadeOnDelete();
-            $table->text('suggestion')->nullable();
-            $table->softDeletes();
+            $table->string('response_value', 100);
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('suggestions');
+        Schema::dropIfExists('response');
     }
 };

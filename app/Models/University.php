@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class University extends Model
 {
+    use HasFactory;
     protected $primaryKey = 'university_id';
-    protected $table = 'universities';  
+    protected $table = 'universities';
     protected $guarded = ['university_id', 'deleted_at', 'created_at', 'updated_at'];
 }

@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reason_for_course', function (Blueprint $table) {
-            $table->unsignedBigInteger('reason_id')->autoIncrement();
+            $table->integer('reason_id')->autoIncrement();
             $table->primary('reason_id');
-            $table->unsignedBigInteger('graduate_id')->nullable();
+            $table->integer('graduate_id')->nullable();
             $table->foreign('graduate_id')->references('graduate_id')->on('graduates')->cascadeOnDelete();
-            $table->text('reason')->nullable()->default('No particular choice or no better idea');
+            $table->enum('degree_level', ['graduate', 'undergraduate'])->nullable()->index();
+            $table->string('reason', length: 128)->nullable()->default('No particular choice or no better idea');
             $table->softDeletes();
             $table->timestamps();
         });

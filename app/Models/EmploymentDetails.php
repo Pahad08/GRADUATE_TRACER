@@ -3,15 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class EmploymentDetails extends Model
 {
-    protected $primaryKey = 'employment_status_id';
+    protected $primaryKey = 'employment_details_id';
     protected $guarded = ['employment_status_id', 'deleted_at', 'created_at', 'updated_at'];
 
-    public function EmploymentStatus(): HasOne
+    public function EmploymentStatus(): BelongsTo
     {
-        return $this->hasOne(EmploymentStatus::class, 'employment_status_id');
+        return $this->belongsTo(EmploymentStatus::class, 'employment_details_id');
+    }
+
+    public function jobDetails(): HasMany
+    {
+        return $this->hasMany(JobDetail::class, 'employment_details_id');
     }
 }
