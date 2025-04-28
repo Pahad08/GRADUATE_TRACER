@@ -4,6 +4,8 @@ namespace App\Livewire\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class Login extends Component
@@ -30,14 +32,23 @@ class Login extends Component
 
     public function login(Request $request)
     {
-        $credentials = $this->validate();
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return $this->redirect('/admin', navigate: true);
+        $throttleKey = strtolower($this->username) . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return $this->addError('too_many_attempts',  'You may try again in ' . $seconds . ' seconds.');
         }
 
-        $this->addError('invalid_credentials', 'Invalid email or password.');
-        return;
+        $credentials = $this->validate();
+
+        if (!Auth::attempt($credentials)) {
+            RateLimiter::increment($throttleKey);
+            return $this->addError('invalid_credentials', 'Invalid email or password.');
+        }
+
+        RateLimiter::clear($throttleKey);
+        $request->session()->regenerate();
+        return $this->redirectIntended('/admin', navigate: true);
     }
 
     public function render()

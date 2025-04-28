@@ -148,32 +148,4 @@
             </div>
         </template>
     </div>
-
-    @script
-        <script>
-            function universitySelect() {
-                return {
-                    open: false,
-                    search: '',
-                    selected: $wire.universities,
-                    universities: @json(\App\Models\University::select("university_id as id", "university_name as name")->get()),
-                    init() {
-                        if (this.selected) {
-                            const selectedUniv = this.universities.find(u => u.id == this.selected);
-                            this.search = selectedUniv ? selectedUniv.name : '';
-                        }
-                    },
-                    get filtered() {
-                        if (!this.search) return this.universities;
-                        return this.universities.filter(u => u.name.toLowerCase().includes(this.search.toLowerCase()));
-                    },
-                    select(id, name) {
-                        this.selected = id;
-                        this.search = name;
-                        this.open = false;
-                    }
-                }
-            }
-        </script>
-    @endscript
 </div>

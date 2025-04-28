@@ -2,7 +2,7 @@
 
     <livewire:components.admin.header />
 
-    <div class="mt-0" x-data="{ active: 'admin.graduates.general-information' }">
+    <div class="mt-0" x-data="{ active: 'admin.graduates.employment-data' }">
         <div class="rounded-lg px-3">
             <div class="md:w-300 mx-auto my-5 w-full max-w-full rounded">
                 <div class="flex flex-col justify-between gap-y-3 md:flex-row md:items-center">
@@ -45,7 +45,8 @@
 
                 <div class="rounded-b bg-white p-6 shadow-md">
                     @foreach ($sections as $key => $sec)
-                        <div class="card" x-show="active === '{{ $key }}'" wire:key='{{ $key }}'>
+                        <div class="card" wire:cloak x-show="active === '{{ $key }}'"
+                            wire:key='{{ $key }}'>
                             <livewire:dynamic-component :is="$key" :key="$key" :graduate="$graduate" />
                         </div>
                     @endforeach

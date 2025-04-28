@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    {{-- <div x-init="$nextTick(() => $refs.disclaimer_modal.click())">
+    <div x-init="$nextTick(() => $refs.disclaimer_modal.click())">
         <input type="checkbox" id="disclaimer-modal" class="modal-toggle" x-ref="disclaimer_modal" />
 
         <div class="modal">
@@ -57,7 +57,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
     @script
         <script>

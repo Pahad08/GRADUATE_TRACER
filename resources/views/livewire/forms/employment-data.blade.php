@@ -90,7 +90,7 @@
                                             <div class="divider"></div>
                                         @endif
 
-                                        @if (isset($this->questionVisibility["ED-occupation"]))
+                                        @if (isset($this->questionVisibility["ED-present_occupation"]))
                                             <div>
                                                 <label class="text-neutral mb-2 block text-sm font-semibold">Present
                                                     occupation(Use the following Phil. Standard Occupational Classification
@@ -160,7 +160,7 @@
                                                 <div class="flex gap-4">
                                                     <label class="flex items-center">
                                                         <input type="radio" @class(["radio", "radio-error" => $errors->has("form.place_of_work")])
-                                                            wire:model='form.place_of_work'>
+                                                            wire:model='form.place_of_work' value="local">
                                                         <span class="ml-2">Local</span>
                                                     </label>
                                                     <label class="flex items-center">
@@ -595,8 +595,7 @@
                                 <div class="divider"></div>
 
                                 <div>
-                                    <label
-                                        class="text-neutral block text-sm font-semibold after:text-red-500 after:content-['*']">
+                                    <label class="text-neutral font-semibold] block text-sm">
                                         List down suggestions to further improve your course curriculum
                                     </label>
                                     @foreach ($form->suggestions as $key => $row)

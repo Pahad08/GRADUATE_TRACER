@@ -42,7 +42,7 @@
     <div class="modal" role="dialog">
         <div class="modal-box">
             <h3 class="text-lg font-bold">Logout</h3>
-            <p class="py-4">Are you sure you want to logout?.
+            <p class="py-4">Are you sure you want to logout?
             </p>
             <div class="modal-action mt-0">
                 <label wire:loading.attr="disabled" for="logout_modal" class="btn btn-error">Close</label>

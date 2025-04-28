@@ -12,17 +12,18 @@
     <td class="whitespace-nowrap">{{ $graduate->location_of_residence }}</td>
     <td>
         <div class="join join-horizontal">
-            <label for="remove-graduate"
-                x-on:click="$dispatch('remove-graduate', {id:'{{ encrypt($graduate->graduate_id) }}'})"
-                class="badge badge-error btn join-item">Delete <i class="fa-solid fa-trash"></i></label>
             @if ($graduate->trashed())
                 <label for="restore-graduate"
                     x-on:click="$dispatch('restore-graduate', {id:'{{ encrypt($graduate->graduate_id) }}'})"
-                    class="badge badge-success btn join-item">Restore <i class="fa-solid fa-rotate-left"></i></label>
+                    class="badge badge-sm badge-success btn join-item">Restore <i
+                        class="fa-solid fa-rotate-left"></i></label>
             @else
                 <a wire:navigate href="{{ url("view_graduate", ["encrypt_id" => encrypt($graduate->graduate_id)]) }}"
-                    class="badge badge-secondary btn join-item">View <i class="fa-solid fa-eye"></i></a>
+                    class="badge badge-sm badge-secondary btn join-item">View <i class="fa-solid fa-eye"></i></a>
             @endif
+            <label for="remove-graduate"
+                x-on:click="$dispatch('remove-graduate', {id:'{{ encrypt($graduate->graduate_id) }}'})"
+                class="badge badge-sm badge-error btn join-item">Delete <i class="fa-solid fa-trash"></i></label>
         </div>
     </td>
 </tr>

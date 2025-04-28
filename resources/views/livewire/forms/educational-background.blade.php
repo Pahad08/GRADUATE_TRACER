@@ -6,7 +6,7 @@
                     @case("EB-educational_attainment")
                         <div x-data="{ isBaccalaureate: 'no' }">
                             <div class="mb-2">
-                                <label class="text-neutral mb-2 block text-sm font-semibold">Has Baccalaureate Degree? </label>
+                                <label class="text-neutral mb-2 block text-sm font-semibold">Only Baccalaureate Degree</label>
                                 <div class="flex gap-4">
                                     <label class="flex items-center">
                                         <input type="radio" wire:model='has_baccalaureate' x-model="isBaccalaureate"

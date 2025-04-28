@@ -28,6 +28,9 @@
                 @error("invalid_credentials")
                     <p class="text-error mt-1 text-sm">{{ $message }}</p>
                 @enderror
+                @error("too_many_attempts")
+                    <p class="text-error mt-1 text-sm">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="mt-2" x-data="{ show: false }">

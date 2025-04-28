@@ -9,11 +9,11 @@ class EmploymentDataForm extends Form
 {
     public $is_employed = '';
     public $unemployment_reason = ['input' => '', 'checkboxes' => []];
-    public $present_employment_status = 'Contractual';
-    public $occupation = 'Clerks';
-    public $company_name = 'dsadsad';
-    public $industry = 'Education';
-    public $place_of_work = 'local';
+    public $present_employment_status = '';
+    public $occupation = '';
+    public $company_name = '';
+    public $industry = '';
+    public $place_of_work = '';
     public $is_first_job = '';
     public $job_retention = ['input' => '', 'checkboxes' => []];
     public $related_to_course = '';
@@ -196,7 +196,6 @@ class EmploymentDataForm extends Form
                 Rule::requiredIf($this->is_employed === 'yes' && !empty($this->is_employed)
                     && empty($this->skills['checkboxes']) && $this->is_curriculum_relevant_to_job == '1'),
             ],
-            'suggestions.*' => ['sometimes', Rule::requiredIf(count($this->suggestions) == 1)],
             'custom_questions.*' => [
                 'sometimes',
                 Rule::requiredIf(count($this->custom_questions) > 0),

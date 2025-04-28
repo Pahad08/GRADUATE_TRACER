@@ -16,9 +16,4 @@ class EmploymentStatus extends Model
     {
         return $this->hasOne(EmploymentDetails::class, 'employment_status_id');
     }
-
-    public function unemploymentReason(): HasMany
-    {
-        return $this->hasMany(UnemploymentReason::class, 'employment_status_id');
-    }
 }
