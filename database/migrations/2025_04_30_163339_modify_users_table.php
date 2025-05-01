@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('email');
-            $table->dropColumn('email_verified_at');
-            $table->dropColumn('remember_token');
+            $table->dropColumn('f_name');
+            $table->dropColumn('l_name');
+            $table->integer('university_id')->after('username')->nullable();
+            $table->foreign('university_id')->references('university_id')->on('universities')->cascadeOnDelete();
         });
     }
 

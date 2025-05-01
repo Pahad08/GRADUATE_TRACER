@@ -4,17 +4,17 @@
             @foreach ($this->questionVisibility as $question)
                 @switch($question->question_key)
                     @case("EB-educational_attainment")
-                        <div x-data="{ isBaccalaureate: 'no' }">
+                        <div x-data="{ isBaccalaureate: '' }" wire:key='{{ $question->question_key }}'>
                             <div class="mb-2">
                                 <label class="text-neutral mb-2 block text-sm font-semibold">Only Baccalaureate Degree</label>
                                 <div class="flex gap-4">
                                     <label class="flex items-center">
-                                        <input type="radio" wire:model='has_baccalaureate' x-model="isBaccalaureate"
+                                        <input type="radio" wire:model='only_baccalaureate' x-model="isBaccalaureate"
                                             class="radio" value="yes">
                                         <span class="ml-2">Yes</span>
                                     </label>
                                     <label class="flex items-center">
-                                        <input type="radio" wire:model='has_baccalaureate' x-model="isBaccalaureate"
+                                        <input type="radio" wire:model='only_baccalaureate' x-model="isBaccalaureate"
                                             class="radio" value="no">
                                         <span class="ml-2">No</span>
                                     </label>
@@ -149,79 +149,88 @@
                             </template>
 
                             <div class="divider"></div>
-
                         </div>
                     @break
 
                     @case("EB-professional_examination")
-                        @foreach ($professional_examination as $key => $row)
-                            <div class="{{ !$loop->first ? "mt-2" : "" }} grid w-full grid-cols-1 items-end gap-y-2 md:grid-cols-4"
-                                wire:key="{{ $key }}">
+                        <div wire:key='{{ $question->question_key }}'>
+                            @foreach ($professional_examination as $key => $row)
+                                <div class="{{ !$loop->first ? "mt-2" : "" }} grid w-full grid-cols-1 items-end gap-y-2 md:grid-cols-4"
+                                    wire:key="{{ $key }}">
 
-                                <div class="col-span-1">
-                                    @if ($loop->first)
-                                        <label
-                                            class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
-                                            Name of Examination
-                                        </label>
-                                    @endif
-                                    <input type="text"
-                                        wire:model="professional_examination.{{ $key }}.name_of_examination"
-                                        class="input {{ !$loop->first ? "mt-2" : "" }} @error("professional_examination." . $key . ".name_of_examination") input-error @enderror w-full md:rounded-none">
-                                </div>
+                                    <div class="col-span-1">
+                                        @if ($loop->first)
+                                            <label
+                                                class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
+                                                Name of Examination
+                                            </label>
+                                        @endif
+                                        <input type="text"
+                                            wire:model="professional_examination.{{ $key }}.name_of_examination"
+                                            @class([
+                                                "input w-full md:rounded-none",
+                                                "input-error" => $errors->has(
+                                                    "professional_examination." . $key . ".name_of_examination"),
+                                                "mt-2" => !$loop->first,
+                                            ])>
 
-                                <div class="col-span-1">
-                                    @if ($loop->first)
-                                        <label
-                                            class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
-                                            Date Taken
-                                        </label>
-                                    @endif
-                                    <input type="date"
-                                        wire:model="professional_examination.{{ $key }}.date_taken"
-                                        class="input {{ !$loop->first ? "mt-2" : "" }} @error("professional_examination." . $key . ".date_taken") input-error @enderror w-full md:rounded-none md:border-x-0">
-                                </div>
+                                    </div>
 
-                                <div class="col-span-1">
-                                    @if ($loop->first)
-                                        <label
-                                            class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
-                                            Rating
-                                        </label>
-                                    @endif
-                                    <input type="text" wire:model="professional_examination.{{ $key }}.rating"
-                                        class="input {{ !$loop->first ? "mt-2" : "" }} @error("professional_examination." . $key . ".rating") input-error @enderror w-full md:rounded-none">
-                                </div>
+                                    <div class="col-span-1">
+                                        @if ($loop->first)
+                                            <label
+                                                class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
+                                                Date Taken
+                                            </label>
+                                        @endif
+                                        <input type="date"
+                                            wire:model="professional_examination.{{ $key }}.date_taken"
+                                            class="input {{ !$loop->first ? "mt-2" : "" }} @error("professional_examination." . $key . ".date_taken") input-error @enderror w-full md:rounded-none md:border-x-0">
+                                    </div>
 
-                                <div>
-                                    @if ($loop->first)
-                                        <button class="btn btn-secondary mt-2 w-full md:rounded-none" type="button"
-                                            wire:click="addProfessionalExaminationRow" wire:loading.attr="disabled">
-                                            <span wire:loading wire:target="addProfessionalExaminationRow"
-                                                class="loading loading-spinner"></span>
-                                            <i wire:target="addProfessionalExaminationRow" wire:loading.remove
-                                                class="fa-solid fa-plus"></i>
-                                        </button>
-                                    @else
-                                        <button class="btn btn-primary mt-2 w-full md:rounded-none" type="button"
-                                            wire:click="deleteProfessionalExaminationRow({{ $key }})"
-                                            wire:loading.attr="disabled"
-                                            wire:target='deleteProfessionalExaminationRow({{ $key }})'>
-                                            <span wire:loading
-                                                wire:target="deleteProfessionalExaminationRow({{ $key }})"
-                                                class="loading loading-spinner"></span>
-                                            <i wire:target="deleteProfessionalExaminationRow({{ $key }})"
-                                                wire:loading.remove class="fa-solid fa-trash"></i>
-                                        </button>
-                                    @endif
+                                    <div class="col-span-1">
+                                        @if ($loop->first)
+                                            <label
+                                                class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
+                                                Rating
+                                            </label>
+                                        @endif
+                                        <input type="text"
+                                            wire:model="professional_examination.{{ $key }}.rating"
+                                            class="input {{ !$loop->first ? "mt-2" : "" }} @error("professional_examination." . $key . ".rating") input-error @enderror w-full md:rounded-none">
+                                    </div>
+
+                                    <div>
+                                        @if ($loop->first)
+                                            <button class="btn btn-secondary mt-2 w-full md:rounded-none" type="button"
+                                                wire:click="addProfessionalExaminationRow" wire:loading.attr="disabled">
+                                                <span wire:loading wire:target="addProfessionalExaminationRow"
+                                                    class="loading loading-spinner"></span>
+                                                <i wire:target="addProfessionalExaminationRow" wire:loading.remove
+                                                    class="fa-solid fa-plus"></i>
+                                            </button>
+                                        @else
+                                            <button class="btn btn-error mt-2 w-full md:rounded-none" type="button"
+                                                wire:click="deleteProfessionalExaminationRow({{ $key }})"
+                                                wire:loading.attr="disabled"
+                                                wire:target='deleteProfessionalExaminationRow({{ $key }})'>
+                                                <span wire:loading
+                                                    wire:target="deleteProfessionalExaminationRow({{ $key }})"
+                                                    class="loading loading-spinner"></span>
+                                                <i wire:target="deleteProfessionalExaminationRow({{ $key }})"
+                                                    wire:loading.remove class="fa-solid fa-trash"></i>
+                                            </button>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
-                        <div class="divider"></div>
+                            @endforeach
+
+                            <div class="divider"></div>
+                        </div>
                     @break
 
                     @case("EB-reason_for_course")
-                        <div class="mt-2">
+                        <div class="mt-2" wire:key='{{ $question->question_key }}'>
                             <p class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
                                 Reason(s)
                                 for taking the course(s) or
@@ -295,68 +304,71 @@
 
                     @default
                         @if ($question->question)
-                            @php
-                                $label = ucfirst($question->question->label);
-                                $fieldKey = str_replace("_", "", $question->question->label);
-                                $options = $question->question->questionOption;
-                            @endphp
+                            <div wire:key='{{ $question->question_key }}'>
+                                @php
+                                    $label = ucfirst($question->question->label);
+                                    $field_key = str_replace("_", " ", $question->question->label);
+                                    $options = $question->question->questionOption;
+                                @endphp
+                                <div class="divider"></div>
 
-                            <div class="mt-2">
-                                <label
-                                    class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
-                                    {{ $label }}
-                                </label>
+                                <div>
+                                    <label
+                                        class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
+                                        {{ $label }}
+                                    </label>
 
-                                @if ($question->question->has_child)
-                                    @switch($question->question->type)
-                                        @case("radio")
-                                            <div class="flex items-center gap-4">
-                                                @foreach ($options as $item)
-                                                    <label class="flex items-center" wire:key="{{ $item->question_option_id }}">
-                                                        <input type="radio" wire:model="custom_questions.{{ $fieldKey }}"
-                                                            class="radio {{ $errors->has("custom_questions." . $fieldKey) ? "radio-error" : "" }}"
-                                                            value="{{ $item->option_value }}">
-                                                        <span class="ml-2">{{ $item->option_text }}</span>
-                                                    </label>
-                                                @endforeach
-                                            </div>
-                                        @break
+                                    @if ($question->question->has_child)
+                                        @switch($question->question->type)
+                                            @case("radio")
+                                                <div class="flex items-center gap-4">
+                                                    @foreach ($options as $item)
+                                                        <label
+                                                            class="{{ $errors->has("custom_questions." . $field_key) ? "radio-error" : "" }} flex items-center"
+                                                            wire:key="{{ $item->question_option_id }}">
+                                                            <input type="radio" wire:model="custom_questions.{{ $field_key }}"
+                                                                class="radio {{ $errors->has("custom_questions." . $field_key) ? "radio-error" : "" }}"
+                                                                value="{{ $item->option_value }}">
+                                                            <span class="ml-2">{{ $item->option_text }}</span>
+                                                        </label>
+                                                    @endforeach
+                                                </div>
+                                            @break
 
-                                        @case("checkbox")
-                                            <div class="flex flex-wrap gap-4">
-                                                @foreach ($options as $key => $option)
-                                                    <label class="mt-2 flex items-center" wire:key="{{ $key }}">
-                                                        <input type="checkbox" class="checkbox" value="{{ $option->option_value }}"
-                                                            wire:model="custom_questions.{{ $fieldKey }}">
-                                                        <span class="ml-2">{{ $option->option_text }}</span>
-                                                    </label>
-                                                @endforeach
-                                            </div>
-                                            @error("custom_questions.$fieldKey")
-                                                <p class="text-error mt-1">Select at least one.</p>
-                                            @enderror
-                                        @break
+                                            @case("checkbox")
+                                                <div class="flex flex-wrap gap-4">
+                                                    @foreach ($options as $key => $option)
+                                                        <label class="mt-2 flex items-center" wire:key="{{ $key }}">
+                                                            <input type="checkbox" class="checkbox"
+                                                                value="{{ $option->option_value }}"
+                                                                wire:model="custom_questions.{{ $field_key }}">
+                                                            <span class="ml-2">{{ $option->option_text }}</span>
+                                                        </label>
+                                                    @endforeach
+                                                </div>
+                                                @error("custom_questions" . $field_key)
+                                                    <p class="text-error mt-1">Select at least one.</p>
+                                                @enderror
+                                            @break
 
-                                        @default
-                                            <select
-                                                class="select {{ $errors->has("custom_questions.$fieldKey") ? "select-error" : "" }} w-full"
-                                                wire:model="custom_questions.{{ $fieldKey }}">
-                                                <option>Select {{ $label }}</option>
-                                                @foreach ($options as $key => $option)
-                                                    <option value="{{ $option->option_value }}" wire:key="{{ $key }}">
-                                                        {{ ucfirst($option->option_text) }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @error("custom_questions.$fieldKey")
-                                                <p class="text-error mt-1">Select at least one.</p>
-                                            @enderror
-                                    @endswitch
-                                @else
-                                    <input type="{{ $question->question->type }}"
-                                        class="input {{ $errors->has("custom_questions.$fieldKey") ? "input-error" : "" }} w-full"
-                                        wire:model="custom_questions.{{ $fieldKey }}">
-                                @endif
+                                            @default
+                                                <select
+                                                    class="select {{ $errors->has("custom_questions." . $field_key) ? "select-error" : "" }} w-full"
+                                                    wire:model="custom_questions.{{ $field_key }}">
+                                                    <option>Select {{ $label }}</option>
+                                                    @foreach ($options as $key => $option)
+                                                        <option value="{{ $option->option_value }}" wire:key="{{ $key }}">
+                                                            {{ ucfirst($option->option_text) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                        @endswitch
+                                    @else
+                                        <input type="{{ $question->question->type }}"
+                                            class="input {{ $errors->has("custom_questions." . $field_key) ? "input-error" : "" }} w-full"
+                                            wire:model="custom_questions.{{ $field_key }}">
+                                    @endif
+                                </div>
                             </div>
                         @endif
                     @endswitch

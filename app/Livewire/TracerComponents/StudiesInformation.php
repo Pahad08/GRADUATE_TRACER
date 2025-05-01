@@ -8,11 +8,11 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class StudiesInformation extends Component
 {
-
     public $trainings = [];
     public $custom_questions = [];
     public $reasons_for_study = [];
@@ -92,9 +92,11 @@ class StudiesInformation extends Component
 
         $rules = array_merge($rules, $training_rules);
 
-        if (!empty($this->custom_questions)) {
-            $rules["custom_questions.*"] = 'required';
-        }
+        $rules["custom_questions.*"] = [
+            'sometimes',
+            Rule::requiredIf(count($this->custom_questions) > 0)
+        ];
+
         return $rules;
     }
 
@@ -110,13 +112,14 @@ class StudiesInformation extends Component
                 'studies_tab' => '',
             ]);
         } catch (ValidationException $e) {
-            $this->resetValidation();
+            // $this->resetValidation();
             $errors = $e->validator->errors()->toArray();
-
+            $d = [];
             // loop errors and add them to the component
             foreach ($errors as $field => $messages) {
                 foreach ($messages as $message) {
                     $this->addError($field, $message);
+                    $d[$field] = $message;
                 }
             }
 
@@ -132,6 +135,20 @@ class StudiesInformation extends Component
     {
         $this->reset(['reasons_for_study']);
         $this->trainings = array_slice($this->trainings, 0, 1);
+        $this->reasons_for_study =   ['input' => '', 'checkboxes' => []];
+
+        $questions = CustomQuestion::with(['questionVisibility', 'questionOption'])
+            ->whereHas('questionVisibility', function ($query) {
+                $query->where('section_name', 'TRAININGS_STUDIES')->where('is_visible', true);
+            })->get();
+
+        $this->custom_questions = $questions->mapWithKeys(function ($question) {
+            $key = Str::slug($question->label, '_');
+
+            $value = $question->questionOption->isNotEmpty() ? [] : '';
+
+            return [$key => $value];
+        })->toArray();
     }
 
     #[Computed()]
@@ -145,7 +162,7 @@ class StudiesInformation extends Component
     {
         $this->trainings[] = ['training_name' => '', 'duration_and_credits_earned' => '', 'training_institution' => ''];
 
-        $this->reasons_for_study =   ['input' => '', 'checkboxes' => ['']];
+        $this->reasons_for_study =   ['input' => '', 'checkboxes' => []];
 
         $questions = CustomQuestion::with(['questionVisibility', 'questionOption'])
             ->whereHas('questionVisibility', function ($query) {
@@ -163,8 +180,6 @@ class StudiesInformation extends Component
 
     public function render()
     {
-
-
         return view('livewire.forms.studies-information');
     }
 }

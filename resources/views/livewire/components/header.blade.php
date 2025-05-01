@@ -28,7 +28,7 @@
         </div>
 
         <div class="tab dropdown dropdown-right px-0 font-semibold md:hidden">
-            <div tabindex="0" class="tab"><i class="fa-solid fa-caret-down mr-2"></i> Menu</div>
+            <div tabindex="0" class="tab"><i class="fa-solid fa-caret-down mr-2"></i> Sections</div>
             <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-75 p-2 shadow-sm">
                 @foreach ($childComponents as $key => $component)
                     <a role="tab" class="tab justify-start font-semibold"
@@ -42,5 +42,9 @@
                 @endforeach
             </ul>
         </div>
+    </div>
+    <div class="bg-error hidden w-full justify-center text-center" wire:offline.class="flex"
+        wire:offline.class.remove="hidden">
+        <span class="text-md italic text-white">No Internet Connection</span>
     </div>
 </div>

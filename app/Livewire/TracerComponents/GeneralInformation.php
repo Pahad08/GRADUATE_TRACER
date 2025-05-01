@@ -43,7 +43,6 @@ class GeneralInformation extends Component
                     $this->addError($field, $message);
                 }
             }
-
             // dispatch an event to add general information error
             $this->dispatch('general-information-error', [
                 'general_information_tab' => 'tracer-components.general-information',
@@ -55,6 +54,19 @@ class GeneralInformation extends Component
     public function resetGeneralInformation()
     {
         $this->form->reset();
+
+        $questions = CustomQuestion::with(['questionVisibility', 'questionOption'])
+            ->whereHas('questionVisibility', function ($query) {
+                $query->where('section_name', 'GENERAL_INFORMATION')->where('is_visible', true);
+            })->get();
+
+        $this->form->custom_questions = $questions->mapWithKeys(function ($question) {
+            $key = Str::slug($question->label, '_');
+
+            $value = $question->questionOption->isNotEmpty() ? [] : '';
+
+            return [$key => $value];
+        })->toArray();
     }
 
     #[Computed]
@@ -69,8 +81,7 @@ class GeneralInformation extends Component
         $questions = CustomQuestion::with(['questionVisibility', 'questionOption'])
             ->whereHas('questionVisibility', function ($query) {
                 $query->where('section_name', 'GENERAL_INFORMATION')->where('is_visible', true);
-            })
-            ->get();
+            })->get();
 
         $this->form->custom_questions = $questions->mapWithKeys(function ($question) {
             $key = Str::slug($question->label, '_');

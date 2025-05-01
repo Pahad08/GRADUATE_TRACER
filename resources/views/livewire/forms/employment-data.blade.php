@@ -94,12 +94,9 @@
                                             <div>
                                                 <label class="text-neutral mb-2 block text-sm font-semibold">Present
                                                     occupation(Use the following Phil. Standard Occupational Classification
-                                                    (PSOC)
-                                                    ,
-                                                    1992
-                                                    classification)
+                                                    (PSOC), 1992 classification)
                                                 </label>
-                                                <select @class([
+                                                <select wire:model ='form.occupation' @class([
                                                     "select w-full",
                                                     "select-error" => $errors->has("form.occupation"),
                                                 ])>
@@ -186,7 +183,8 @@
                                                     </label>
                                                     <label class="flex items-center">
                                                         <input type="radio" @class(["radio", "radio-error" => $errors->has("form.is_first_job")])
-                                                            wire:model="form.is_first_job" x-model="isFirstJob" value="0">
+                                                            wire:model="form.is_first_job" x-model="isFirstJob"
+                                                            value="0">
                                                         <span class="ml-2">No</span>
                                                     </label>
                                                 </div>
@@ -640,7 +638,7 @@
                             @if ($question->question)
                                 @php
                                     $label = ucfirst($question->question->label);
-                                    $fieldKey = str_replace("_", "", $question->question->label);
+                                    $fieldKey = str_replace("_", " ", $question->question->label);
                                     $options = $question->question->questionOption;
                                 @endphp
 
@@ -710,7 +708,7 @@
                     @endforeach
 
                     <div class="mt-2 flex justify-end">
-                        <label for="confirmation_modal" class="btn btn-primary">Submit
+                        <label for="confirmation_modal" class="btn btn-primary" wire:offline.attr="disabled">Submit
                         </label>
                     </div>
 
@@ -732,7 +730,7 @@
                                 undone.
                             </p>
                             <div class="modal-action mt-0">
-                                <label for="confirmation_modal" class="btn btn-error">Close</label>
+                                <label for="confirmation_modal" class="btn btn-soft">Close</label>
                                 <label for="confirmation_modal" class="btn btn-success"
                                     x-on:click="$dispatch('form-submitted')" wire:click="save"><span
                                         wire:target="save">Submit</span></label>

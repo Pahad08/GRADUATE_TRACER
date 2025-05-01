@@ -21,14 +21,13 @@
                     </ul>
                 </div>
 
-                <div class="border-1 border-base-300 mt-2 rounded-lg shadow-md">
+                <div class="mt-2 rounded-lg shadow-md">
                     <div class="bg-secondary text-base-100 flex items-center justify-between rounded-t-lg px-4 py-3">
                         <h2 class="text-lg font-semibold">Graduates</h2>
                     </div>
 
                     <div class="bg-base-100 rounded-b-lg">
-                        <div
-                            class="border-base-300 flex flex-col justify-between gap-2 p-4 md:flex-row md:items-center">
+                        <div class="flex flex-col justify-between gap-2 p-4 md:flex-row md:items-center">
                             <div class="join">
                                 <input wire:model.live.debounce.250ms='search' type="text"
                                     class="input input-sm input-bordered join-item w-full"
@@ -39,26 +38,30 @@
                             </div>
 
                             <div class="flex items-center gap-2">
-                                <select wire:model.live='only_deleted' class="select select-sm">
+                                <select wire:model.live='only_deleted' class="select select-sm w-full">
                                     <option value="">Graduates</option>
                                     <option value="1">Deleted Graduates</option>
                                 </select>
 
-                                <select wire:model.live='university' id="university" class="select select-sm">
-                                    <option value="">University</option>
-                                    @foreach (\App\Models\University::all() as $university)
-                                        <option value="{{ $university->university_id }}">
-                                            {{ $university->university_name }}</option>
-                                    @endforeach
-                                </select>
-
-                                <select wire:model.live='degree_level' class="select select-sm">
+                                <select wire:model.live='degree_level' class="select select-sm w-full">
                                     <option value="">Graduate Type</option>
                                     <option value="graduate">Graduate</option>
                                     <option value="undergraduate">Under Graduate</option>
                                 </select>
 
-                                <select wire:model.live='table_length' class="select select-sm">
+
+
+                                <div wire:ignore class="h-full w-full">
+                                    <select id="university-select" class="select select-sm">
+                                        <option value="" class="text-sm">University</option>
+                                        @foreach (\App\Models\University::all() as $university)
+                                            <option value="{{ $university->university_id }}">
+                                                {{ $university->university_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <select wire:model.live='table_length' class="select select-sm w-full">
                                     <option value="10">10</option>
                                     <option value="30">30</option>
                                     <option value="50">50</option>
@@ -105,14 +108,14 @@
 
     <input type="checkbox" id="remove-graduate" class="modal-toggle" />
     <div x-data='{ id: ""}' id="delete_confirmation_modal" class="modal"
-        x-on:remove-graduate.window="id=$event.detail.id" x-on:graduate-removed.window="id=''">
+        x-on:remove-graduate.window="id=$event.detail.id;" x-on:graduate-removed.window="id=''">
         <div class="modal-box">
             <h3 class="text-lg font-bold">Confirm Deletion</h3>
             <p class="py-4">Are you sure you want to delete this graduate?</p>
             <div class="modal-action">
                 <label for="remove-graduate" class="btn" x-on:graduate-removed.window="$el.click()">Close</label>
 
-                <button class="btn btn-error text-white" wire:loading.attr='disabled' wire:click='deleteGraduate(id);'>
+                <button class="btn btn-error" wire:loading.attr='disabled' wire:click='deleteGraduate(id);'>
                     Yes, Delete
                 </button>
             </div>
@@ -121,14 +124,13 @@
 
     <input type="checkbox" id="restore-graduate" class="modal-toggle" />
     <div x-data='{ id: ""}' id="restore_confirmation_modal" class="modal"
-        x-on:restore-graduate.window="id=$event.detail.id" x-on:graduate-restored.window="id=''">
+        x-on:restore-graduate.window="id=$event.detail.id;" x-on:graduate-restored.window="id=''">
         <div class="modal-box">
             <h3 class="text-lg font-bold">Confirm Restoration</h3>
             <p class="py-4">Are you sure you want to restore this graduate?</p>
             <div class="modal-action">
                 <label for="restore-graduate" class="btn" x-on:graduate-restored.window="$el.click()">Close</label>
-                <button class="btn btn-success text-white" wire:loading.attr='disabled'
-                    wire:click='restoreGraduate(id);'>
+                <button class="btn btn-success" wire:loading.attr='disabled' wire:click='restoreGraduate(id);'>
                     Yes, Restore
                 </button>
             </div>
@@ -148,4 +150,19 @@
             </div>
         </template>
     </div>
+    @assets
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    @endassets
+
+    @script
+        <script>
+            $('#university-select').select2();
+            $('#university-select').on('change', function() {
+                $wire.set('university', $(this).val());
+            });
+        </script>
+    @endscript
 </div>

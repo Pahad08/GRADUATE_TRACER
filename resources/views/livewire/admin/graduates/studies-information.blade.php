@@ -2,32 +2,6 @@
     <div class="card border-1 border-base-300 bg-base-100 shadow-sm">
         <div class="card-body p-4">
             <h3 class="text-neutral font-bold">Professional or work-related training programs</h3>
-            {{-- <div class="grid grid-cols-3 gap-3 overflow-x-auto">
-                @foreach ($graduate->training as $training)
-                    <div>
-                        @if ($loop->first)
-                            <p class="text-base-content mb-2 text-sm font-semibold">Title of Training</p>
-                        @endif
-                        <p class="text-md">{{ $training->training_name }}</p>
-                    </div>
-
-                    <div>
-                        @if ($loop->first)
-                            <p class="text-base-content mb-2 text-sm font-semibold">Duration and Credits Earned</p>
-                        @endif
-                        <p class="text-md">{{ $training->duration_and_credits_earned }}
-                        </p>
-                    </div>
-
-                    <div>
-                        @if ($loop->first)
-                            <p class="text-base-content mb-2 text-sm font-semibold">
-                                Name of Training Institution</p>
-                        @endif
-                        <p class="text-md">{{ $training->training_institution }}</p>
-                    </div>
-                @endforeach
-            </div> --}}
             <div class="overflow-x-auto">
                 <table class="table">
                     <thead>
@@ -70,4 +44,19 @@
             </div>
         </div>
     </div>
+
+    @if (count($custom_question_responses) > 0)
+        <div class="divider text-neutral-content text-xs"><span class="text-neutral">Additional Information</span>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            @foreach ($custom_question_responses as $response)
+                <div>
+                    <span
+                        class="text-neutral mb-2 text-sm font-bold">{{ ucfirst($response->customQuestion->label) }}:</span>
+                    <p class="text-sm">{{ $response->response_value }}</p>
+                </div>
+            @endforeach
+        </div>
+    @endif
 </div>

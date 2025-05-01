@@ -4,7 +4,6 @@ namespace App\Livewire\Admin;
 
 use App\Models\Graduate;
 use App\Models\University;
-use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithoutUrlPagination;

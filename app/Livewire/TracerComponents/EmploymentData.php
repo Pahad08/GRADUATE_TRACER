@@ -192,6 +192,20 @@ class EmploymentData extends Component
     {
         $this->form->reset();
         $this->form->suggestions[] = '';
+
+        $questions = CustomQuestion::with(['questionVisibility', 'questionOption'])
+            ->whereHas('questionVisibility', function ($query) {
+                $query->where('section_name', 'EMPLOYMENT_DATA')->where('is_visible', true);
+            })
+            ->get();
+
+        $this->form->custom_questions = $questions->mapWithKeys(function ($question) {
+            $key = Str::slug($question->label, '_');
+
+            $value = $question->questionOption->isNotEmpty() ? [] : '';
+
+            return [$key => $value];
+        })->toArray();
     }
 
     #[Computed]

@@ -65,7 +65,7 @@ class Graduate extends Model
     protected function fName(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => ucfirst($value),
+            get: fn(?string $value) => empty($value) ? null : ucfirst($value),
         );
     }
 
@@ -73,7 +73,7 @@ class Graduate extends Model
     protected function lName(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => ucfirst($value),
+            get: fn(?string $value) => empty($value) ? null : ucfirst($value),
         );
     }
 }

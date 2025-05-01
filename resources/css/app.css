@@ -3,3 +3,14 @@
 @plugin "daisyui" {
     themes: nord --default;
 }
+
+.select2-container--default .select2-selection--single {
+    height: 100% !important;
+    border-color: #c6c9d0 !important;
+}
+
+#select2-university-select-container {
+    font-size: 0.75rem !important;
+    background: #eceff4 !important;
+    border-radius: 0.25rem !important;
+}

@@ -1,5 +1,5 @@
 <div>
-    @if (count($graduate->educationalBackground) > 0)
+    @if (count($educational_backgrounds) > 0)
         <div class="flex flex-col gap-3">
             <div class="card border-1 border-base-300 bg-base-100 shadow-sm">
                 <div class="card-body p-4">
@@ -15,7 +15,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($graduate->educationalBackground as $background)
+                                @foreach ($educational_backgrounds as $background)
                                     <tr>
                                         <td class="whitespace-nowrap">{{ $background->degree->degree_name }}</td>
                                         <td class="whitespace-nowrap">{{ $background->university->university_name }}
@@ -50,7 +50,7 @@
 
     <div @class([
         "flex flex-col gap-3",
-        "mt-3" => count($graduate->educationalBackground) > 0,
+        "mt-3" => count($educational_backgrounds) > 0,
     ])>
         <div class="card border-1 border-base-300 bg-base-100 shadow-sm">
             <div class="card-body p-4">
@@ -65,7 +65,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($graduate->training as $key => $training)
+                            @foreach ($trainings as $key => $training)
                                 <tr>
                                     <td class="whitespace-nowrap">
                                         {{ $training->training_name }}
@@ -88,26 +88,26 @@
             <h3 class="text-neutral font-bold">Reasons for taking the course or pursuing degree</h3>
             <div class="grid gap-3 overflow-x-auto md:grid-cols-2">
                 @php
-                    $undergraduate_level = $graduate->reasonForCourse->where("degree_level", "undergraduate");
-                    $graduate_level = $graduate->reasonForCourse->where("degree_level", "graduate");
+                    $undergraduate_reasons = $graduate_reasons->where("degree_level", "undergraduate");
+                    $graduate_reasons = $graduate_reasons->where("degree_level", "graduate");
                 @endphp
-                @if (count($undergraduate_level) > 0)
+                @if (count($undergraduate_reasons) > 0)
                     <div>
                         <p class="text-base-content mb-2 text-sm font-semibold opacity-70">Undergraduates</p>
                         <ul class="list-inside list-disc">
-                            @foreach ($undergraduate_level as $level)
-                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $level->reason }}</li>
+                            @foreach ($undergraduate_reasons as $reason)
+                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $reason->reason }}</li>
                             @endforeach
                         </ul>
                     </div>
                 @endif
 
-                @if (count($graduate_level) > 0)
+                @if (count($graduate_reasons) > 0)
                     <div>
                         <p class="text-base-content mb-2 text-sm font-semibold">Graduates</p>
                         <ul class="list-inside list-disc">
-                            @foreach ($graduate_level as $level)
-                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $level->reason }}</li>
+                            @foreach ($graduate_reasons as $reason)
+                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $reason->reason }}</li>
                             @endforeach
                         </ul>
                     </div>
@@ -115,4 +115,19 @@
             </div>
         </div>
     </div>
+
+    @if (count($custom_question_responses) > 0)
+        <div class="divider text-neutral-content text-xs"><span class="text-neutral">Additional Information</span>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            @foreach ($custom_question_responses as $response)
+                <div>
+                    <span
+                        class="text-neutral mb-2 text-sm font-bold">{{ ucfirst($response->customQuestion->label) }}:</span>
+                    <p class="text-sm">{{ $response->response_value }}</p>
+                </div>
+            @endforeach
+        </div>
+    @endif
 </div>

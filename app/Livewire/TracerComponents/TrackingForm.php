@@ -81,6 +81,9 @@ class TrackingForm extends Component
             if (is_array($data) && !empty($data)) {
                 //loop again if the value is an array or checkbox
                 foreach ($data as $item) {
+                    if (empty($item)) {
+                        continue;
+                    }
                     $new_data[] = [$data_key => $item, $key => $type];
                 }
             } elseif (!empty($data)) {
@@ -129,6 +132,7 @@ class TrackingForm extends Component
 
     private function insertGraduates()
     {
+
         DB::transaction(function () {
             //reason types to insert in the database
             $reason_types = [
@@ -151,9 +155,16 @@ class TrackingForm extends Component
             $employment_data = $this->validated_data['employment_data'];
 
             //remove index 0 from the array
-            array_shift($educational_background['professional_examination']);
-            array_shift($studies_information['trainings']);
-            array_shift($employment_data['suggestions']);
+            if (count($educational_background['professional_examination']) > 1) {
+                array_shift($educational_background['professional_examination']);
+            }
+            if (count($studies_information['trainings']) > 1) {
+                array_shift($studies_information['trainings']);
+            }
+
+            if (count($employment_data['suggestions']) > 1) {
+                array_shift($employment_data['suggestions']);
+            }
 
             $graduates = [
                 'f_name' => $general_information['f_name'],
@@ -261,12 +272,12 @@ class TrackingForm extends Component
 
                 if ((int)$employment_data['is_first_job']) {
                     //add job retentions
-                    $job_retentions = $this->extractInputsAndCheckboxes($employment_data['job_retention'], 'description', $job_detail_types[2]);
-                    $employment_details->jobDetails()->createMany($job_retentions);
+                    $job_retentions = $this->extractInputsAndCheckboxes($employment_data['job_retention'], 'reason', 'job_retention_reason');
+                    $new_graduate->reason()->createMany($job_retentions);
 
                     if ((int)$employment_data['related_to_course']) {
                         //add job acceptance reason
-                        $related_to_course_reasons = $this->extractInputsAndCheckboxes($employment_data['job_acceptance'], 'reason', $reason_types[3]);
+                        $related_to_course_reasons = $this->extractInputsAndCheckboxes($employment_data['job_acceptance'], 'reason', 'job_acceptance_reason');
                         $new_graduate->reason()->createMany($related_to_course_reasons);
                     }
                 } else {

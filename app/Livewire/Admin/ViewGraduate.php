@@ -42,7 +42,7 @@ class ViewGraduate extends Component
             'training',
             'reason',
             'employmentStatus',
-            'response.customQuestion',
+            'response.customQuestion.questionVisibility',
             'region',
             'province',
         ])->where('graduate_id', $encrypt_id)->firstOrFail();

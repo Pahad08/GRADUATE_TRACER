@@ -24,6 +24,11 @@ class Header extends Component
             'title' => 'Manage Questions',
             'url' => '/questions'
         ],
+        [
+            'icon' => 'fa-school',
+            'title' => 'HEI',
+            'url' => '/hei'
+        ],
     ];
 
     public function logout(Request $request)

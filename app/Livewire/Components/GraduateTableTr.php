@@ -13,7 +13,7 @@ class GraduateTableTr extends Component
 
     public function placeholder(array $params = [])
     {
-        return view('livewire.components.table-loader');
+        return view('livewire.components.loader.table-loader');
     }
 
     public function render()

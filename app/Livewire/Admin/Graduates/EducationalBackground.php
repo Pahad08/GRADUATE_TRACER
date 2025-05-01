@@ -6,7 +6,20 @@ use Livewire\Component;
 
 class EducationalBackground extends Component
 {
-    public $graduate;
+    public $educational_backgrounds;
+    public $trainings;
+    public $graduate_reasons;
+    public $custom_question_responses;
+
+    public function mount($graduate)
+    {
+        $this->educational_backgrounds = $graduate->educationalBackground;
+        $this->trainings = $graduate->training;
+        $this->graduate_reasons = $graduate->reasonForCourse;
+        $this->custom_question_responses = $graduate->response->filter(function ($response) {
+            return $response->customQuestion->questionVisibility->section_name === 'EDUCATIONAL_BACKGROUND';
+        });
+    }
 
     public function render()
     {
