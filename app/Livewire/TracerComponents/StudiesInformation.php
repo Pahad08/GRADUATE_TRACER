@@ -79,15 +79,15 @@ class StudiesInformation extends Component
             }
             $prefix = "trainings.$key";
 
-            $training_rules["$prefix.training_name"] = 'sometimes|required';
-            $training_rules["$prefix.duration_and_credits_earned"] = 'sometimes|required';
-            $training_rules["$prefix.training_institution"] = 'sometimes|required';
+            $training_rules["$prefix.training_name"] = 'sometimes|nullable';
+            $training_rules["$prefix.duration_and_credits_earned"] = 'sometimes|nullable';
+            $training_rules["$prefix.training_institution"] = 'sometimes|nullable';
         }
 
         if (empty($training_rules)) {
-            $training_rules["trainings.0.training_name"] = 'sometimes|required';
-            $training_rules["trainings.0.duration_and_credits_earned"] = 'sometimes|required';
-            $training_rules["trainings.0.training_institution"] = 'sometimes|required';
+            $training_rules["trainings.0.training_name"] = 'sometimes|nullable';
+            $training_rules["trainings.0.duration_and_credits_earned"] = 'sometimes|nullable';
+            $training_rules["trainings.0.training_institution"] = 'sometimes|nullable';
         }
 
         $rules = array_merge($rules, $training_rules);
@@ -114,12 +114,23 @@ class StudiesInformation extends Component
         } catch (ValidationException $e) {
             // $this->resetValidation();
             $errors = $e->validator->errors()->toArray();
-            $d = [];
+
+            //reset trainings if no errors
+            foreach ($this->trainings as $index => $training) {
+                foreach (array_keys($training) as $field) {
+                    $fieldKey = "trainings.$index.$field";
+
+                    // Only reset if it's not in the current validation error array
+                    if (!array_key_exists($fieldKey, $errors)) {
+                        $this->resetValidation($fieldKey);
+                    }
+                }
+            }
+
             // loop errors and add them to the component
             foreach ($errors as $field => $messages) {
                 foreach ($messages as $message) {
                     $this->addError($field, $message);
-                    $d[$field] = $message;
                 }
             }
 

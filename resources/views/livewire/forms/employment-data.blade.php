@@ -71,7 +71,9 @@
 
                                         @if (isset($this->questionVisibility["ED-present_employment_status"]))
                                             <div>
-                                                <label class="text-neutral mb-2 block text-sm font-semibold">Present Employment
+                                                <label
+                                                    class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Present
+                                                    Employment
                                                     Status</label>
                                                 <div class="flex flex-wrap gap-4">
                                                     @foreach ($employment_status as $key => $status)
@@ -92,7 +94,8 @@
 
                                         @if (isset($this->questionVisibility["ED-present_occupation"]))
                                             <div>
-                                                <label class="text-neutral mb-2 block text-sm font-semibold">Present
+                                                <label
+                                                    class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Present
                                                     occupation(Use the following Phil. Standard Occupational Classification
                                                     (PSOC), 1992 classification)
                                                 </label>
@@ -129,7 +132,9 @@
 
                                         @if (isset($this->questionVisibility["ED-line_of_busines"]))
                                             <div>
-                                                <label class="text-neutral mb-2 block text-sm font-semibold">Major line of
+                                                <label
+                                                    class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Major
+                                                    line of
                                                     business
                                                     of
                                                     the
@@ -152,7 +157,9 @@
 
                                         @if (isset($this->questionVisibility["ED-place_of_work"]))
                                             <div>
-                                                <label class="text-neutral mb-2 block text-sm font-semibold">Place of
+                                                <label
+                                                    class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Place
+                                                    of
                                                     work</label>
                                                 <div class="flex gap-4">
                                                     <label class="flex items-center">
@@ -173,7 +180,9 @@
 
                                         @if (isset($this->questionVisibility["ED-is_first_job"]))
                                             <div>
-                                                <label class="text-neutral mb-2 block text-sm font-semibold">Is this your first
+                                                <label
+                                                    class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Is
+                                                    this your first
                                                     job after college?</label>
                                                 <div class="flex gap-4">
                                                     <label class="flex items-center">
@@ -196,7 +205,8 @@
                                                         <div class="divider"></div>
 
                                                         <div>
-                                                            <label class="text-neutral mb-2 block text-sm font-semibold">What
+                                                            <label
+                                                                class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">What
                                                                 are
                                                                 your reason(s) for staying on the job?</label>
                                                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -231,7 +241,8 @@
                                                         <div class="divider"></div>
 
                                                         <div>
-                                                            <label class="text-neutral mb-2 block text-sm font-semibold">Is
+                                                            <label
+                                                                class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Is
                                                                 your
                                                                 first job related to the course you took up in college?</label>
                                                             <div class="flex gap-4">
@@ -264,7 +275,7 @@
                                                             <template x-if="isRelated === '1' && isRelated !== ''">
                                                                 <div>
                                                                     <label
-                                                                        class="text-neutral mb-2 block text-sm font-semibold">What
+                                                                        class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">What
                                                                         were your reasons for accepting the job?</label>
                                                                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                                         @foreach ($reasons as $key => $reason)
@@ -308,7 +319,7 @@
                                                         <div>
                                                             <div>
                                                                 <label
-                                                                    class="text-neutral mb-2 block text-sm font-semibold">What
+                                                                    class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">What
                                                                     were your reason(s) for changing job?</label>
                                                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                                     @foreach ($reasons as $key => $reason)
@@ -341,7 +352,8 @@
                                                         <div class="divider"></div>
 
                                                         <div>
-                                                            <label class="text-neutral mb-2 block text-sm font-semibold">How
+                                                            <label
+                                                                class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">How
                                                                 long
                                                                 did you stay in your first job?</label>
                                                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -377,7 +389,9 @@
 
                                         @if (isset($this->questionVisibility["ED-first_job_search_method"]))
                                             <div>
-                                                <label class="text-neutral mb-2 block text-sm font-semibold">How did you find
+                                                <label
+                                                    class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">How
+                                                    did you find
                                                     your first job?</label>
                                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                     @foreach ($first_job_sources as $key => $source)
@@ -407,7 +421,9 @@
 
                                         @if (isset($this->questionVisibility["ED-first_job_search_duration"]))
                                             <div>
-                                                <label class="text-neutral mb-2 block text-sm font-semibold">How long did it
+                                                <label
+                                                    class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">How
+                                                    long did it
                                                     take you to land your first job?</label>
                                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                     @foreach ($first_job_search_durations as $key => $duration)
@@ -420,7 +436,9 @@
                                                 </div>
 
                                                 <div class="mt-3 flex flex-col">
-                                                    <label class="text-neutral mb-2 font-semibold">Others, please
+                                                    <label
+                                                        class="text-neutral mb-2 font-semibold after:text-red-500 after:content-['*']">Others,
+                                                        please
                                                         specify</label>
                                                     <input type="text" wire:model='form.first_job_search_duration'
                                                         class="input w-full">
@@ -441,7 +459,9 @@
                                         @if (isset($this->questionVisibility["ED-first_job_position"]) ||
                                                 isset($this->questionVisibility["ED-current_position"]))
                                             <div>
-                                                <label class="text-neutral mb-4 block text-sm font-semibold">Job Level
+                                                <label
+                                                    class="text-neutral mb-4 block text-sm font-semibold after:text-red-500 after:content-['*']">Job
+                                                    Level
                                                     Position</label>
                                                 <div class="grid grid-cols-1 gap-2">
                                                     @if (isset($this->questionVisibility["ED-first_job_position"]))
@@ -498,7 +518,9 @@
 
                                         @if (isset($this->questionVisibility["ED-initial_gross"]))
                                             <div>
-                                                <label class="text-neutral mb-2 block text-sm font-semibold">What is your
+                                                <label
+                                                    class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">What
+                                                    is your
                                                     initial gross monthly earning in your first job after college?</label>
                                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                     @foreach ($salaryRanges as $key => $range)
@@ -519,7 +541,8 @@
 
                                         @if (isset($this->questionVisibility["ED-curriculum_is_relevant"]))
                                             <div>
-                                                <label class="text-neutral mb-2 block text-sm font-semibold">
+                                                <label
+                                                    class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
                                                     Was the curriculum you had in college relevant to your
                                                     first job?</label>
                                                 <div class="flex gap-4">
@@ -552,7 +575,8 @@
                                                 x-if="is_curriculum_relevant_to_job === '1' && is_curriculum_relevant_to_job !== ''">
                                                 <div>
 
-                                                    <label class="text-neutral mb-2 block text-sm font-semibold">What
+                                                    <label
+                                                        class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">What
                                                         competencies
                                                         learned
                                                         in college did you find very useful in your
@@ -619,7 +643,7 @@
                                                 @else
                                                     <button wire:click='deleteSuggestionInput({{ $key }})'
                                                         wire:loading.attr="disabled"
-                                                        class="btn btn-primary mt-2 md:rounded-none" type="button">
+                                                        class="btn btn-error mt-2 md:rounded-none" type="button">
                                                         <span wire:loading
                                                             wire:target="deleteSuggestionInput({{ $key }})"
                                                             class="loading loading-spinner"></span>
@@ -708,7 +732,9 @@
                     @endforeach
 
                     <div class="mt-2 flex justify-end">
-                        <label for="confirmation_modal" class="btn btn-primary" wire:offline.attr="disabled">Submit
+                        <label for="confirmation_modal" class="btn btn-primary" wire:offline.attr="disabled"><i
+                                class="fa-solid fa-floppy-disk"></i>
+                            Submit
                         </label>
                     </div>
 
@@ -733,7 +759,7 @@
                                 <label for="confirmation_modal" class="btn btn-soft">Close</label>
                                 <label for="confirmation_modal" class="btn btn-success"
                                     x-on:click="$dispatch('form-submitted')" wire:click="save"><span
-                                        wire:target="save">Submit</span></label>
+                                        wire:target="save"><i class="fa-solid fa-floppy-disk"></i> Submit</span></label>
                             </div>
                         </div>
                     </div>

@@ -6,14 +6,15 @@
             @endpersist
         </a>
         <div>
-            <span class="text-base-100 hidden text-sm font-semibold md:inline">COMMISSION ON HIGHER EDUCATION REGIONAL
+            <span class="text-secondary-content hidden text-sm font-semibold md:inline">COMMISSION ON HIGHER EDUCATION
+                REGIONAL
                 OFFICE
                 XII</span><br class="hidden md:inline">
-            <span class="text-base-100 text-sm font-semibold">CHED XII Graduate Tracer</span>
+            <span class="text-secondary-content text-sm font-semibold">CHED XII Graduate Tracer</span>
         </div>
     </div>
 
-    <div class="tabs bg-neutral-content items-start justify-between">
+    <div class="tabs bg-base-300 items-start justify-between">
         <div class="hidden md:block">
             {{-- loop the tabs --}}
             @foreach ($childComponents as $key => $component)

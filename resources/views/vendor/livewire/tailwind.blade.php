@@ -26,7 +26,7 @@ $scrollIntoViewJsSnippet = ($scrollTo !== false)
                 @if ($paginator->hasPages())
 
                 <div>
-                    <span class="join relative z-0 inline-flex rtl:flex-row-reverse rounded-md shadow-md">
+                    <span class="join relative z-0 inline-flex rtl:flex-row-reverse rounded-md">
                         {{-- First Page --}}
                         @if ($paginator->onFirstPage())
                             <span class="join-item btn btn-sm relative z-0 cursor-default opacity-50">First</span>

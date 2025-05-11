@@ -1,5 +1,5 @@
 <div>
-    <livewire:components.admin.header />
+    <livewire:components.hei.header />
 
     <div class="mt-0" x-data="{ active: 'admin.questions.general-information' }">
         <div class="rounded-lg px-3">
@@ -7,7 +7,7 @@
                 <div class="breadcrumbs text-sm">
                     <ul>
                         <li>
-                            <a wire:navigate href="{{ route("dashboard") }}">
+                            <a wire:navigate href="/home">
                                 <i class="fa-solid fa-chart-simple"></i>
                                 Analytics
                             </a>
@@ -29,36 +29,22 @@
 
                     <div class="bg-base-100 rounded-b-lg">
                         <div class="flex flex-col justify-between gap-2 p-4 md:flex-row md:items-center">
-                            <div>
-                                <label class="input input-sm w-full">
+                            <div class="join">
+                                <input wire:model.live.debounce.250ms='search' type="text"
+                                    class="input input-sm input-bordered join-item w-full"
+                                    placeholder="Filter graduates..." />
+                                <span class="bg-primary join-item flex items-center justify-center px-3">
                                     <i class="fa-solid fa-magnifying-glass"></i>
-                                    <input wire:model.live.debounce.250ms='search' type="text"
-                                        placeholder="Filter graduates..." />
-                                </label>
+                                </span>
                             </div>
 
-
                             <div class="flex items-center gap-2">
-                                <select wire:model.live='only_deleted' class="select select-sm w-full">
-                                    <option value="">Graduates</option>
-                                    <option value="1">Deleted Graduates</option>
-                                </select>
 
                                 <select wire:model.live='degree_level' class="select select-sm w-full">
                                     <option value="">Graduate Type</option>
                                     <option value="graduate">Graduate</option>
                                     <option value="undergraduate">Under Graduate</option>
                                 </select>
-
-                                <div wire:ignore class="h-full w-full">
-                                    <select wire:model='selected_hei' id="hei-select" class="select select-sm w-full">
-                                        <option class="text-sm" value="">Select HEI</option>
-                                        @foreach (\App\Models\HEI::all() as $hei)
-                                            <option value="{{ $hei->hei_id }}">
-                                                {{ $hei->hei_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
 
                                 <select wire:model.live='table_length' class="select select-sm w-full">
                                     <option value="10">10</option>
@@ -104,66 +90,5 @@
             </div>
         </div>
     </div>
-
-    <input type="checkbox" id="remove-graduate" class="modal-toggle" />
-    <div x-data='{ id: ""}' id="delete_confirmation_modal" class="modal"
-        x-on:remove-graduate.window="id=$event.detail.id;" x-on:graduate-removed.window="id=''">
-        <div class="modal-box">
-            <h3 class="text-lg font-bold">Confirm Deletion</h3>
-            <p class="py-4">Are you sure you want to delete this graduate?</p>
-            <div class="modal-action">
-                <label for="remove-graduate" class="btn" x-on:graduate-removed.window="$el.click()">Close</label>
-
-                <button class="btn btn-error" wire:loading.attr='disabled' wire:click='deleteGraduate(id);'>
-                    Yes, Delete
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <input type="checkbox" id="restore-graduate" class="modal-toggle" />
-    <div x-data='{ id: ""}' id="restore_confirmation_modal" class="modal"
-        x-on:restore-graduate.window="id=$event.detail.id;" x-on:graduate-restored.window="id=''">
-        <div class="modal-box">
-            <h3 class="text-lg font-bold">Confirm Restoration</h3>
-            <p class="py-4">Are you sure you want to restore this graduate?</p>
-            <div class="modal-action">
-                <label for="restore-graduate" class="btn" x-on:graduate-restored.window="$el.click()">Close</label>
-                <button class="btn btn-success" wire:loading.attr='disabled' wire:click='restoreGraduate(id);'>
-                    Yes, Restore
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div x-data="{ message: '', show: false, timeout: null }" class="toast toast-end"
-        x-on:graduate-removed.window="message = event.detail; if (timeout) {clearTimeout(timeout)} 
-        show = true; timeout= setTimeout(() => show = false, 2000);"
-        x-on:graduate-restored.window="message = event.detail; if (timeout) {clearTimeout(timeout)} 
-        show = true; timeout= setTimeout(() => show = false, 2000);">
-        <template x-if="show">
-            <div class="toast toast-end">
-                <div class="alert alert-success">
-                    <span x-text="message"></span>
-                </div>
-            </div>
-        </template>
-    </div>
-
-    @assets
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    @endassets
-
-    @script
-        <script>
-            $('#hei-select').select2();
-            $('#hei-select').on('change', function() {
-                $wire.set('selected_hei', $(this).val());
-            });
-        </script>
-    @endscript
 
 </div>

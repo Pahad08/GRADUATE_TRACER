@@ -17,8 +17,7 @@
 
                                             <div class="col-span-1">
                                                 @if ($loop->first)
-                                                    <label
-                                                        class="text-neutral after:text-error mb-2 block text-sm font-semibold after:content-['*']">
+                                                    <label class="text-neutral mb-2 block text-sm font-semibold">
                                                         Title of Training
                                                     </label>
                                                 @endif
@@ -28,8 +27,7 @@
 
                                             <div class="col-span-1">
                                                 @if ($loop->first)
-                                                    <label
-                                                        class="text-neutral after:text-error mb-2 block text-sm font-semibold after:content-['*']">
+                                                    <label class="text-neutral mb-2 block text-sm font-semibold">
                                                         Duration and Credits Earned
                                                     </label>
                                                 @endif
@@ -40,8 +38,7 @@
 
                                             <div class="col-span-1">
                                                 @if ($loop->first)
-                                                    <label
-                                                        class="text-neutral after:text-error mb-2 block text-sm font-semibold after:content-['*']">
+                                                    <label class="text-neutral mb-2 block text-sm font-semibold">
                                                         Name of Training Institution
                                                     </label>
                                                 @endif

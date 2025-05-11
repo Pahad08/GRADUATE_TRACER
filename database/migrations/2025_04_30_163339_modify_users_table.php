@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('f_name');
             $table->dropColumn('l_name');
-            $table->integer('university_id')->after('username')->nullable();
-            $table->foreign('university_id')->references('university_id')->on('universities')->cascadeOnDelete();
+            $table->integer('hei_id')->after('username')->nullable();
+            $table->foreign('hei_id')->references('hei_id')->on('hei')->cascadeOnDelete();
         });
     }
 

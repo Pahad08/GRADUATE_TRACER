@@ -48,6 +48,11 @@ class Login extends Component
 
         RateLimiter::clear($throttleKey);
         $request->session()->regenerate();
+
+        if (Auth::user()->hei_id !== null) {
+            return $this->redirectIntended('/home', navigate: true);
+        }
+
         return $this->redirectIntended('/admin', navigate: true);
     }
 

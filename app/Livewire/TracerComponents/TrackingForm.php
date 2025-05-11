@@ -120,10 +120,10 @@ class TrackingForm extends Component
     }
 
     protected function checkEducationalAttainment($educational_background)
-    {;
+    {
         $is_empty = empty(array_filter([
             $educational_background['degree_id'],
-            $educational_background['university_id'],
+            $educational_background['hei_id'],
             $educational_background['year_graduated']
         ]));
 
@@ -132,7 +132,6 @@ class TrackingForm extends Component
 
     private function insertGraduates()
     {
-
         DB::transaction(function () {
             //reason types to insert in the database
             $reason_types = [
@@ -155,13 +154,6 @@ class TrackingForm extends Component
             $employment_data = $this->validated_data['employment_data'];
 
             //remove index 0 from the array
-            if (count($educational_background['professional_examination']) > 1) {
-                array_shift($educational_background['professional_examination']);
-            }
-            if (count($studies_information['trainings']) > 1) {
-                array_shift($studies_information['trainings']);
-            }
-
             if (count($employment_data['suggestions']) > 1) {
                 array_shift($employment_data['suggestions']);
             }
@@ -204,7 +196,7 @@ class TrackingForm extends Component
             foreach ($educational_background['educational_attainment'] as $key => $value) {
                 $educational_background_to_add = [];
                 $educational_background_to_add['degree_id'] = $value['degree_id'];
-                $educational_background_to_add['university_id'] = $value['university_id'];
+                $educational_background_to_add['hei_id'] = $value['hei_id'];
                 $educational_background_to_add['year_graduated'] = $value['year_graduated'];
 
                 if (!$this->checkEducationalAttainment($educational_background_to_add)) {
@@ -220,8 +212,13 @@ class TrackingForm extends Component
                 }
             }
 
-            //add educational examinations of the graduate
-            $new_graduate->professionalExamination()->createMany($educational_background['professional_examination']);
+            //add educational examinations of the graduate if the array is greater than 1
+            if (count($educational_background['professional_examination']) > 1) {
+                //remove index 0 from the array
+                array_shift($educational_background['professional_examination']);
+                $new_graduate->professionalExamination()->createMany($educational_background['professional_examination']);
+            }
+
 
             //add the reasons for course of the graduate
             if (!empty($reason_for_undergraduates)) {
@@ -233,7 +230,11 @@ class TrackingForm extends Component
             }
 
             //add the trainings of the graduate
-            $new_graduate->training()->createMany($studies_information['trainings']);
+            if (count($educational_background['professional_examination']) > 1) {
+                //remove index 0 from the array
+                array_shift($studies_information['trainings']);
+                $new_graduate->training()->createMany($studies_information['trainings']);
+            }
 
             //add the reason for pursuing the study of the graduate
             $new_graduate->reason()->createMany($reason_for_study);

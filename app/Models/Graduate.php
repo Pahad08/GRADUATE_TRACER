@@ -56,6 +56,7 @@ class Graduate extends Model
     {
         return $this->belongsTo(Region::class, 'region_id');
     }
+
     public function province(): BelongsTo
     {
         return $this->belongsTo(Province::class, 'province_id');

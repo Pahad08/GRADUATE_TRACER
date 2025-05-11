@@ -19,9 +19,9 @@ class EducationalBackground extends Model
         return $this->belongsTo(Degree::class, 'degree_id');
     }
 
-    public function university(): BelongsTo
+    public function hei(): BelongsTo
     {
-        return $this->belongsTo(University::class, 'university_id');
+        return $this->belongsTo(HEI::class, 'hei_id');
     }
 
     public function honor()

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\Hei;
 
 use App\Models\Graduate;
 use Illuminate\Support\Facades\Auth;
@@ -23,41 +23,6 @@ class Graduates extends Component
         $this->resetPage();
     }
 
-    public function deleteGraduate($graduate_id)
-    {
-        if (Auth::user()->hei_id !== null) {
-            abort(401);
-            return;
-        }
-
-        $graduate_id = decrypt($graduate_id);
-        $graduate = Graduate::withTrashed()->findOrFail($graduate_id);
-
-        if ($graduate->trashed()) {
-            $graduate->forceDelete();
-        } else {
-            $graduate->delete();
-        }
-        $this->dispatch('graduate-removed', 'Graduate removed successfully.');
-    }
-
-    public function restoreGraduate($graduate_id)
-    {
-        if (Auth::user()->hei_id !== null) {
-            abort(401);
-            return;
-        }
-
-        $graduate_id = decrypt($graduate_id);
-        $graduate = Graduate::withTrashed()->findOrFail($graduate_id);
-        if (!$graduate->trashed()) {
-            $this->dispatch('graduate-restored', 'Graduate is not deleted.');
-            return;
-        }
-        $graduate->restore();
-        $this->dispatch('graduate-restored', 'Graduate restored successfully.');
-    }
-
     public function render()
     {
         $graduates = Graduate::with([
@@ -67,7 +32,6 @@ class Graduates extends Component
             'training',
             'reason',
             'employmentStatus',
-            'response.customQuestion',
             'region',
             'province',
         ])->when($this->search, function ($query) {
@@ -92,14 +56,10 @@ class Graduates extends Component
             $query->whereHas('reasonForCourse', function ($q) {
                 $q->where('degree_level', $this->degree_level);
             });
-        })->when($this->only_deleted, function ($query) {
-            $query->onlyTrashed();
-        })->when($this->selected_hei, function ($query) {
-            $query->whereHas('educationalBackground', function ($q) {
-                $q->where('hei_id', $this->selected_hei);
-            });
+        })->whereHas('educationalBackground', function ($q) {
+            $q->where('hei_id', Auth::user()->hei_id);
         })->paginate($this->table_length);
 
-        return view('livewire.admin.graduates', ['graduates' => $graduates]);
+        return view('livewire.hei.graduates', ['graduates' => $graduates]);
     }
 }

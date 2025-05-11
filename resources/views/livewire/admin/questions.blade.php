@@ -29,8 +29,7 @@
                         </ul>
                     </div>
 
-                    <label for="add-question-modal" class="btn btn-primary btn-sm text-white"><i
-                            class="fa-solid fa-plus"></i>
+                    <label for="add-question-modal" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i>
                         Add question</label>
                 </div>
 
@@ -98,18 +97,12 @@
             <div class="mt-3 grid grid-cols-2 gap-4" x-data="{ type: '' }">
                 <div>
                     <label class="label after:text-error text-sm font-semibold after:content-['*']">Label</label>
-                    <input @class([
-                        "input w-full bg-white",
-                        "input-error" => $errors->has("label"),
-                    ]) type="text" wire:model='label'>
+                    <input @class(["input w-full", "input-error" => $errors->has("label")]) type="text" wire:model='label'>
                 </div>
 
                 <div>
                     <label class="label after:text-error text-sm font-semibold after:content-['*']">Section</label>
-                    <select @class([
-                        "select w-full bg-white",
-                        "select-error" => $errors->has("section"),
-                    ]) wire:model='section'>
+                    <select @class(["select w-full", "select-error" => $errors->has("section")]) wire:model='section'>
                         <option value="" selected>Select Section</option>
                         <option value="GENERAL_INFORMATION">General Information</option>
                         <option value="EDUCATIONAL_BACKGROUND">Educational Background</option>
@@ -120,18 +113,26 @@
 
                 <div class="col-span-2">
                     <label class="label after:text-error text-sm font-semibold after:content-['*']">Type</label>
-                    <select @class([
-                        "select w-full bg-white",
-                        "select-error" => $errors->has("type"),
-                    ]) x-model="type" wire:model='type'>
-                        <option value="" selected>Select Type</option>
-                        <option value="text">Text</option>
-                        <option value="number">Number</option>
-                        <option value="date">Date</option>
-                        <option value="checkbox">Checkbox</option>
-                        <option value="radio">Radio</option>
-                        <option value="select">Select</option>
-                    </select>
+                    <div class="filter">
+                        <input class="btn filter-reset" type="radio" x-model="type" value="" name="type"
+                            aria-label="All" />
+                        <input class="btn" type="radio" name="type" x-model="type" wire:model='type'
+                            value="text" aria-label="Text" />
+                        <input class="btn" type="radio" name="type" x-model="type" wire:model='type'
+                            value="number" aria-label="Number" />
+                        <input class="btn" type="radio" name="type" x-model="type" wire:model='type'
+                            value="date" aria-label="Date" />
+                        <input class="btn" type="radio" name="type" x-model="type" wire:model='type'
+                            value="checkbox" aria-label="Checkbox" />
+                        <input class="btn" type="radio" name="type" x-model="type" wire:model='type'
+                            value="radio" aria-label="Radio" />
+                        <input class="btn" type="radio" name="type" x-model="type" wire:model='type'
+                            value="select" aria-label="Select" />
+                    </div>
+
+                    @error("type")
+                        <p class="text-error mt-1 text-sm">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <template x-if="(type === 'radio' || type === 'checkbox' || type === 'select') && type !== ''">
@@ -141,7 +142,7 @@
                                 <div class="col-span-1" wire:key='{{ $key }}'>
                                     <input type="text" wire:model='option_inputs.{{ $key }}.option_text'
                                         @class([
-                                            "input w-full bg-white md:rounded-none",
+                                            "input w-full md:rounded-none",
                                             "input-error" => $errors->has("option_inputs." . $key . ".option_text"),
                                         ]) placeholder="Option text">
                                 </div>
@@ -149,19 +150,19 @@
                                 <div class="col-span-1">
                                     <input type="text" wire:model='option_inputs.{{ $key }}.option_value'
                                         @class([
-                                            "input w-full bg-white md:rounded-none",
+                                            "input w-full md:rounded-none",
                                             "input-error" => $errors->has("option_inputs." . $key . ".option_value"),
                                         ]) placeholder="Value">
                                 </div>
 
                                 <div class="col-span-1">
                                     @if ($loop->first)
-                                        <button class="btn btn-primary w-full text-white md:rounded-none"
+                                        <button class="btn btn-primary w-full md:rounded-none"
                                             wire:click='addOptionvalue' wire:loading.attr="disabled" type="button">
                                             Add Option
                                         </button>
                                     @else
-                                        <button class="btn btn-error w-full text-white md:rounded-none"
+                                        <button class="btn btn-error w-full md:rounded-none"
                                             wire:click='removeOptionvalue({{ $key }})'
                                             wire:loading.attr="disabled" type="button">
                                             Remove option
@@ -176,9 +177,9 @@
             </div>
 
             <div class="modal-action">
-                <label class="btn" for="add-question-modal">Close</label>
-                <button class="btn btn-primary text-white" wire:click='saveCustomQuestion'
-                    wire:loading.attr="disabled">Add question</button>
+                <label class="btn btn-sm" for="add-question-modal">Close</label>
+                <button class="btn btn-primary btn-sm" wire:click='saveCustomQuestion' wire:loading.attr="disabled">
+                    <i class="fa-solid fa-floppy-disk"></i> Submit</button>
             </div>
         </div>
     </div>

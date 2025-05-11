@@ -10,20 +10,26 @@
     <td class="whitespace-nowrap">{{ $graduate->region->region_name }}</td>
     <td class="whitespace-nowrap">{{ $graduate->province->province_name }}</td>
     <td class="whitespace-nowrap">{{ $graduate->location_of_residence }}</td>
+
     <td>
         <div class="join join-horizontal">
             @if ($graduate->trashed())
                 <label for="restore-graduate"
                     x-on:click="$dispatch('restore-graduate', {id:'{{ encrypt($graduate->graduate_id) }}'})"
-                    class="badge badge-sm badge-success btn join-item">Restore <i
-                        class="fa-solid fa-rotate-left"></i></label>
+                    class="badge badge-sm badge-success btn join-item"><i class="fa-solid fa-rotate-left"></i>
+                    Restore</label>
             @else
-                <a wire:navigate href="{{ url("view_graduate", ["encrypt_id" => encrypt($graduate->graduate_id)]) }}"
-                    class="badge badge-sm badge-secondary btn join-item">View <i class="fa-solid fa-eye"></i></a>
+                @php
+                    $link = auth()->user()->hei_id === null ? "view_graduate" : "graduate";
+                @endphp
+                <a wire:navigate href="{{ url($link, ["encrypt_id" => encrypt($graduate->graduate_id)]) }}"
+                    class="badge badge-sm badge-secondary btn join-item"><i class="fa-solid fa-eye"></i> View</a>
             @endif
-            <label for="remove-graduate"
-                x-on:click="$dispatch('remove-graduate', {id:'{{ encrypt($graduate->graduate_id) }}'})"
-                class="badge badge-sm badge-error btn join-item">Delete <i class="fa-solid fa-trash"></i></label>
+            @if (auth()->user()->hei_id === null)
+                <label for="remove-graduate"
+                    x-on:click="$dispatch('remove-graduate', {id:'{{ encrypt($graduate->graduate_id) }}'})"
+                    class="badge badge-sm badge-error btn join-item"><i class="fa-solid fa-trash"></i> Delete</label>
+            @endif
         </div>
     </td>
 </tr>

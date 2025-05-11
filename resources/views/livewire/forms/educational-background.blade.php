@@ -4,149 +4,161 @@
             @foreach ($this->questionVisibility as $question)
                 @switch($question->question_key)
                     @case("EB-educational_attainment")
-                        <div x-data="{ isBaccalaureate: '' }" wire:key='{{ $question->question_key }}'>
-                            <div class="mb-2">
-                                <label class="text-neutral mb-2 block text-sm font-semibold">Only Baccalaureate Degree</label>
-                                <div class="flex gap-4">
-                                    <label class="flex items-center">
-                                        <input type="radio" wire:model='only_baccalaureate' x-model="isBaccalaureate"
-                                            class="radio" value="yes">
-                                        <span class="ml-2">Yes</span>
-                                    </label>
-                                    <label class="flex items-center">
-                                        <input type="radio" wire:model='only_baccalaureate' x-model="isBaccalaureate"
-                                            class="radio" value="no">
-                                        <span class="ml-2">No</span>
-                                    </label>
-                                </div>
-                            </div>
+                        <div wire:key='{{ $question->question_key }}'>
+                            <div>
+                                @foreach ($this->educational_attainment as $key => $row)
+                                    <div @class([
+                                        "card bg-base-100 border-1 border-base-300",
+                                        "mt-5" => !$loop->first,
+                                    ]) wire:key='{{ $key }}'>
+                                        <div class="card-body">
+                                            @if (count($this->educational_attainment) > 1)
+                                                <div class="flex justify-end">
+                                                    <button wire:target="removeRow({{ $key }})"
+                                                        wire:click="removeRow({{ $key }})" wire:loading.attr="disabled"
+                                                        type="button" class="btn btn-error btn-sm">
+                                                        <span wire:loading wire:target="removeRow({{ $key }})"
+                                                            class="loading loading-spinner"></span>
+                                                        <i class="fa-solid fa-trash"
+                                                            wire:target="removeRow({{ $key }})"></i>
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                            @endif
 
-                            <template x-if="isBaccalaureate === 'yes'">
-                                <div class="divider"></div>
-                            </template>
+                                            <div class="grid grid-cols-1 items-end gap-y-2 md:grid-cols-3">
+                                                <div class="col-span-1">
+                                                    <label
+                                                        class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
+                                                        Degree & Specialization
+                                                    </label>
+                                                    @php
+                                                        $searchKey = "educational_attainment.$key.search_degree";
+                                                    @endphp
 
-                            <template x-if="isBaccalaureate === 'yes'">
-                                <div>
-                                    @foreach ($this->educational_attainment as $key => $row)
-                                        <div @class([
-                                            "card bg-base-100 border-1 border-base-300",
-                                            "mt-5" => count($this->educational_attainment) > 1,
-                                        ]) wire:key='{{ $key }}'>
-                                            <div class="card-body">
+                                                    <div x-data="{ open: false }"
+                                                        @click.outside="if (open) {
+                                                            if($wire.$get('{{ $searchKey }}') !== '') {
+                                                               $wire.$set('{{ $searchKey }}', '');
+                                                            }
+                                                            open = false;
+                                                        }"
+                                                        class="relative w-full">
+                                                        <input x-on:focus="open = true;"
+                                                            wire:model.live.debounce.250ms="{{ $searchKey }}" type="text"
+                                                            class="input @error("educational_attainment." . $key . ".degree_id") input-error @enderror w-full bg-white md:rounded-none">
 
-                                                @if (count($this->educational_attainment) > 1)
-                                                    <div class="flex justify-end">
-                                                        <button wire:target="removeRow({{ $key }})"
-                                                            wire:click="removeRow({{ $key }})"
-                                                            wire:loading.attr="disabled" type="button"
-                                                            class="btn btn-error btn-sm">
-                                                            <span wire:loading wire:target="removeRow({{ $key }})"
-                                                                class="loading loading-spinner"></span>
-                                                            <i class="fa-solid fa-trash"
-                                                                wire:target="removeRow({{ $key }})"></i>
-                                                            Remove
-                                                        </button>
-                                                    </div>
-                                                @endif
-
-                                                <div class="grid grid-cols-1 items-end gap-y-2 md:grid-cols-3">
-                                                    <div class="col-span-1">
-                                                        <label
-                                                            class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
-                                                            Degree & Specialization
-                                                        </label>
-                                                        <select
-                                                            wire:model="educational_attainment.{{ $key }}.degree_id"
-                                                            class="select @error("educational_attainment." . $key . ".degree_id") select-error @enderror w-full bg-white md:rounded-none">
-                                                            <option value="">Degree & Specialization</option>
-                                                            @foreach (App\Models\Degree::all() as $degree_level)
-                                                                <option value="{{ $degree_level->degree_id }}"
-                                                                    wire:key={{ "degree-" . $degree_level->degree_id }}>
-                                                                    {{ $degree_level->degree_name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-span-1">
-                                                        <label
-                                                            class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
-                                                            College or University
-                                                        </label>
-                                                        <select
-                                                            wire:model="educational_attainment.{{ $key }}.university_id"
-                                                            class="select @error("educational_attainment." . $key . ".degree_id") select-error @enderror w-full bg-white md:rounded-none">
-                                                            <option value="" selected>University</option>
-                                                            @foreach (App\Models\University::all() as $university)
-                                                                <option value="{{ $university->university_id }}"
-                                                                    wire:key={{ "university-" . $university->university_id }}>
-                                                                    {{ $university->university_name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-span-1">
-                                                        <label
-                                                            class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
-                                                            Year Graduated
-                                                        </label>
-                                                        <input
-                                                            wire:model="educational_attainment.{{ $key }}.year_graduated"
-                                                            type="number" min="1900" max="2100" step="1"
-                                                            class="input @error("educational_attainment." . $key . ".degree_id") select-error @enderror w-full bg-white md:rounded-none">
+                                                        <ul x-show="open"
+                                                            class="z-999 border-base-300 absolute mt-1 max-h-60 w-full overflow-y-auto rounded-md border bg-white shadow-md">
+                                                            @forelse($educational_attainment[$key]['degree_result'] as $degree)
+                                                                <li x-on:click='open = false'
+                                                                    wire:click="selectDegree({{ $key }}, {{ $degree->degree_id }}, '{{ $degree->degree_name }}')"
+                                                                    class="hover:bg-primary hover:text-base-100 cursor-pointer p-3">
+                                                                    {{ $degree->degree_name }}
+                                                                </li>
+                                                            @empty
+                                                                <li class="text-error p-3">No results found.</li>
+                                                            @endforelse
+                                                        </ul>
                                                     </div>
                                                 </div>
 
-                                                <div class="mt-4">
-                                                    <label class="text-neutral mb-2 block text-sm font-semibold">Honor</label>
-                                                    @foreach ($row["honor"] as $honor_key => $honor)
-                                                        <div class="mb-2 flex items-center" wire:key='{{ $honor_key }}'>
-                                                            <input type="text"
-                                                                class="input @error("educational_attainment." . $key . ".honor." . $honor_key) input-error @enderror flex-1 rounded-none bg-white"
-                                                                wire:model="educational_attainment.{{ $key }}.honor.{{ $honor_key }}">
-                                                            @if ($loop->first)
-                                                                <button type="button"
-                                                                    wire:click='addHonor({{ $key }})'
-                                                                    class="btn btn-secondary rounded-none"
-                                                                    wire:target="addHonor({{ $key }})"
-                                                                    wire:loading.attr="disabled">
-                                                                    <span wire:loading
-                                                                        wire:target="addHonor({{ $key }})"
-                                                                        class="loading loading-spinner"></span>
-                                                                    <i class="fa-solid fa-plus" wire:loading.remove
-                                                                        wire:target="addHonor({{ $key }})"></i>
-                                                                </button>
-                                                            @else
-                                                                <button type="button" class="btn btn-error rounded-none"
-                                                                    wire:target="removeHonor({{ $key }}, {{ $honor_key }})"
-                                                                    wire:click="removeHonor({{ $key }}, {{ $honor_key }})"
-                                                                    wire:loading.attr="disabled">
-                                                                    <span wire:loading
-                                                                        wire:target="removeHonor({{ $key }}, {{ $honor_key }})"
-                                                                        class="loading loading-spinner"></span>
-                                                                    <i class="fa-solid fa-trash"
-                                                                        wire:target="removeHonor({{ $key }}, {{ $honor_key }})"></i>
-                                                                </button>
-                                                            @endif
-                                                        </div>
-                                                    @endforeach
+                                                <div class="col-span-1">
+                                                    <label
+                                                        class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
+                                                        College or University
+                                                    </label>
+
+                                                    @php
+                                                        $searchKey = "educational_attainment.$key.search_hei";
+                                                    @endphp
+
+                                                    <div x-data="{ open: false }"
+                                                        @click.outside="if (open) {
+                                                        if($wire.$get('{{ $searchKey }}') !== '') {
+                                                           $wire.$set('{{ $searchKey }}', '');
+                                                        }
+                                                        open = false;
+                                                    }"
+                                                        class="relative w-full">
+                                                        <input x-on:focus="open = true;"
+                                                            wire:model.live.debounce.250ms="{{ $searchKey }}" type="text"
+                                                            class="input @error("educational_attainment." . $key . ".hei_id") input-error @enderror w-full bg-white md:rounded-none">
+
+                                                        <ul x-show="open"
+                                                            class="z-999 border-base-300 absolute mt-1 max-h-60 w-full overflow-y-auto rounded-md border bg-white shadow-md">
+                                                            @forelse($educational_attainment[$key]['hei_result'] as $hei)
+                                                                <li x-on:click='open = false'
+                                                                    wire:click="selectHEI({{ $key }}, {{ $hei->hei_id }}, '{{ $hei->hei_name }}')"
+                                                                    class="hover:bg-primary hover:text-base-100 cursor-pointer p-3">
+                                                                    {{ $hei->hei_name }}
+                                                                </li>
+                                                            @empty
+                                                                <li class="text-error p-3">No results found.</li>
+                                                            @endforelse
+                                                        </ul>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-span-1">
+                                                    <label
+                                                        class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
+                                                        Year Graduated
+                                                    </label>
+                                                    <input
+                                                        wire:model="educational_attainment.{{ $key }}.year_graduated"
+                                                        type="number" min="1900" max="2100" step="1"
+                                                        class="input @error("educational_attainment." . $key . ".year_graduated") select-error @enderror w-full bg-white md:rounded-none">
                                                 </div>
                                             </div>
 
+                                            <div class="mt-4">
+                                                <label class="text-neutral mb-2 block text-sm font-semibold">Honor</label>
+                                                @foreach ($row["honor"] as $honor_key => $honor)
+                                                    <div class="mb-2 flex items-center" wire:key='{{ $honor_key }}'>
+                                                        <input type="text"
+                                                            class="input @error("educational_attainment." . $key . ".honor." . $honor_key) input-error @enderror flex-1 rounded-none bg-white"
+                                                            wire:model="educational_attainment.{{ $key }}.honor.{{ $honor_key }}">
+                                                        @if ($loop->first)
+                                                            <button type="button" wire:click='addHonor({{ $key }})'
+                                                                class="btn btn-secondary rounded-none"
+                                                                wire:target="addHonor({{ $key }})"
+                                                                wire:loading.attr="disabled">
+                                                                <span wire:loading wire:target="addHonor({{ $key }})"
+                                                                    class="loading loading-spinner"></span>
+                                                                <i class="fa-solid fa-plus" wire:loading.remove
+                                                                    wire:target="addHonor({{ $key }})"></i>
+                                                            </button>
+                                                        @else
+                                                            <button type="button" class="btn btn-error rounded-none"
+                                                                wire:target="removeHonor({{ $key }}, {{ $honor_key }})"
+                                                                wire:click="removeHonor({{ $key }}, {{ $honor_key }})"
+                                                                wire:loading.attr="disabled">
+                                                                <span wire:loading
+                                                                    wire:target="removeHonor({{ $key }}, {{ $honor_key }})"
+                                                                    class="loading loading-spinner"></span>
+                                                                <i class="fa-solid fa-trash"
+                                                                    wire:target="removeHonor({{ $key }}, {{ $honor_key }})"></i>
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
-                                    @endforeach
-
-                                    <div class="mt-5 flex justify-end">
-                                        <button class="btn btn-primary btn-sm" wire:loading.attr="disabled"
-                                            wire:click='addEducationAttainmentRow'>
-                                            <span wire:loading wire:target="addEducationAttainmentRow"
-                                                class="loading loading-spinner"></span>
-                                            <i class="fa-solid fa-plus" wire:loading.remove
-                                                wire:target="addEducationAttainmentRow"></i>
-                                            Add Degree
-                                        </button>
                                     </div>
+                                @endforeach
+
+                                <div class="mt-5 flex justify-end">
+                                    <button class="btn btn-primary btn-sm" wire:loading.attr="disabled"
+                                        wire:click='addEducationAttainmentRow'>
+                                        <span wire:loading wire:target="addEducationAttainmentRow"
+                                            class="loading loading-spinner"></span>
+                                        <i class="fa-solid fa-plus" wire:loading.remove
+                                            wire:target="addEducationAttainmentRow"></i>
+                                        Add New Degree
+                                    </button>
                                 </div>
-                            </template>
+                            </div>
 
                             <div class="divider"></div>
                         </div>
@@ -160,8 +172,7 @@
 
                                     <div class="col-span-1">
                                         @if ($loop->first)
-                                            <label
-                                                class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
+                                            <label class="text-neutral mb-2 block text-sm font-semibold">
                                                 Name of Examination
                                             </label>
                                         @endif
@@ -178,8 +189,7 @@
 
                                     <div class="col-span-1">
                                         @if ($loop->first)
-                                            <label
-                                                class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
+                                            <label class="text-neutral mb-2 block text-sm font-semibold">
                                                 Date Taken
                                             </label>
                                         @endif
@@ -190,8 +200,7 @@
 
                                     <div class="col-span-1">
                                         @if ($loop->first)
-                                            <label
-                                                class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">
+                                            <label class="text-neutral mb-2 block text-sm font-semibold">
                                                 Rating
                                             </label>
                                         @endif

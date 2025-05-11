@@ -1,6 +1,6 @@
 <div id="root">
 
-    <livewire:components.admin.header />
+    <livewire:components.hei.header />
 
     <div class="mt-0" x-data="{ active: 'admin.graduates.general-information' }">
         <div class="rounded-lg px-3">
@@ -9,13 +9,13 @@
                     <div class="breadcrumbs text-sm">
                         <ul>
                             <li>
-                                <a wire:navigate href="{{ route("dashboard") }}">
+                                <a wire:navigate href="/home}">
                                     <i class="fa-solid fa-chart-simple"></i>
                                     Analytics
                                 </a>
                             </li>
                             <li>
-                                <a wire:navigate href="/graduates">
+                                <a wire:navigate href="/view_graduates">
                                     <i class="fa-solid fa-user-graduate"></i>
                                     Graduates
                                 </a>

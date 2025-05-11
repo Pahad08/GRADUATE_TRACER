@@ -18,7 +18,7 @@
                                 @foreach ($educational_backgrounds as $background)
                                     <tr>
                                         <td class="whitespace-nowrap">{{ $background->degree->degree_name }}</td>
-                                        <td class="whitespace-nowrap">{{ $background->university->university_name }}
+                                        <td class="whitespace-nowrap">{{ $background->hei->hei_name }}
                                         </td>
                                         <td class="whitespace-nowrap">{{ $background->year_graduated }}</td>
                                         <td class="flex gap-2 whitespace-nowrap">
@@ -59,21 +59,21 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th class="whitespace-nowrap">Title of Training</th>
-                                <th class="whitespace-nowrap">Duration and Credits Earned</th>
-                                <th class="whitespace-nowrap">Name of Training Institution</th>
+                                <th class="whitespace-nowrap">Examination Name</th>
+                                <th class="whitespace-nowrap">Date Taken</th>
+                                <th class="whitespace-nowrap">Rating</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($trainings as $key => $training)
+                            @foreach ($examinations as $key => $examination)
                                 <tr>
                                     <td class="whitespace-nowrap">
-                                        {{ $training->training_name }}
+                                        {{ $examination->name_of_examination }}
                                     </td>
                                     <td class="whitespace-nowrap">
-                                        {{ $training->duration_and_credits_earned }}</td>
+                                        {{ $examination->date_taken }}</td>
                                     <td class="whitespace-nowrap">
-                                        {{ $training->training_institution }}</td>
+                                        {{ $examination->rating }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

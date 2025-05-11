@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('universities', function (Blueprint $table) {
-            $table->integer('university_id')->autoIncrement();
-            $table->primary('university_id');
-            $table->string('university_name', length: 100)->nullable()->index();
+        Schema::create('HEI', function (Blueprint $table) {
+            $table->integer('hei_id')->autoIncrement();
+            $table->primary('hei_id');
+            $table->string('hei_name', length: 100)->nullable()->index();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('university');
+        Schema::dropIfExists('HEI');
     }
 };

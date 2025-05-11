@@ -1,7 +1,43 @@
 @import "tailwindcss";
 @source "../views";
+
+@plugin "daisyui/theme" {
+    name: "nord";
+    default: true;
+    prefersdark: false;
+    color-scheme: "light";
+    --color-base-100: oklch(95.127% 0.007 260.731);
+    --color-base-200: oklch(95.127% 0.007 260.731);
+    --color-base-300: oklch(89.925% 0.016 262.749);
+    --color-base-content: oklch(32.437% 0.022 264.182);
+    --color-primary: oklch(59.435% 0.077 254.027);
+    --color-primary-content: oklch(98% 0.001 106.423);
+    --color-secondary: oklch(69.651% 0.059 248.687);
+    --color-secondary-content: oklch(95.127% 0.007 260.731);
+    --color-accent: oklch(77.464% 0.062 217.469);
+    --color-accent-content: oklch(95.127% 0.007 260.731);
+    --color-neutral: oklch(45.229% 0.035 264.131);
+    --color-neutral-content: oklch(89.925% 0.016 262.749);
+    --color-info: oklch(69.207% 0.062 332.664);
+    --color-info-content: oklch(95.127% 0.007 260.731);
+    --color-success: oklch(59.435% 0.077 140);
+    --color-success-content: oklch(95.127% 0.007 260.731);
+    --color-warning: oklch(59.435% 0.077 100);
+    --color-warning-content: oklch(95.127% 0.007 260.731);
+    --color-error: oklch(59.435% 0.077 27);
+    --color-error-content: oklch(95.127% 0.007 260.731);
+    --radius-selector: 0.5rem;
+    --radius-field: 0.25rem;
+    --radius-box: 0.5rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+}
+
 @plugin "daisyui" {
-    themes: nord --default;
+    themes: nord;
 }
 
 .select2-container--default .select2-selection--single {
@@ -9,8 +45,23 @@
     border-color: #c6c9d0 !important;
 }
 
-#select2-university-select-container {
+#select2-university-select-container,
+#select2-hei-select-container {
     font-size: 0.75rem !important;
     background: #eceff4 !important;
     border-radius: 0.25rem !important;
+}
+
+.select2-results__options > li,
+.select2-search {
+    background: #eceff4 !important;
+    color: #000000;
+}
+
+.select2-results__options > li:hover {
+    background: oklch(59.435% 0.077 254.027) !important;
+}
+
+li[aria-selected="true"] {
+    background: oklch(59.435% 0.077 254.027) !important;
 }

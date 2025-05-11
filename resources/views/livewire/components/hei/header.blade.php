@@ -1,4 +1,4 @@
-<div class="shadow-screen z-99 sticky top-0 w-full p-0">
+<div data-theme="dracula" class="shadow-screen z-99 sticky top-0 w-full p-0">
     <div class="bg-primary flex w-full items-center gap-4 p-3">
         <a href="/" wire:navigate>
             <img src="{{ asset("images/logo.png") }}" alt="CHED logo" class="w-13">
@@ -29,12 +29,10 @@
             <div tabindex="0" class="tab"><i class="fa-solid fa-caret-down mr-2"></i> Menu</div>
             <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                 @foreach ($links as $key => $link)
-                    <li>
-                        <a href="{{ $link["url"] }}" ... wire:current="tab-active"
-                            class="tab justify-start font-semibold" wire:navigate>
-                            <i class="fa-solid {{ $link["icon"] }}">
-                            </i>&nbsp{{ $link["title"] }}</a>
-                    </li>
+                    <a href="{{ $link["url"] }}" ... wire:current="tab-active" class="tab justify-start font-semibold"
+                        wire:navigate>
+                        <i class="fa-solid {{ $link["icon"] }}">
+                        </i>&nbsp{{ $link["title"] }}</a>
                 @endforeach
             </ul>
         </div>

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreign('graduate_id')->references('graduate_id')->on('graduates')->cascadeOnDelete();
             $table->integer('degree_id')->nullable();
             $table->foreign('degree_id')->references('degree_id')->on('degrees')->cascadeOnDelete();
-            $table->integer('university_id')->nullable();
-            $table->foreign('university_id')->references('university_id')->on('universities')->cascadeOnDelete();
+            $table->integer('hei_id')->nullable();
+            $table->foreign('hei_id')->references('hei_id')->on('hei')->cascadeOnDelete();
             $table->year('year_graduated')->nullable()->index();
             $table->string('honor', length: 100)->nullable();
             $table->softDeletes();

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Components;
+namespace App\Livewire\Components\tableRow;
 
 use Livewire\Attributes\Lazy;
 use Livewire\Component;
@@ -13,11 +13,11 @@ class GraduateTableTr extends Component
 
     public function placeholder(array $params = [])
     {
-        return view('livewire.components.loader.table-loader');
+        return view('livewire.components.loader.table-loader', ['length' => 13]);
     }
 
     public function render()
     {
-        return view('livewire.components.graduate-table-tr');
+        return view('livewire.components.tableRow.graduate-table-tr');
     }
 }
