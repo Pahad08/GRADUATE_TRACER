@@ -10,6 +10,8 @@ class EducationalBackground extends Component
     public $examinations;
     public $graduate_reasons;
     public $custom_question_responses;
+    public $heis = [];
+    public $degrees = [];
 
     public function mount($graduate)
     {
@@ -17,7 +19,7 @@ class EducationalBackground extends Component
         $this->examinations = $graduate->professionalExamination;
         $this->graduate_reasons = $graduate->reasonForCourse;
         $this->custom_question_responses = $graduate->response->filter(function ($response) {
-            return $response->customQuestion->questionVisibility->section_name === 'EDUCATIONAL_BACKGROUND';
+            return optional($response->customQuestion->responsesWithTrashed)->section_name === 'EDUCATIONAL_BACKGROUND';
         });
     }
 

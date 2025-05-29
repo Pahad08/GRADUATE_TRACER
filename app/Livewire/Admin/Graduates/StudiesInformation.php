@@ -13,7 +13,7 @@ class StudiesInformation extends Component
     {
         $this->graduate = $graduate;
         $this->custom_question_responses = $graduate->response->filter(function ($response) {
-            return $response->customQuestion->questionVisibility->section_name === 'TRAININGS_STUDIES';
+            return  optional($response->customQuestion->responsesWithTrashed)->section_name === 'TRAININGS_STUDIES';
         });
     }
 

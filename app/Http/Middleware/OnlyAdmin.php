@@ -16,7 +16,7 @@ class OnlyAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->hei_id !== null) {
+        if (!Auth::user()->is_admin) {
             return redirect('/home');
         }
 

@@ -17,8 +17,8 @@ class EducationalBackgroundFactory extends Factory
     public function definition(): array
     {
         return [
-            'university_id' => rand(1, 11),
-            'degree_id' => rand(1, 11),
+            'university_id' => rand(1, 10),
+            'degree_id' => rand(1, 10),
             'year_graduated' => $this->faker->year(),
             'honor' => $this->faker->randomDigitNotNull(),
         ];

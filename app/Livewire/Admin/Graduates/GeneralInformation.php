@@ -13,7 +13,7 @@ class GeneralInformation extends Component
     {
         $this->graduate = $graduate;
         $this->custom_question_responses = $graduate->response->filter(function ($response) {
-            return $response->customQuestion->questionVisibility->section_name === 'GENERAL_INFORMATION';
+            return optional($response->customQuestion->responsesWithTrashed)->section_name === 'GENERAL_INFORMATION';
         });
     }
 

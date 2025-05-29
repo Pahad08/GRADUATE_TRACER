@@ -203,6 +203,39 @@ class EmploymentDataForm extends Form
         ];
     }
 
+    protected function messages()
+    {
+        return [
+            'is_employed.required' => 'The Employment status is required.',
+            'unemployment_reason.checkboxes.required' => 'Please provide a reason for unemployment.',
+            'unemployment_reason.input.required' => 'Please provide a reason for unemployment.',
+            'present_employment_status.required' => 'The Present Employment Status is required.',
+            'occupation.required' => 'The Occupation is required.',
+            'company_name.required' => 'The Company Name is required.',
+            'industry.required' => 'The Industry is required.',
+            'place_of_work.required' => 'The Place of Work is required.',
+            'is_first_job.required' => 'This field is required.',
+            'job_retention.checkboxes.required' => 'At least one reason for job retention is required.',
+            'job_retention.input.required' => 'Please provide a reason for job retention.',
+            'related_to_course.required' => 'The Related to Course field is required.',
+            'job_acceptance.checkboxes.required' => 'At least one reason for job acceptance is required.',
+            'job_acceptance.input.required' => 'Please provide a reason for job acceptance.',
+            'job_change.checkboxes.required' => 'At least one reason for job change is required.',
+            'job_change.input.required' => 'Please provide a reason for job change.',
+            'first_job_duration.required' => 'Select atleast one selection from the options.',
+            'job_source.checkboxes.required' => 'At least one job source is required.',
+            'job_source.input.required' => 'Please provide a job source.',
+            'first_job_search_duration.required' => 'The First Job Search Duration is required.',
+            'first_job_level.required' => 'The First Job Level is required.',
+            'current_job_level.required' => 'The Current Job Level is required.',
+            'first_job_initial_gross.required' => 'The First Job Initial Gross is required.',
+            'is_curriculum_relevant_to_job.required' => 'This field is required.',
+            'skills.checkboxes.required' => 'At least one skill is required.',
+            'skills.input.required' => 'Please provide a skill.',
+            'custom_questions.*.required' => 'The :attribute is required.',
+        ];
+    }
+
     public function validateSuggestion()
     {
         $this->validate([

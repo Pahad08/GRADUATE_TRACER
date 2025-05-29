@@ -1,5 +1,6 @@
-<div class="rounded-none px-3" x-data="{ isEmployed: '' }" x-on:graduate-created.window="isEmployed='';">
-    <div class="card lg:w-250 md:w-230 mx-auto my-5 max-w-full bg-white">
+<div class="rounded-none px-3" x-data="{ isEmployed: '', isSubmit: false, showConfirmation: false }" x-on:graduate-created.window="isEmployed=''; isSubmit=false;"
+    x-on:form-error.window="if(isSubmit){isSubmit=false;}">
+    <div class="card lg:w-250 md:w-230 bg-base-200 border-base-300 mx-auto my-5 max-w-full border">
         <div class="card-body rounded-lg shadow-md">
             <div class="grid grid-cols-1">
                 @foreach ($this->questionVisibility as $question)
@@ -10,23 +11,36 @@
                                     <label
                                         class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Are
                                         you presently employed? </label>
-                                    <div class="flex gap-4">
+                                    <div @class(["flex gap-4", "mb-2" => $errors->has("form.is_employed")])>
                                         <label class="flex items-center">
-                                            <input type="radio" x-model="isEmployed" @class(["radio", "radio-error" => $errors->has("form.is_employed")])
+                                            <input type="radio" x-model="isEmployed" @class([
+                                                "radio border-base-300 bg-white",
+                                                "radio-error" => $errors->has("form.is_employed"),
+                                            ])
                                                 value="yes" wire:model="form.is_employed">
                                             <span class="ml-2">Yes</span>
                                         </label>
                                         <label class="flex items-center">
-                                            <input type="radio" x-model="isEmployed" @class(["radio", "radio-error" => $errors->has("form.is_employed")])
+                                            <input type="radio" x-model="isEmployed" @class([
+                                                "radio border-base-300 bg-white",
+                                                "radio-error" => $errors->has("form.is_employed"),
+                                            ])
                                                 value="no" wire:model="form.is_employed">
                                             <span class="ml-2">No</span>
                                         </label>
                                         <label class="flex items-center">
-                                            <input type="radio" @class(["radio", "radio-error" => $errors->has("form.is_employed")]) x-model="isEmployed"
+                                            <input type="radio" @class([
+                                                "radio border-base-300 bg-white",
+                                                "radio-error" => $errors->has("form.is_employed"),
+                                            ]) x-model="isEmployed"
                                                 wire:model="form.is_employed" value="never">
                                             <span class="ml-2">Never Employed</span>
                                         </label>
                                     </div>
+
+                                    @if ($errors->has("form.is_employed"))
+                                        <span class="text-error text-sm">{{ $errors->first("form.is_employed") }}</span>
+                                    @endif
                                 </div>
 
                                 @if (isset($this->questionVisibility["ED-reason_for_not_employed"]))
@@ -40,7 +54,8 @@
                                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                 @foreach ($unemployment_reasons as $key => $reason)
                                                     <label class="flex items-center" wire:key="{{ "reason-" . $key }}">
-                                                        <input type="checkbox" class="checkbox" value="{{ $reason }}"
+                                                        <input type="checkbox" class="checkbox border-base-300 bg-white"
+                                                            value="{{ $reason }}"
                                                             wire:model="form.unemployment_reason.checkboxes">
                                                         <span class="ml-2">{{ $reason }}</span>
                                                     </label>
@@ -56,7 +71,7 @@
                                             @if ($errors->has("form.unemployment_reason.checkboxes") || $errors->has("form.unemployment_reason.input"))
                                                 <div class="mt-1">
                                                     <p class="text-error">
-                                                        Provide atleast one reason.
+                                                        {{ $errors->first("form.unemployment_reason.checkboxes") ?? $errors->first("form.unemployment_reason.input") }}
                                                     </p>
                                                 </div>
                                             @endif
@@ -73,14 +88,13 @@
                                             <div>
                                                 <label
                                                     class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Present
-                                                    Employment
-                                                    Status</label>
+                                                    Employment Status</label>
                                                 <div class="flex flex-wrap gap-4">
                                                     @foreach ($employment_status as $key => $status)
-                                                        <label class="flex items-center" wire:key='{{ "status-" . $key }}'>
+                                                        <label class="items-center" wire:key='{{ "status-" . $key }}'>
                                                             <input type="radio" wire:model="form.present_employment_status"
                                                                 value="{{ $status }}" @class([
-                                                                    "radio",
+                                                                    "radio border-base-300 bg-white",
                                                                     "radio-error" => $errors->has("form.present_employment_status"),
                                                                 ])>
                                                             <span class="ml-2">{{ $status }}</span>
@@ -89,6 +103,14 @@
                                                 </div>
                                             </div>
 
+                                            @if ($errors->has("form.present_employment_status"))
+                                                <div class="mt-1">
+                                                    <p class="text-error">
+                                                        {{ $errors->first("form.present_employment_status") }}
+                                                    </p>
+                                                </div>
+                                            @endif
+
                                             <div class="divider"></div>
                                         @endif
 
@@ -96,7 +118,7 @@
                                             <div>
                                                 <label
                                                     class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Present
-                                                    occupation(Use the following Phil. Standard Occupational Classification
+                                                    occupation (Use the following Phil. Standard Occupational Classification
                                                     (PSOC), 1992 classification)
                                                 </label>
                                                 <select wire:model ='form.occupation' @class([
@@ -112,6 +134,14 @@
                                                 </select>
                                             </div>
 
+                                            @if ($errors->has("form.occupation"))
+                                                <div class="mt-1">
+                                                    <p class="text-error">
+                                                        {{ $errors->first("form.occupation") }}
+                                                    </p>
+                                                </div>
+                                            @endif
+
                                             <div class="divider"></div>
                                         @endif
 
@@ -125,7 +155,18 @@
                                                     "input-error" => $errors->has("form.company_name"),
                                                 ]) type="text"
                                                     wire:model="form.company_name">
+
+                                                <p class="text-base-content my-1 italic">Note: Please enter full name of the
+                                                    company.</p>
                                             </div>
+
+                                            @if ($errors->has("form.company_name"))
+                                                <div class="mt-1">
+                                                    <p class="text-error">
+                                                        {{ $errors->first("form.company_name") }}
+                                                    </p>
+                                                </div>
+                                            @endif
 
                                             <div class="divider"></div>
                                         @endif
@@ -134,11 +175,7 @@
                                             <div>
                                                 <label
                                                     class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Major
-                                                    line of
-                                                    business
-                                                    of
-                                                    the
-                                                    company you are presently employed in.</label>
+                                                    line of business of the company you are presently employed in.</label>
                                                 <select wire:model="form.industry" @class([
                                                     "select w-full",
                                                     "select-error" => $errors->has("form.industry"),
@@ -152,6 +189,14 @@
                                                 </select>
                                             </div>
 
+                                            @if ($errors->has("form.industry"))
+                                                <div class="mt-1">
+                                                    <p class="text-error">
+                                                        {{ $errors->first("form.industry") }}
+                                                    </p>
+                                                </div>
+                                            @endif
+
                                             <div class="divider"></div>
                                         @endif
 
@@ -159,21 +204,34 @@
                                             <div>
                                                 <label
                                                     class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Place
-                                                    of
-                                                    work</label>
+                                                    of work</label>
                                                 <div class="flex gap-4">
                                                     <label class="flex items-center">
-                                                        <input type="radio" @class(["radio", "radio-error" => $errors->has("form.place_of_work")])
+                                                        <input type="radio" @class([
+                                                            "radio border-base-300 bg-white",
+                                                            "radio-error" => $errors->has("form.place_of_work"),
+                                                        ])
                                                             wire:model='form.place_of_work' value="local">
                                                         <span class="ml-2">Local</span>
                                                     </label>
                                                     <label class="flex items-center">
-                                                        <input type="radio" @class(["radio", "radio-error" => $errors->has("form.place_of_work")])
+                                                        <input type="radio" @class([
+                                                            "radio bg-white",
+                                                            "radio-error" => $errors->has("form.place_of_work"),
+                                                        ])
                                                             wire:model='form.place_of_work' value="abroad">
                                                         <span class="ml-2">Abroad</span>
                                                     </label>
                                                 </div>
                                             </div>
+
+                                            @if ($errors->has("form.place_of_work"))
+                                                <div class="mt-1">
+                                                    <p class="text-error">
+                                                        {{ $errors->first("form.place_of_work") }}
+                                                    </p>
+                                                </div>
+                                            @endif
 
                                             <div class="divider"></div>
                                         @endif
@@ -182,21 +240,35 @@
                                             <div>
                                                 <label
                                                     class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Is
-                                                    this your first
-                                                    job after college?</label>
+                                                    this your first job after college?</label>
                                                 <div class="flex gap-4">
                                                     <label class="flex items-center">
-                                                        <input type="radio" @class(["radio", "radio-error" => $errors->has("form.is_first_job")])
-                                                            wire:model="form.is_first_job" x-model="isFirstJob" value="1">
+                                                        <input type="radio" @class([
+                                                            "radio border-base-300 bg-white",
+                                                            "radio-error" => $errors->has("form.is_first_job"),
+                                                        ])
+                                                            wire:model="form.is_first_job" x-model="isFirstJob"
+                                                            value="1">
                                                         <span class="ml-2">Yes</span>
                                                     </label>
                                                     <label class="flex items-center">
-                                                        <input type="radio" @class(["radio", "radio-error" => $errors->has("form.is_first_job")])
+                                                        <input type="radio" @class([
+                                                            "radio border-base-300 bg-white",
+                                                            "radio-error" => $errors->has("form.is_first_job"),
+                                                        ])
                                                             wire:model="form.is_first_job" x-model="isFirstJob"
                                                             value="0">
                                                         <span class="ml-2">No</span>
                                                     </label>
                                                 </div>
+
+                                                @if ($errors->has("form.is_first_job"))
+                                                    <div class="mt-1">
+                                                        <p class="text-error">
+                                                            {{ $errors->first("form.is_first_job") }}
+                                                        </p>
+                                                    </div>
+                                                @endif
                                             </div>
 
                                             <template x-if="isFirstJob === '1' && isFirstJob !== ''">
@@ -207,15 +279,15 @@
                                                         <div>
                                                             <label
                                                                 class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">What
-                                                                are
-                                                                your reason(s) for staying on the job?</label>
+                                                                are your reason(s) for staying on the job?</label>
                                                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                                 @foreach ($reasons as $key => $reason)
                                                                     <label class="flex items-center"
                                                                         wire:key="{{ "reason-" . $key }}">
                                                                         <input type="checkbox"
                                                                             wire:model='form.job_retention.checkboxes'
-                                                                            value="{{ $reason }}" class="checkbox">
+                                                                            value="{{ $reason }}"
+                                                                            class="checkbox border-base-300 bg-white">
                                                                         <span class="ml-2">{{ $reason }}</span>
                                                                     </label>
                                                                 @endforeach
@@ -230,7 +302,7 @@
                                                             @if ($errors->has("form.job_retention.input") || $errors->has("form.job_retention.checkboxes"))
                                                                 <div class="mt-1">
                                                                     <p class="text-error">
-                                                                        Provide atleast one reason.
+                                                                        {{ $errors->first("form.job_retention.input") ?? $errors->first("form.job_retention.checkboxes") }}
                                                                     </p>
                                                                 </div>
                                                             @endif
@@ -243,12 +315,12 @@
                                                         <div>
                                                             <label
                                                                 class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">Is
-                                                                your
-                                                                first job related to the course you took up in college?</label>
+                                                                your first job related to the course you took up in
+                                                                college?</label>
                                                             <div class="flex gap-4">
                                                                 <label class="flex items-center">
                                                                     <input type="radio" @class([
-                                                                        "radio",
+                                                                        "radio border-base-300 bg-white",
                                                                         "radio-error" => $errors->has("form.related_to_course"),
                                                                     ])
                                                                         wire:model="form.related_to_course"
@@ -257,7 +329,7 @@
                                                                 </label>
                                                                 <label class="flex items-center">
                                                                     <input type="radio" @class([
-                                                                        "radio",
+                                                                        "radio border-base-300 bg-white",
                                                                         "radio-error" => $errors->has("form.related_to_course"),
                                                                     ])
                                                                         wire:model="form.related_to_course"
@@ -284,7 +356,7 @@
                                                                                 <input type="checkbox"
                                                                                     wire:model='form.job_acceptance.checkboxes'
                                                                                     value="{{ $reason }}"
-                                                                                    class="checkbox">
+                                                                                    class="checkbox border-base-300 bg-white">
                                                                                 <span
                                                                                     class="ml-2">{{ $reason }}</span>
                                                                             </label>
@@ -301,7 +373,7 @@
                                                                     @if ($errors->has("form.job_acceptance.input") || $errors->has("form.job_acceptance.checkboxes"))
                                                                         <div class="mt-1">
                                                                             <p class="text-error">
-                                                                                Provide atleast one reason.
+                                                                                {{ $errors->first("form.job_acceptance.input") ?? $errors->first("form.job_acceptance.checkboxes") }}
                                                                             </p>
                                                                         </div>
                                                                     @endif
@@ -327,7 +399,8 @@
                                                                             wire:key="{{ "reason-" . $key }}">
                                                                             <input type="checkbox"
                                                                                 wire:model='form.job_change.checkboxes'
-                                                                                class="checkbox" value="{{ $reason }}">
+                                                                                class="checkbox border-base-300 bg-white"
+                                                                                value="{{ $reason }}">
                                                                             <span class="ml-2">{{ $reason }}</span>
                                                                         </label>
                                                                     @endforeach
@@ -342,7 +415,7 @@
                                                                 @if ($errors->has("form.job_change.input") || $errors->has("form.job_change.checkboxes"))
                                                                     <div class="mt-1">
                                                                         <p class="text-error">
-                                                                            Provide atleast one reason.
+                                                                            {{ $errors->first("form.job_change.input") ?? $errors->first("form.job_change.checkboxes") }}
                                                                         </p>
                                                                     </div>
                                                                 @endif
@@ -354,15 +427,15 @@
                                                         <div>
                                                             <label
                                                                 class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">How
-                                                                long
-                                                                did you stay in your first job?</label>
+                                                                long did you stay in your first job?</label>
                                                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                                 @foreach ($first_job_durations as $key => $reason)
                                                                     <label class="flex items-center"
                                                                         wire:key="{{ "first-job-duration-" . $key }}">
                                                                         <input type="radio"
                                                                             wire:model="form.first_job_duration"
-                                                                            class="radio" value="{{ $reason }}">
+                                                                            class="radio border-base-300 bg-white"
+                                                                            value="{{ $reason }}">
                                                                         <span class="ml-2">{{ $reason }}</span>
                                                                     </label>
                                                                 @endforeach
@@ -373,10 +446,10 @@
                                                                     class="input w-full" placeholder="Others, please specify">
                                                             </div>
 
-                                                            @if ($errors->has("form.first_job_duration") || $errors->has("form.first_job_duration"))
+                                                            @if ($errors->has("form.first_job_duration"))
                                                                 <div class="mt-1">
                                                                     <p class="text-error">
-                                                                        Provide atleast one from the options or specify it.
+                                                                        {{ $errors->first("form.first_job_duration") }}
                                                                     </p>
                                                                 </div>
                                                             @endif
@@ -391,13 +464,13 @@
                                             <div>
                                                 <label
                                                     class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">How
-                                                    did you find
-                                                    your first job?</label>
+                                                    did you find your first job?</label>
                                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                     @foreach ($first_job_sources as $key => $source)
                                                         <label class="flex items-center" wire:key='{{ "source-" . $key }}'>
                                                             <input type="checkbox" value="{{ $source }}"
-                                                                class="checkbox" wire:model='form.job_source.checkboxes'>
+                                                                class="checkbox border-base-300 bg-white"
+                                                                wire:model='form.job_source.checkboxes'>
                                                             <span class="ml-2">{{ $source }}</span>
                                                         </label>
                                                     @endforeach
@@ -410,7 +483,7 @@
                                                 @if ($errors->has("form.job_source.input") || $errors->has("form.job_source.checkboxes"))
                                                     <div class="mt-1">
                                                         <p class="text-error">
-                                                            Provide atleast one reason.
+                                                            {{ $errors->first("form.job_source.input") ?? $errors->first("form.job_source.checkboxes") }}
                                                         </p>
                                                     </div>
                                                 @endif
@@ -423,13 +496,13 @@
                                             <div>
                                                 <label
                                                     class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">How
-                                                    long did it
-                                                    take you to land your first job?</label>
+                                                    long did it take you to land your first job?</label>
                                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                     @foreach ($first_job_search_durations as $key => $duration)
                                                         <label class="flex items-center" wire:key='{{ "duration-" . $key }}'>
                                                             <input type="radio" wire:model="form.first_job_search_duration"
-                                                                class="radio" value="{{ $duration }}">
+                                                                class="radio border-base-300 bg-white"
+                                                                value="{{ $duration }}">
                                                             <span class="ml-2">{{ $key }}</span>
                                                         </label>
                                                     @endforeach
@@ -438,16 +511,15 @@
                                                 <div class="mt-3 flex flex-col">
                                                     <label
                                                         class="text-neutral mb-2 font-semibold after:text-red-500 after:content-['*']">Others,
-                                                        please
-                                                        specify</label>
+                                                        please specify</label>
                                                     <input type="text" wire:model='form.first_job_search_duration'
                                                         class="input w-full">
                                                 </div>
 
-                                                @if ($errors->has("form.first_job_search_duration") || $errors->has("form.first_job_search_duration"))
+                                                @if ($errors->has("form.first_job_search_duration"))
                                                     <div class="mt-1">
                                                         <p class="text-error">
-                                                            Provide atleast one from the options or specify it.
+                                                            {{ $errors->first("form.first_job_search_duration") }}
                                                         </p>
                                                     </div>
                                                 @endif
@@ -461,8 +533,7 @@
                                             <div>
                                                 <label
                                                     class="text-neutral mb-4 block text-sm font-semibold after:text-red-500 after:content-['*']">Job
-                                                    Level
-                                                    Position</label>
+                                                    Level Position</label>
                                                 <div class="grid grid-cols-1 gap-2">
                                                     @if (isset($this->questionVisibility["ED-first_job_position"]))
                                                         <div>
@@ -475,7 +546,7 @@
                                                                         <input type="radio"
                                                                             wire:model="form.first_job_level"
                                                                             @class([
-                                                                                "radio",
+                                                                                "radio border-base-300 bg-white",
                                                                                 "radio-error" => $errors->has("form.first_job_level"),
                                                                             ])
                                                                             value="{{ $job_level }}">
@@ -483,6 +554,14 @@
                                                                     </label>
                                                                 @endforeach
                                                             </div>
+
+                                                            @if ($errors->has("form.first_job_level"))
+                                                                <div class="mt-1">
+                                                                    <p class="text-error">
+                                                                        {{ $errors->first("form.first_job_level") }}
+                                                                    </p>
+                                                                </div>
+                                                            @endif
                                                         </div>
                                                     @endif
 
@@ -490,9 +569,7 @@
                                                         <div>
                                                             <label
                                                                 class="text-neutral mb-2 block text-sm font-semibold">Current
-                                                                or
-                                                                Present
-                                                                Job</label>
+                                                                or Present Job</label>
                                                             <div class="flex flex-col gap-4 md:flex-row">
                                                                 @foreach ($job_levels as $key => $job_level)
                                                                     <label class="flex items-center"
@@ -500,7 +577,7 @@
                                                                         <input type="radio"
                                                                             wire:model="form.current_job_level"
                                                                             @class([
-                                                                                "radio",
+                                                                                "radio border-base-300 bg-white",
                                                                                 "radio-error" => $errors->has("form.first_job_level"),
                                                                             ])
                                                                             value="{{ $job_level }}">
@@ -508,6 +585,14 @@
                                                                     </label>
                                                                 @endforeach
                                                             </div>
+
+                                                            @if ($errors->has("form.current_job_level"))
+                                                                <div class="mt-1">
+                                                                    <p class="text-error">
+                                                                        {{ $errors->first("form.current_job_level") }}
+                                                                    </p>
+                                                                </div>
+                                                            @endif
                                                         </div>
                                                     @endif
                                                 </div>
@@ -520,20 +605,29 @@
                                             <div>
                                                 <label
                                                     class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">What
-                                                    is your
-                                                    initial gross monthly earning in your first job after college?</label>
+                                                    is your initial gross monthly earning in your first job after
+                                                    college?</label>
                                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                     @foreach ($salaryRanges as $key => $range)
                                                         <label class="flex items-center" wire:key='{{ "range-" . $key }}'>
                                                             <input type="radio" wire:model="form.first_job_initial_gross"
                                                                 @class([
-                                                                    "radio",
+                                                                    "radio border-base-300 bg-white",
                                                                     "radio-error" => $errors->has("form.first_job_initial_gross"),
                                                                 ]) value="{{ $range }}">
                                                             <span class="ml-2">{{ $key }}</span>
                                                         </label>
                                                     @endforeach
                                                 </div>
+
+                                                @if ($errors->has("form.first_job_initial_gross"))
+                                                    <div class="mt-1">
+                                                        <p class="text-error">
+                                                            {{ $errors->first("form.first_job_initial_gross") }}
+                                                        </p>
+                                                    </div>
+                                                @endif
+
                                             </div>
 
                                             <div class="divider"></div>
@@ -549,7 +643,7 @@
                                                     <label class="flex items-center">
                                                         <input type="radio" x-model="is_curriculum_relevant_to_job"
                                                             @class([
-                                                                "radio",
+                                                                "radio border-base-300 bg-white",
                                                                 "radio-error" => $errors->has("form.is_curriculum_relevant_to_job"),
                                                             ]) value="1"
                                                             wire:model="form.is_curriculum_relevant_to_job">
@@ -558,35 +652,40 @@
                                                     <label class="flex items-center">
                                                         <input type="radio" x-model="is_curriculum_relevant_to_job"
                                                             @class([
-                                                                "radio",
+                                                                "radio border-base-300 bg-white",
                                                                 "radio-error" => $errors->has("form.is_curriculum_relevant_to_job"),
                                                             ]) value="0"
                                                             wire:model="form.is_curriculum_relevant_to_job">
                                                         <span class="ml-2">No</span>
                                                     </label>
                                                 </div>
-                                            </div>
 
-                                            <div class="divider"></div>
+                                                @if ($errors->has("form.is_curriculum_relevant_to_job"))
+                                                    <div class="mt-1">
+                                                        <p class="text-error">
+                                                            {{ $errors->first("form.is_curriculum_relevant_to_job") }}
+                                                        </p>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         @endif
 
                                         @if (isset($this->questionVisibility["ED-skill_in_college"]))
                                             <template
                                                 x-if="is_curriculum_relevant_to_job === '1' && is_curriculum_relevant_to_job !== ''">
                                                 <div>
-
+                                                    <div class="divider"></div>
                                                     <label
                                                         class="text-neutral mb-2 block text-sm font-semibold after:text-red-500 after:content-['*']">What
-                                                        competencies
-                                                        learned
-                                                        in college did you find very useful in your
+                                                        competencies learned in college did you find very useful in your
                                                         first job?</label>
                                                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                                         @foreach ($skills as $key => $skill)
                                                             <label class="flex items-center"
                                                                 wire:key="{{ "skill-" . $key }}">
                                                                 <input type="checkbox" wire:model='form.skills.checkboxes'
-                                                                    value="{{ $skill }}" class="checkbox">
+                                                                    value="{{ $skill }}"
+                                                                    class="checkbox border-base-300 bg-white">
                                                                 <span class="ml-2">{{ $skill }}</span>
                                                             </label>
                                                         @endforeach
@@ -600,7 +699,7 @@
                                                     @if ($errors->has("form.skills.input") || $errors->has("form.skills.checkboxes"))
                                                         <div class="mt-1">
                                                             <p class="text-error">
-                                                                Provide atleast one skill.
+                                                                {{ $errors->first("form.skills.input") ?? $errors->first("form.skills.checkboxes") }}
                                                             </p>
                                                         </div>
                                                     @endif
@@ -673,97 +772,119 @@
                                     </label>
 
                                     @if ($question->question->has_child)
-                                        @switch($question->question->type)
-                                            @case("radio")
+                                        @if ($question->question->type === "radio")
+                                            <div>
                                                 <div class="flex items-center gap-4">
                                                     @foreach ($options as $item)
-                                                        <label class="flex items-center" wire:key="{{ $item->question_option_id }}">
+                                                        <label class="flex items-center"
+                                                            wire:key="{{ $item->question_option_id }}">
                                                             <input type="radio"
                                                                 wire:model="form.custom_questions.{{ $fieldKey }}"
-                                                                class="radio {{ $errors->has("form.custom_questions." . $fieldKey) ? "radio-error" : "" }}"
+                                                                class="radio border-base-300 {{ $errors->has("form.custom_questions." . $fieldKey) ? "radio-error" : "" }} bg-white"
                                                                 value="{{ $item->option_value }}">
                                                             <span class="ml-2">{{ $item->option_text }}</span>
                                                         </label>
                                                     @endforeach
                                                 </div>
-                                            @break
 
-                                            @case("checkbox")
+                                                @if ($errors->has("form.custom_questions.$fieldKey"))
+                                                    <span
+                                                        class="text-error mt-2 text-sm">{{ $errors->first("form.custom_questions.$fieldKey") }}</span>
+                                                @endif
+                                            </div>
+                                        @elseif($question->question->type === "checkbox")
+                                            <div>
                                                 <div class="flex flex-wrap gap-4">
                                                     @foreach ($options as $key => $option)
                                                         <label class="mt-2 flex items-center" wire:key="{{ $key }}">
-                                                            <input type="checkbox" class="checkbox"
+                                                            <input type="checkbox" class="checkbox border-base-300 bg-white"
                                                                 value="{{ $option->option_value }}"
                                                                 wire:model="form.custom_questions.{{ $fieldKey }}">
                                                             <span class="ml-2">{{ $option->option_text }}</span>
                                                         </label>
                                                     @endforeach
                                                 </div>
-                                                @error("form.custom_questions.$fieldKey")
-                                                    <p class="text-error mt-1">Select at least one.</p>
-                                                @enderror
-                                            @break
-
-                                            @default
+                                                @if ($errors->has("form.custom_questions.$fieldKey"))
+                                                    <span
+                                                        class="text-error mt-2 text-sm">{{ $errors->first("form.custom_questions.$fieldKey") }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        @else
+                                            <div>
                                                 <select
                                                     class="select {{ $errors->has("form.custom_questions.$fieldKey") ? "select-error" : "" }} w-full"
                                                     wire:model="form.custom_questions.{{ $fieldKey }}">
                                                     <option>Select {{ $label }}</option>
                                                     @foreach ($options as $key => $option)
-                                                        <option value="{{ $option->option_value }}" wire:key="{{ $key }}">
+                                                        <option value="{{ $option->option_value }}"
+                                                            wire:key="{{ $key }}">
                                                             {{ ucfirst($option->option_text) }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                @error("form.custom_questions.$fieldKey")
-                                                    <p class="text-error mt-1">Select at least one.</p>
-                                                @enderror
-                                        @endswitch
+                                                @if ($errors->has("form.custom_questions.$fieldKey"))
+                                                    <span
+                                                        class="text-error mt-2 text-sm">{{ $errors->first("form.custom_questions.$fieldKey") }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        @endif
                                     @else
-                                        <input type="{{ $question->question->type }}" @class([
-                                            "input w-full",
-                                            "input-error" => $errors->has("form.custom_questions.$fieldKey"),
-                                        ])
-                                            wire:model="form.custom_questions.{{ $fieldKey }}">
+                                        <div>
+                                            <input type="{{ $question->question->type }}" @class([
+                                                "input w-full",
+                                                "input-error" => $errors->has("form.custom_questions.$fieldKey"),
+                                            ])
+                                                wire:model="form.custom_questions.{{ $fieldKey }}">
+
+                                            @if ($errors->has("form.custom_questions.$fieldKey"))
+                                                <span
+                                                    class="text-error mt-2 text-sm">{{ $errors->first("form.custom_questions.$fieldKey") }}
+                                                </span>
+                                            @endif
+                                        </div>
                                     @endif
                                 </div>
                             @endif
-                        @endswitch
-                    @endforeach
+                    @endswitch
+                @endforeach
 
-                    <div class="mt-2 flex justify-end">
-                        <label for="confirmation_modal" class="btn btn-primary" wire:offline.attr="disabled"><i
-                                class="fa-solid fa-floppy-disk"></i>
-                            Submit
-                        </label>
-                    </div>
+                <div class="join mt-4 justify-end">
+                    <button class="join-item btn btn-secondary"
+                        x-on:click="activeTab = 'tracer-components.studies-information';window.scrollTo({ top: 0, behavior: 'smooth' })"><i
+                            class="fa-solid fa-arrow-left"></i> Previous</button>
+                    <button x-on:click="showConfirmation = true;" class="btn btn-primary join-item"><i
+                            class="fa-solid fa-floppy-disk"></i>
+                        Submit
+                    </button>
+                </div>
 
-                    <div class="z-9999 fixed inset-0 flex h-screen w-screen items-center justify-center bg-[rgba(0,0,0,0.5)]"
-                        wire:target="$parent.insertGraduates, save" wire:loading>
-                        <div class="flex h-[100%] items-center justify-center">
-                            <div class="">
-                                <span class="loading loading-spinner text-primary loading-xl"></span>
-                            </div>
+                <div x-show="isSubmit"
+                    class="z-9999 fixed inset-0 flex h-screen w-screen items-center justify-center bg-[rgba(0,0,0,0.5)]">
+                    <div class="flex h-[100%] items-center justify-center">
+                        <div class="">
+                            <span class="loading loading-spinner text-primary loading-xl"></span>
                         </div>
                     </div>
+                </div>
 
-                    <input type="checkbox" id="confirmation_modal" class="modal-toggle" />
-
-                    <div class="modal" role="dialog">
-                        <div class="modal-box">
-                            <h3 class="text-lg font-bold">Submit Graduate</h3>
-                            <p class="py-4">Are you sure you want to submit this graduate? This action cannot be
-                                undone.
-                            </p>
-                            <div class="modal-action mt-0">
-                                <label for="confirmation_modal" class="btn btn-soft">Close</label>
-                                <label for="confirmation_modal" class="btn btn-success"
-                                    x-on:click="$dispatch('form-submitted')" wire:click="save"><span
-                                        wire:target="save"><i class="fa-solid fa-floppy-disk"></i> Submit</span></label>
-                            </div>
+                <div class="modal" :class="showConfirmation ? 'modal-open' : ''"
+                    x:on-display-summary="showConfirmation = true;" role="dialog">
+                    <div class="modal-box">
+                        <h3 class="text-lg font-bold">Submit Graduate</h3>
+                        <p class="py-4">Are you sure you want to submit this graduate? This action cannot be
+                            undone.
+                        </p>
+                        <div class="modal-action mt-0">
+                            <button class="btn btn-soft" x-on:click="showConfirmation = false">Close</button>
+                            <button class="btn btn-success"
+                                x-on:click="$dispatch('form-submitted'); isSubmit = true; showConfirmation = false;"><span><i
+                                        class="fa-solid fa-floppy-disk"></i> Submit</span></button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>

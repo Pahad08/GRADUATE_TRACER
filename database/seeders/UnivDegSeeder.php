@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Degree;
-use App\Models\University;
+use App\Models\HEI;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -27,8 +27,8 @@ class UnivDegSeeder extends Seeder
             'Tacurong College'
         ];
         foreach ($universities as $university) {
-            University::create([
-                'university_name' => $university,
+            HEI::create([
+                'hei_name' => $university,
             ]);
         }
 

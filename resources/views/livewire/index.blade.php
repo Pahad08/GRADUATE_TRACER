@@ -5,7 +5,7 @@
     <div class="mt-0">
         {{-- loop the components(forms) --}}
         @foreach ($childComponents as $key => $component)
-            <div x-show="activeTab === '{{ $key }}'" wire:cloak>
+            <div x-show="activeTab === '{{ $key }}'">
                 <livewire:dynamic-component :is="$key" :key="$key" />
             </div>
         @endforeach
@@ -13,25 +13,23 @@
 
     <div x-data="{
         message: ''
-    }">
-        <input x-on:graduate-created.window="message=$event.detail.message; $el.click();" type="checkbox"
-            id="success-modal" class="modal-toggle" />
-        <div class="modal" role="dialog">
-            <div class="modal-box border-success bg-success border-l-4">
+    }" x-on:graduate-created.window="message = $event.detail.message">
+        <div class="modal" :class="{
+            'modal-open': message !== '',
+        }" role="dialog">
+            <div class="modal-box">
                 <h3 class="text-lg font-semibold">Success!</h3>
                 <p class="py-4" x-text="message"></p>
                 <div class="modal-action mt-0">
-                    <label class="btn btn-soft" x-on:click="activeTab = 'tracer-components.general-information'"
+                    <label class="btn" x-on:click="activeTab = 'tracer-components.general-information'; message = ''"
                         for="success-modal">Close</label>
                 </div>
             </div>
         </div>
     </div>
 
-    <div x-init="$nextTick(() => $refs.disclaimer_modal.click())">
-        <input type="checkbox" id="disclaimer-modal" class="modal-toggle" x-ref="disclaimer_modal" />
-
-        <div class="modal">
+    <div x-data="{ showModal: true }">
+        <div class="modal" :class="showModal ? 'modal-open' : ''">
             <div class="modal-box">
                 <h3 class="text-lg font-bold"><i class="fa-solid fa-circle-info"></i> Disclaimer</h3>
                 <div>
@@ -53,7 +51,7 @@
                     </ul>
                 </div>
                 <div class="modal-action mt-3">
-                    <label for="disclaimer-modal" class="btn btn-success">Agree</label>
+                    <label for="disclaimer-modal" class="btn btn-success" x-on:click="showModal = false">Agree</label>
                 </div>
             </div>
         </div>

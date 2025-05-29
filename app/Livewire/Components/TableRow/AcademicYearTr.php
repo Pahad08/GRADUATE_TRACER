@@ -7,14 +7,14 @@ use Livewire\Attributes\Lazy;
 use Livewire\Attributes\Reactive;
 
 #[Lazy(isolate: false)]
-class AccountTableTr extends Component
+class AcademicYearTr extends Component
 {
     #[Reactive]
-    public $user_id;
+    public $academic_year_id;
     #[Reactive]
-    public $username;
+    public $start_year;
     #[Reactive]
-    public $inst_name;
+    public $end_year;
 
     public function placeholder(array $params = [])
     {
@@ -23,6 +23,6 @@ class AccountTableTr extends Component
 
     public function render()
     {
-        return view('livewire.components.tableRow.account-table-tr');
+        return view('livewire.components.tableRow.academic-year-tr');
     }
 }

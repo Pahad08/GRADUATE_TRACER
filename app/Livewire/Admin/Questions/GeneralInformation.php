@@ -73,15 +73,16 @@ class GeneralInformation extends Component
         $defaultFields = [
             'GI-f_name' => ['label' => 'First Name', 'question_order' => '1'],
             'GI-l_name' => ['label' => 'Last Name', 'question_order' => '2'],
-            'GI-permanent_address' => ['label' => 'Permanent Address', 'question_order' => '3'],
-            'GI-email' => ['label' => 'E-mail Address', 'question_order' => '4'],
-            'GI-contact_number' => ['label' => 'Contact Number', 'question_order' => '5'],
-            'GI-sex' => ['label' => 'Sex', 'question_order' => '6'],
-            'GI-civil_status' => ['label' => 'Civil Status', 'question_order' => '7'],
-            'GI-birthdate' => ['label' => 'Birthday', 'question_order' => '8'],
-            'GI-region_of_origin' => ['label' => 'Region of Origin', 'question_order' => '9'],
-            'GI-province' => ['label' => 'Province', 'question_order' => '10'],
-            'GI-location_of_residence' => ['label' => 'Location of Residence', 'question_order' => '11'],
+            'GI-name_extension' => ['label' => 'Name Extension', 'question_order' => '3'],
+            'GI-permanent_address' => ['label' => 'Permanent Address', 'question_order' => '4'],
+            'GI-email' => ['label' => 'E-mail Address', 'question_order' => '5'],
+            'GI-contact_number' => ['label' => 'Contact Number', 'question_order' => '6'],
+            'GI-sex' => ['label' => 'Sex', 'question_order' => '7'],
+            'GI-civil_status' => ['label' => 'Civil Status', 'question_order' => '8'],
+            'GI-birthdate' => ['label' => 'Birthday', 'question_order' => '9'],
+            'GI-region_of_origin' => ['label' => 'Region of Origin', 'question_order' => '10'],
+            'GI-province' => ['label' => 'Province', 'question_order' => '11'],
+            'GI-location_of_residence' => ['label' => 'Location of Residence', 'question_order' => '12'],
         ];
 
         // Initialize the visibility of question to false

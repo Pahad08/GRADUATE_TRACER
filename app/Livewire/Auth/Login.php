@@ -2,10 +2,11 @@
 
 namespace App\Livewire\Auth;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class Login extends Component
@@ -41,15 +42,30 @@ class Login extends Component
 
         $credentials = $this->validate();
 
+        //create a new admin user if no users exist
+        if (User::count() === 0) {
+            $new_admin = User::create([
+                'username' => $this->username,
+                'password' => Hash::make($this->password),
+            ]);
+
+            $new_admin->is_admin = true;
+            $new_admin->save();
+            Auth::login($new_admin);
+            RateLimiter::clear($throttleKey);
+            $request->session()->regenerate();
+            return $this->redirectIntended('/graduates', navigate: true);
+        }
+
         if (!Auth::attempt($credentials)) {
             RateLimiter::increment($throttleKey);
-            return $this->addError('invalid_credentials', 'Invalid email or password.');
+            return $this->addError('invalid_credentials', 'Invalid username or password.');
         }
 
         RateLimiter::clear($throttleKey);
         $request->session()->regenerate();
 
-        if (Auth::user()->hei_id !== null) {
+        if (!Auth::user()->is_admin) {
             return $this->redirectIntended('/home', navigate: true);
         }
 

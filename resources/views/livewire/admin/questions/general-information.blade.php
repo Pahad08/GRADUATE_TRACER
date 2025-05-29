@@ -1,7 +1,7 @@
 <div class="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3" wire:sortable="updateOrder"
     wire:sortable.options="{ animation: 100 }">
     @foreach ($labels as $key => $label)
-        <div class="card bg-base-100 border-1 border-base-300 shadow-md"
+        <div class="card bg-base-100 border-base-300 border-1 shadow-sm"
             @if ($label["is_visible"]) wire:sortable.item="{{ $key }}" @endif
             wire:key="question-{{ $label["question_order"] }}">
             <div class="absolute right-3 top-3 flex items-center space-x-2">

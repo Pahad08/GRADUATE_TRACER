@@ -1,13 +1,13 @@
-<div>
+<div class="p-5">
     @if (count($educational_backgrounds) > 0)
         <div class="flex flex-col gap-3">
-            <div class="card border-1 border-base-300 bg-base-100 shadow-sm">
+            <div class="card bg-base-100 border-base-300 border shadow-sm">
                 <div class="card-body p-4">
                     <h3 class="text-neutral font-bold">Baccalaureate Degree</h3>
                     <div class="overflow-x-auto">
                         <table class="table">
                             <thead>
-                                <tr>
+                                <tr class="border-base-300">
                                     <th class="whitespace-nowrap">Degree & Specialization</th>
                                     <th class="whitespace-nowrap">College/University</th>
                                     <th class="whitespace-nowrap">Year Graduated</th>
@@ -17,26 +17,21 @@
                             <tbody>
                                 @foreach ($educational_backgrounds as $background)
                                     <tr>
-                                        <td class="whitespace-nowrap">{{ $background->degree->degree_name }}</td>
-                                        <td class="whitespace-nowrap">{{ $background->hei->hei_name }}
+                                        <td class="whitespace-nowrap">
+                                            {{ ucfirst($background->degree ?? "Error fetching data") }}
                                         </td>
-                                        <td class="whitespace-nowrap">{{ $background->year_graduated }}</td>
+                                        <td class="whitespace-nowrap">
+                                            {{ ucfirst($background->hei ?? "Error fetching data") }}
+                                        </td>
+                                        <td class="whitespace-nowrap">
+                                            {{ $background->academicYear->academicYear ?? "" }}</td>
                                         <td class="flex gap-2 whitespace-nowrap">
-                                            @php
-                                                $colors = [
-                                                    "primary",
-                                                    "secondary",
-                                                    "accent",
-                                                    "info",
-                                                    "success",
-                                                    "warning",
-                                                    "error",
-                                                ];
-                                            @endphp
-                                            @foreach ($background->honor as $honor)
-                                                <span
-                                                    class="badge badge-sm badge-{{ $colors[array_rand($colors)] }} badge-neutral">{{ $honor->honor }}</span>
-                                            @endforeach
+                                            @if ($background->honor)
+                                                @foreach ($background->honor as $honor)
+                                                    <span
+                                                        class="badge badge-sm badge-soft">{{ ucfirst($honor->honor) }}</span>
+                                                @endforeach
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -50,15 +45,15 @@
 
     <div @class([
         "flex flex-col gap-3",
-        "mt-3" => count($educational_backgrounds) > 0,
+        "mt-5" => count($educational_backgrounds) > 0,
     ])>
-        <div class="card border-1 border-base-300 bg-base-100 shadow-sm">
+        <div class="card bg-base-100 border-base-300 border shadow-sm">
             <div class="card-body p-4">
                 <h3 class="text-neutral font-bold">Training/Advance Studies</h3>
                 <div class="overflow-x-auto">
                     <table class="table">
                         <thead>
-                            <tr>
+                            <tr class="border-base-300">
                                 <th class="whitespace-nowrap">Examination Name</th>
                                 <th class="whitespace-nowrap">Date Taken</th>
                                 <th class="whitespace-nowrap">Rating</th>
@@ -68,12 +63,12 @@
                             @foreach ($examinations as $key => $examination)
                                 <tr>
                                     <td class="whitespace-nowrap">
-                                        {{ $examination->name_of_examination }}
+                                        {{ ucfirst($examination->name_of_examination) }}
                                     </td>
                                     <td class="whitespace-nowrap">
                                         {{ $examination->date_taken }}</td>
                                     <td class="whitespace-nowrap">
-                                        {{ $examination->rating }}</td>
+                                        {{ ucfirst($examination->rating) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -83,7 +78,7 @@
         </div>
     </div>
 
-    <div class="card border-1 border-base-300 bg-base-100 mt-6 shadow-sm">
+    <div class="card bg-base-100 border-base-300 mt-5 border shadow-sm">
         <div class="card-body p-4">
             <h3 class="text-neutral font-bold">Reasons for taking the course or pursuing degree</h3>
             <div class="grid gap-3 overflow-x-auto md:grid-cols-2">
@@ -96,7 +91,7 @@
                         <p class="text-base-content mb-2 text-sm font-semibold opacity-70">Undergraduates</p>
                         <ul class="list-inside list-disc">
                             @foreach ($undergraduate_reasons as $reason)
-                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $reason->reason }}</li>
+                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ ucfirst($reason->reason) }}</li>
                             @endforeach
                         </ul>
                     </div>
@@ -107,7 +102,7 @@
                         <p class="text-base-content mb-2 text-sm font-semibold">Graduates</p>
                         <ul class="list-inside list-disc">
                             @foreach ($graduate_reasons as $reason)
-                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $reason->reason }}</li>
+                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ ucfirst($reason->reason) }}</li>
                             @endforeach
                         </ul>
                     </div>
@@ -120,12 +115,12 @@
         <div class="divider text-neutral-content text-xs"><span class="text-neutral">Additional Information</span>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
             @foreach ($custom_question_responses as $response)
                 <div>
                     <span
                         class="text-neutral mb-2 text-sm font-bold">{{ ucfirst($response->customQuestion->label) }}:</span>
-                    <p class="text-sm">{{ $response->response_value }}</p>
+                    <p class="text-sm">{{ ucfirst($response->response_value) }}</p>
                 </div>
             @endforeach
         </div>

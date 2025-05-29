@@ -2,22 +2,21 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable;
 
     protected $primaryKey = 'user_id';
 
     protected $fillable = [
         'username',
         'password',
-        'hei_id'
+        'inst_name',
+        'inst_id'
     ];
 
     protected $hidden = [
@@ -29,10 +28,5 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
         ];
-    }
-
-    public function hei()
-    {
-        return $this->belongsTo(HEI::class, 'hei_id');
     }
 }

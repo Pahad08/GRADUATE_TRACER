@@ -14,14 +14,14 @@ class EducationalBackground extends Model
     protected $primaryKey = 'educational_background_id';
     protected $guarded = ['educational_background_id', 'deleted_at', 'created_at', 'updated_at'];
 
-    public function degree(): BelongsTo
+    public function academicYear(): BelongsTo
     {
-        return $this->belongsTo(Degree::class, 'degree_id');
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
     }
 
-    public function hei(): BelongsTo
+    public function graduates(): BelongsTo
     {
-        return $this->belongsTo(HEI::class, 'hei_id');
+        return $this->belongsTo(Graduate::class, 'graduate_id');
     }
 
     public function honor()

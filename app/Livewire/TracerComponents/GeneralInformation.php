@@ -4,9 +4,7 @@ namespace App\Livewire\TracerComponents;
 
 use App\Livewire\Forms\GeneralInformationForm;
 use Livewire\Component;
-use App\Models\Province;
 use App\Models\QuestionVisibility;
-use App\Models\Region;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -15,10 +13,11 @@ use Illuminate\Support\Str;
 
 class GeneralInformation extends Component
 {
-    public $civil_status_selection = ['single', 'married', 'separated', 'widow or widower', 'single parent'];
+    public $civil_status_selection;
     public GeneralInformationForm $form;
     public $name = '';
     public $activeTab;
+    public $provinces;
 
     #[On('form-submitted')]
     public function generalInformationValidated()
@@ -47,6 +46,7 @@ class GeneralInformation extends Component
             $this->dispatch('general-information-error', [
                 'general_information_tab' => 'tracer-components.general-information',
             ]);
+            $this->dispatch('form-error');
         }
     }
 
@@ -90,6 +90,13 @@ class GeneralInformation extends Component
 
             return [$key => $value];
         })->toArray();
+        $this->civil_status_selection = ['single', 'married', 'separated', 'widow or widower', 'single parent'];
+        $this->provinces = [
+            'SULTAN KUDARAT',
+            'SOUTH COTABATO',
+            'SARANGANI',
+            'COTABATO',
+        ];
     }
 
     public function render()

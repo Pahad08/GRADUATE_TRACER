@@ -20,6 +20,7 @@ return new class extends Migration
                 $table->string('question_key', 100)->unique()->nullable();
                 $table->integer('question_order')->nullable();
                 $table->boolean('is_visible')->default('1');
+                $table->softDeletes();
                 $table->timestamps();
             }
         );

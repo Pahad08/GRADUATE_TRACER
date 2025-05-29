@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -50,16 +49,6 @@ class Graduate extends Model
     public function response(): HasMany
     {
         return $this->hasMany(Response::class, 'graduate_id');
-    }
-
-    public function region(): BelongsTo
-    {
-        return $this->belongsTo(Region::class, 'region_id');
-    }
-
-    public function province(): BelongsTo
-    {
-        return $this->belongsTo(Province::class, 'province_id');
     }
 
     //return the first letter of the first name in uppercase

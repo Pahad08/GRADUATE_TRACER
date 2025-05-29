@@ -12,63 +12,46 @@ use Livewire\Attributes\Title;
 
 class TrackingForm extends Component
 {
-    public $civil_status_selection = ['single', 'married', 'separated', 'widow or widower', 'single parent'];
-    public $childComponents = [
-        'tracer-components.general-information' => [
-            'icon' => 'fa-user',
-            'title' => 'General Information',
-        ],
-        'tracer-components.educational-background' => [
-            'icon' => 'fa-user-graduate',
-            'title' => 'Educational Background',
-        ],
-        'tracer-components.studies-information' => [
-            'icon' => 'fa-certificate',
-            'title' => 'Training/Advance Studies',
-        ],
-        'tracer-components.employment-data' => [
-            'icon' => 'fa-user-tie',
-            'title' => 'Employment Data',
-        ]
-    ];
-    protected $eventCompletion = 0;
-    protected $totalEvents = 4;
-    protected $validated_data = [];
+    public $civil_status_selection;
+    public $childComponents;
+    protected $event_submission_count = 0;
+    protected $total_submission_events = 4;
+    protected $validated_data;
 
     #[On('validated-general-information')]
     public function general_information_validated($general_information)
     {
         $this->validated_data['general_information'] = $general_information;
-        $this->checkCompletion();
+        $this->checkInformationSubmission();
     }
 
     #[On('validated-education-background')]
     public function educational_background_validated($educational_background)
     {
         $this->validated_data['educational_background'] = $educational_background;
-        $this->checkCompletion();
+        $this->checkInformationSubmission();
     }
 
     #[On('validated-studies-information')]
     public function studies_information_validated($studies_information)
     {
         $this->validated_data['studies_information'] = $studies_information;
-        $this->checkCompletion();
+        $this->checkInformationSubmission();
     }
 
     #[On('validated-employment-data')]
     public function employment_data_validated($employment_data)
     {
         $this->validated_data['employment_data'] = $employment_data;
-        $this->checkCompletion();
+        $this->checkInformationSubmission();
     }
 
     //check if all of the events are finished
-    private function checkCompletion()
+    private function checkInformationSubmission()
     {
-        $this->eventCompletion++;
+        $this->event_submission_count++;
 
-        if ($this->eventCompletion === $this->totalEvents) {
+        if ($this->event_submission_count == $this->total_submission_events) {
             $this->insertGraduates();
         }
     }
@@ -122,9 +105,9 @@ class TrackingForm extends Component
     protected function checkEducationalAttainment($educational_background)
     {
         $is_empty = empty(array_filter([
-            $educational_background['degree_id'],
-            $educational_background['hei_id'],
-            $educational_background['year_graduated']
+            $educational_background['degree'],
+            $educational_background['hei'],
+            $educational_background['academic_year_id']
         ]));
 
         return $is_empty;
@@ -161,14 +144,15 @@ class TrackingForm extends Component
             $graduates = [
                 'f_name' => $general_information['f_name'],
                 'l_name' => $general_information['l_name'],
+                'name_extension' => $general_information['name_extension'],
                 'permanent_address' => $general_information['permanent_address'],
                 'email_address' => $general_information['email_address'],
                 'contact_number' => $general_information['contact_number'],
                 'sex' => $general_information['sex'],
                 'civil_status' => $general_information['civil_status'],
                 'birthdate' => $general_information['birthdate'],
-                'region_id' => $general_information['region'],
-                'province_id' => $general_information['province'],
+                'region' => $general_information['region'],
+                'province' => $general_information['province'],
                 'location_of_residence' => $general_information['location_of_residence'],
             ];
 
@@ -195,9 +179,9 @@ class TrackingForm extends Component
             //add the educational background of the graduate
             foreach ($educational_background['educational_attainment'] as $key => $value) {
                 $educational_background_to_add = [];
-                $educational_background_to_add['degree_id'] = $value['degree_id'];
-                $educational_background_to_add['hei_id'] = $value['hei_id'];
-                $educational_background_to_add['year_graduated'] = $value['year_graduated'];
+                $educational_background_to_add['degree'] = $value['degree'];
+                $educational_background_to_add['hei'] = $value['hei'];
+                $educational_background_to_add['academic_year_id'] = $value['academic_year_id'];
 
                 if (!$this->checkEducationalAttainment($educational_background_to_add)) {
                     $new_educational_background = $new_graduate->educationalBackground()->create($educational_background_to_add);
@@ -219,7 +203,6 @@ class TrackingForm extends Component
                 $new_graduate->professionalExamination()->createMany($educational_background['professional_examination']);
             }
 
-
             //add the reasons for course of the graduate
             if (!empty($reason_for_undergraduates)) {
                 $new_graduate->reasonForCourse()->createMany($reason_for_undergraduates);
@@ -230,14 +213,14 @@ class TrackingForm extends Component
             }
 
             //add the trainings of the graduate
-            if (count($educational_background['professional_examination']) > 1) {
+            if (count($studies_information['trainings']) > 1) {
                 //remove index 0 from the array
                 array_shift($studies_information['trainings']);
                 $new_graduate->training()->createMany($studies_information['trainings']);
-            }
 
-            //add the reason for pursuing the study of the graduate
-            $new_graduate->reason()->createMany($reason_for_study);
+                //add the reason for pursuing the study of the graduate
+                $new_graduate->reason()->createMany($reason_for_study);
+            }
 
             //add the employment status of the graduate
             $employment_status = $new_graduate->employmentStatus()->create(['is_employed' => $employment_data['is_employed']]);
@@ -315,8 +298,32 @@ class TrackingForm extends Component
             $this->dispatch('graduate-created', message: 'Graduate created successfully.');
         });
 
-        $this->totalEvents = 0;
-        $this->eventCompletion = 0;
+        $this->total_submission_events = 0;
+        $this->event_submission_count = 0;
+        $this->validated_data = [];
+    }
+
+    public function mount()
+    {
+        $this->civil_status_selection = ['single', 'married', 'separated', 'widow or widower', 'single parent'];
+        $this->childComponents = [
+            'tracer-components.general-information' => [
+                'icon' => 'fa-user',
+                'title' => 'General Information',
+            ],
+            'tracer-components.educational-background' => [
+                'icon' => 'fa-user-graduate',
+                'title' => 'Educational Background',
+            ],
+            'tracer-components.studies-information' => [
+                'icon' => 'fa-certificate',
+                'title' => 'Training/Advance Studies',
+            ],
+            'tracer-components.employment-data' => [
+                'icon' => 'fa-user-tie',
+                'title' => 'Employment Data',
+            ]
+        ];
         $this->validated_data = [];
     }
 

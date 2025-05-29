@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('custom_questions', function (Blueprint $table) {
             $table->integer('custom_question_id')->autoIncrement();
             $table->primary('custom_question_id');
-            $table->integer('question_id');
-            $table->foreign('question_id')->references('question_id')->on('question_visibility')->cascadeOnDelete();
+            $table->integer('question_id')->nullable();
+            $table->foreign('question_id')->references('question_id')->on('question_visibility')->nullOnDelete();
             $table->string('type', length: 100);
             $table->string('label', length: 100);
             $table->boolean('has_child');

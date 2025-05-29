@@ -33,12 +33,13 @@
                         Add question</label>
                 </div>
 
-                <div class="bg-secondary mt-2 w-full overflow-x-auto whitespace-nowrap rounded-t px-3 py-2">
+                <div
+                    class="bg-base-300 border-base-300 mt-2 w-full overflow-x-auto whitespace-nowrap rounded-t border border-b-0 px-3 py-2">
                     <div>
                         @foreach ($sections as $key => $section)
                             <a role="tab" class="tab font-semibold"
                                 :class="{
-                                    'text-base-100!': active == '{{ $key }}',
+                                    'text-base-content!': active == '{{ $key }}',
                                 }"
                                 x-on:click="active = '{{ $key }}'" wire:key='{{ $key }}'><i
                                     class="fa-solid {{ $section["icon"] }}"></i>&nbsp;{{ $section["title"] }}</a>
@@ -46,7 +47,7 @@
                     </div>
                 </div>
 
-                <div class="border-1 border-base-300 rounded-b bg-white shadow-md">
+                <div class="border-base-300 bg-base-100 rounded-b border shadow-md">
                     <div class="overflow-x-auto">
                         @foreach ($sections as $key => $sec)
                             <div class="card" wire:cloak x-show="active === '{{ $key }}'"
@@ -189,11 +190,11 @@
         x-on:set-question-to-remove.window="key = event.detail;">
         <div class="modal-box">
             <h3 class="text-lg font-bold">Confirm Deletion</h3>
-            <p class="py-4">Are you sure you want to delete this question?</p>
+            <p class="py-4 text-sm">Are you sure you want to delete this question?</p>
             <div class="modal-action">
-                <label for="remove-question" class="btn">Close</label>
+                <label for="remove-question" class="btn btn-sm">Close</label>
 
-                <button class="btn btn-error text-white" wire:loading.attr='disabled'
+                <button class="btn btn-error btn-sm text-white" wire:loading.attr='disabled'
                     wire:click='removeQuestion(key)'>
                     Yes, Delete
                 </button>

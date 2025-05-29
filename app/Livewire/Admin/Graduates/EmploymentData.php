@@ -21,7 +21,7 @@ class EmploymentData extends Component
         $this->graduate_reasons = $graduate->reason ?? null;
         $this->job_details = $graduate->employmentStatus->employmentDetails->jobDetails ?? null;
         $this->custom_question_responses = $graduate->response->filter(function ($response) {
-            return optional($response->customQuestion->questionVisibility)->section_name === 'EMPLOYMENT_DATA';
+            return optional($response->customQuestion->responsesWithTrashed)->section_name === 'EMPLOYMENT_DATA';
         });
     }
 

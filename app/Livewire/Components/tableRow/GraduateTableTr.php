@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Components\tableRow;
+namespace App\Livewire\Components\TableRow;
 
 use Livewire\Attributes\Lazy;
 use Livewire\Component;

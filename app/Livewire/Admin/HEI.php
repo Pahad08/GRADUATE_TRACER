@@ -14,25 +14,21 @@ class HEI extends Component
     use WithPagination, WithoutUrlPagination;
 
     public $search = '';
-    public $only_deleted = '';
     public $hei_search = '';
     public $hei_form_search = '';
     public $hei_results = [];
     public $hei_form_results = [];
     public $selected_hei = '';
     public $table_length = 10;
-    public $username = '';
     public $edit_username = '';
     public $account_id = '';
     public $password = '';
-    public $selected_form_hei = '';
+    public $inst_code = '';
+    public $inst_name = '';
 
     protected function isAuthorize()
     {
-        if (Auth::user()->hei_id !== null) {
-            abort(401);
-            return;
-        }
+        return Auth::user()->is_admin;
     }
 
     public function updated($name = '', $value = '')
@@ -49,31 +45,65 @@ class HEI extends Component
         $this->resetValidation();
     }
 
+    protected function generateAcronym($string, $skipWords = ['of', '&', 'and'])
+    {
+
+        $string = str_replace(',', '', $string);
+
+        if (strpos($string, '-') !== false) {
+            [$main, $suffix] = array_map('trim', explode('-', $string, 2));
+        } else {
+            $main = $string;
+            $suffix = null;
+        }
+
+        $words = preg_split('/\s+/', $main);
+        $acronym = '';
+
+        foreach ($words as $word) {
+            if (!in_array(strtolower($word), $skipWords) && !empty($word)) {
+                $acronym .= strtoupper($word[0]);
+            }
+        }
+
+        return $suffix ? $acronym . '-' . strtoupper($suffix) : $acronym;
+    }
+
     public function addHeiAccount()
     {
-        $this->isAuthorize();
+        if (!$this->isAuthorize()) {
+            abort(403);
+            return;
+        }
 
         $rules = [
-            'username' => 'required',
-            'selected_form_hei' => 'required|exists:hei,hei_id'
+            'inst_code' => 'required|unique:users,inst_id'
         ];
 
-        $validated = $this->validate($rules);
+        $message = [
+            'inst_code.required' => 'HEI field is required.'
+        ];
+
+        $validated = $this->validate($rules, $message);
 
         User::create([
-            'username' => $validated['username'],
-            'hei_id' => $validated['selected_form_hei'],
-            'password' => Hash::make('12345')
+            'username' => $this->generateAcronym($this->inst_name),
+            'inst_name' => $this->inst_name,
+            'inst_id' => $validated['inst_code'],
+            'password' => Hash::make('chedro12')
         ]);
 
         $this->dispatch('account-created', 'Account created!');
 
-        $this->reset('username', 'selected_form_hei');
+        $this->reset(['inst_code', 'inst_name']);
     }
 
     public function editHEIAccount()
     {
-        $this->isAuthorize();
+        if (! $this->isAuthorize()) {
+            abort(403);
+            return;
+        }
 
         $rules = [
             'account_id' => 'required|exists:users,user_id',
@@ -87,6 +117,7 @@ class HEI extends Component
         ];
 
         $validated = $this->validate($rules, $message);
+
         $validated['username'] = $validated['edit_username'];
         $id = $validated['account_id'];
         unset($validated['account_id']);
@@ -95,67 +126,55 @@ class HEI extends Component
         if (empty($validated['password'])) {
             unset($validated['password']);
         }
+        $validated['password'] = Hash::make($validated['password']);
 
         User::where('user_id', $id)->update($validated);
-
+        $this->reset('password');
         $this->dispatch('account-updated', 'HEI account updated!');
     }
 
     public function deleteAccount($account_id)
     {
-        $this->isAuthorize();
+        if (! $this->isAuthorize()) {
+            abort(403);
+            return;
+        }
 
         $account_id = decrypt($account_id);
-        $account = User::withTrashed()->findOrFail($account_id);
+        $account = User::find($account_id);
 
-        if (empty($account->hei_id)) {
+        if (empty($account->inst_id)) {
             $this->dispatch('account-delete-fail', 'Account is invalid.');
             return;
         }
 
-        if ($account->trashed()) {
-            $account->forceDelete();
-        } else {
-            $account->delete();
-        }
+        $account->delete();
         $this->dispatch('account-removed', 'Account removed successfully.');
     }
 
-    public function restoreAccount($account_id)
+    public function closeModal()
     {
-        $this->isAuthorize();
-
-        $account_id = decrypt($account_id);
-        $account = User::withTrashed()->findOrFail($account_id);
-        if (!$account->trashed()) {
-            $this->dispatch('account-restored', 'Account is not deleted.');
-            return;
-        }
-        $account->restore();
-        $this->dispatch('account-restored', 'Account restored successfully.');
+        $this->updateEditInputs('', '');
+        $this->dispatch('modal-close');
     }
 
     public function render()
     {
-        $accounts = User::with('hei:hei_id,hei_name')
-            ->whereNotNull('hei_id')
+        $accounts = User::whereNotNull('inst_name')
+            ->whereNotNull('inst_id')
+            ->where('is_admin', 0)
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->whereLike('username', "%{$this->search}%")
-                        ->orWhereHas('hei', function ($hei) {
-                            $hei->whereLike('hei_name', "%{$this->search}%");
-                        });
+                        ->orwhereLike('inst_name', "%{$this->search}%");
                 });
-            })->when($this->only_deleted, function ($query) {
-                $query->onlyTrashed();
-            })
-            ->when($this->selected_hei, function ($query) {
-                $query->whereHas('hei', function ($q) {
-                    $q->where('hei_id', $this->selected_hei);
-                });
-            })
-            ->paginate($this->table_length);
+            })->when($this->selected_hei, function ($query) {
+                $query->where('inst_name', $this->selected_hei);
+            })->paginate($this->table_length);
 
-        return view('livewire.admin.HEI', ['accounts' => $accounts]);
+        return view(
+            'livewire.admin.HEI',
+            ['accounts' => $accounts]
+        );
     }
 }

@@ -20,10 +20,6 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
-
-        Schema::table('educational_backgrounds', function (Blueprint $table) {
-            // $table->dropColumn('honor');
-        });
     }
 
     /**

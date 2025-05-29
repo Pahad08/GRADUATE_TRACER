@@ -16,12 +16,9 @@ return new class extends Migration
             $table->primary('educational_background_id');
             $table->integer('graduate_id')->nullable();
             $table->foreign('graduate_id')->references('graduate_id')->on('graduates')->cascadeOnDelete();
-            $table->integer('degree_id')->nullable();
-            $table->foreign('degree_id')->references('degree_id')->on('degrees')->cascadeOnDelete();
-            $table->integer('hei_id')->nullable();
-            $table->foreign('hei_id')->references('hei_id')->on('hei')->cascadeOnDelete();
+            $table->string('degree', length: 100)->nullable();
+            $table->string('hei', length: 100)->nullable();
             $table->year('year_graduated')->nullable()->index();
-            $table->string('honor', length: 100)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -63,12 +63,19 @@ class StudiesInformation extends Component
         $training_rules = [];
         $rules = [];
 
-        if (empty($this->reasons_for_study['input']) && empty($this->reasons_for_study['checkboxes'])) {
-            $rules["reasons_for_study.checkboxes.*"] = 'sometimes|required';
-            $rules["reasons_for_study.input"] = 'sometimes|required';
-        }
+        if (count($this->trainings) > 1) {
+            if (empty($this->reasons_for_study['input']) && empty($this->reasons_for_study['checkboxes'])) {
+                $rules["reasons_for_study.checkboxes.*"] = 'sometimes|required';
+                $rules["reasons_for_study.input"] = 'sometimes|required';
+            }
 
-        if (!empty($this->reasons_for_study['checkboxes']) || !empty($this->reasons_for_study['input'])) {
+            if (!empty($this->reasons_for_study['checkboxes']) || !empty($this->reasons_for_study['input'])) {
+                $rules["reasons_for_study.checkboxes.*"] = 'nullable';
+                $rules["reasons_for_study.input"] = 'nullable';
+            }
+        } else {
+            $rules["reasons_for_study.checkboxes.*"] = 'nullable';
+            $rules["reasons_for_study.input"] = 'nullable';
             $rules["reasons_for_study.checkboxes.*"] = 'nullable';
             $rules["reasons_for_study.input"] = 'nullable';
         }
@@ -138,6 +145,8 @@ class StudiesInformation extends Component
             $this->dispatch('studies-error', [
                 'studies_tab' => 'tracer-components.studies-information',
             ]);
+
+            $this->dispatch('form-error');
         }
     }
 

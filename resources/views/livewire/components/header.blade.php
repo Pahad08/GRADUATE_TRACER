@@ -8,9 +8,8 @@
         <div>
             <span class="text-secondary-content hidden text-sm font-semibold md:inline">COMMISSION ON HIGHER EDUCATION
                 REGIONAL
-                OFFICE
-                XII</span><br class="hidden md:inline">
-            <span class="text-secondary-content text-sm font-semibold">CHED XII Graduate Tracer</span>
+                OFFICE-XII</span><br class="hidden md:inline">
+            <span class="text-secondary-content text-sm font-semibold">Graduate Tracer System</span>
         </div>
     </div>
 
@@ -18,7 +17,7 @@
         <div class="hidden md:block">
             {{-- loop the tabs --}}
             @foreach ($childComponents as $key => $component)
-                <a role="tab" class="tab font-semibold"
+                <a role="tab" class="tab font-semibold" wire:key='{{ $key }}'
                     :class="{
                         'tab-active': activeTab === '{{ $key }}',
                         'text-error! hover:text-error': errorTabs.hasOwnProperty('{{ $key }}')
@@ -32,7 +31,7 @@
             <div tabindex="0" class="tab"><i class="fa-solid fa-caret-down mr-2"></i> Sections</div>
             <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-75 p-2 shadow-sm">
                 @foreach ($childComponents as $key => $component)
-                    <a role="tab" class="tab justify-start font-semibold"
+                    <a role="tab" class="tab justify-start font-semibold" wire:key='{{ $key }}'
                         :class="{
                             'tab-active': activeTab === '{{ $key }}',
                             'text-error! hover:text-error': errorTabs.hasOwnProperty('{{ $key }}'),

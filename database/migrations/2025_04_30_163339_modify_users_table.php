@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('f_name');
-            $table->dropColumn('l_name');
-            $table->integer('hei_id')->after('username')->nullable();
-            $table->foreign('hei_id')->references('hei_id')->on('hei')->cascadeOnDelete();
+            $table->boolean('is_admin')->after('user_id')->default(0);
+            $table->string('inst_name', length: 100)->nullable()->after('username');
+            $table->string('inst_id', length: 100)->nullable()->after('inst_name');
         });
     }
 

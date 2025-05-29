@@ -14,7 +14,7 @@ class HonorSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach (range(45, 248) as $graduateId) {
+        foreach (range(1, 200) as $graduateId) {
             if (!EducationalBackground::find($graduateId)) {
                 continue;
             }

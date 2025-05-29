@@ -1,9 +1,10 @@
 <?php
 
+use App\Http\Controllers\APIController;
+use App\Livewire\Admin\AcademicYear;
 use App\Livewire\Admin\Admin;
 use App\Livewire\Admin\Graduates;
 use App\Livewire\Admin\HEI;
-use App\Livewire\Admin\HEIList;
 use App\Livewire\TracerComponents\TrackingForm;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\Questions;
@@ -21,9 +22,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin', Admin::class)->name('dashboard');
         Route::get('/questions', Questions::class);
         Route::get('/graduates', Graduates::class);
+        Route::get('/academic_years', AcademicYear::class);
         Route::get('/view_graduate/{encrypt_id}', ViewGraduate::class);
         Route::get('/hei', HEI::class);
-        Route::get('/hei_list', HEIList::class);
+        Route::get('/fetch-hei', [APIController::class, 'HEIName']);
+        Route::get('/fetch-unique-hei', [APIController::class, 'UniqueHEi']);
     });
 
     Route::get('/home', HEIAcc::class);

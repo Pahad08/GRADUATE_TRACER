@@ -1,5 +1,4 @@
-<!-- Employment Status Section -->
-<div class="card bg-base-100 border-base-300 w-full border shadow-sm">
+<div class="card w-full">
     <div class="card-body gap-0">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div class="flex items-center gap-2">
@@ -28,27 +27,27 @@
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                     <span class="text-neutral mb-2 font-bold">Present Employment Status:</span>
-                    <p>{{ $employment_data->employmentDetails->present_employment_status }}</p>
+                    <p>{{ ucfirst($employment_data->employmentDetails->present_employment_status ?? "") }}</p>
                 </div>
 
                 <div>
                     <span class="text-neutral mb-2 font-bold">Occupation:</span>
-                    <p>{{ $employment_data->employmentDetails->occupation }}</p>
+                    <p>{{ ucfirst($employment_data->employmentDetails->occupation ?? "") }}</p>
                 </div>
 
                 <div>
                     <span class="text-neutral mb-2 font-bold">Name of Company or Organization including address:</span>
-                    <p>{{ $employment_data->employmentDetails->company_name }}</p>
+                    <p>{{ ucfirst($employment_data->employmentDetails->company_name ?? "") }}</p>
                 </div>
 
                 <div>
                     <span class="text-neutral mb-2 font-bold">Major line of business of the company:</span>
-                    <p>{{ $employment_data->employmentDetails->industry }}</p>
+                    <p>{{ ucfirst($employment_data->employmentDetails->industry ?? "") }}</p>
                 </div>
 
                 <div>
                     <span class="text-neutral mb-2 font-bold">Place of work:</span>
-                    <p>{{ $employment_data->employmentDetails->work_location }}</p>
+                    <p>{{ ucfirst($employment_data->employmentDetails->work_location ?? "") }}</p>
                 </div>
 
                 <div>
@@ -73,28 +72,28 @@
                         <p class="text-neutral mb-2 font-bold">Reasons for changing job</p>
                         <ul class="list-inside list-disc">
                             @foreach ($job_change_reasons as $reason)
-                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $reason->reason }}</li>
+                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ ucfirst($reason->reason ?? "") }}</li>
                             @endforeach
                         </ul>
                     </div>
 
                     <div>
                         <span class="text-neutral mb-2 font-bold">First Job Duration:</span>
-                        <p>{{ $first_job_duration->description }}</p>
+                        <p>{{ ucfirst($first_job_duration->description ?? "") }}</p>
                     </div>
 
                     <div>
                         <p class="text-neutral mb-2 font-bold">First Job Search</p>
                         <ul class="list-inside list-disc">
                             @foreach ($first_job_method as $method)
-                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $method->description }}</li>
+                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ ucfirst($method->description ?? "") }}</li>
                             @endforeach
                         </ul>
                     </div>
 
                     <div>
                         <span class="text-neutral mb-2 font-bold">First Job Search Duration:</span>
-                        <p>{{ $first_job_search_duration->description }}</p>
+                        <p>{{ ucfirst($first_job_search_duration->description ?? "") }}</p>
                     </div>
 
                     <div>
@@ -112,7 +111,7 @@
                         <div>
                             <p class="text-neutral mb-2 font-bold">Competencies learned in college:</p>
                             @foreach ($skills as $skill)
-                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $skill->description }}</li>
+                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ ucfirst($skill->description ?? "") }}</li>
                             @endforeach
                         </div>
                     @endif
@@ -129,7 +128,7 @@
                         <p class="text-neutral mb-2 font-bold">Reasons for staying on the job</p>
                         <ul class="list-inside list-disc">
                             @foreach ($job_change_reasons as $reason)
-                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $reason->reason }}</li>
+                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ ucfirst($reason->reason ?? "") }}</li>
                             @endforeach
                         </ul>
                     </div>
@@ -148,7 +147,7 @@
                             <p class="text-neutral mb-2 font-bold">Reasons for accepting the the job</p>
                             <ul class="list-inside list-disc">
                                 @foreach ($job_acceptance_reasons as $reason)
-                                    <li @class(["text-md", "mt-1" => !$loop->first])>{{ $reason->reason }}</li>
+                                    <li @class(["text-md", "mt-1" => !$loop->first])>{{ ucfirst($reason->reason ?? "") }}</li>
                                 @endforeach
                             </ul>
                         </div>
@@ -158,14 +157,14 @@
                         <p class="text-neutral mb-2 font-bold">First Job Search</p>
                         <ul class="list-inside list-disc">
                             @foreach ($first_job_method as $method)
-                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $method->description }}</li>
+                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ ucfirst($method->description ?? "") }}</li>
                             @endforeach
                         </ul>
                     </div>
 
                     <div>
                         <span class="text-neutral mb-2 font-bold">First Job Search Duration:</span>
-                        <p>{{ $first_job_search_duration->description }}</p>
+                        <p>{{ ucfirst($first_job_search_duration->description ?? "") }}</p>
                     </div>
 
                     <div>
@@ -183,7 +182,7 @@
                         <div>
                             <p class="text-neutral mb-2 font-bold">Competencies learned in college:</p>
                             @foreach ($skills as $skill)
-                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ $skill->description }}</li>
+                                <li @class(["text-md", "mt-1" => !$loop->first])>{{ ucfirst($skill->description ?? "") }}</li>
                             @endforeach
                         </div>
                     @endif
@@ -198,12 +197,12 @@
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                     <span class="text-neutral mb-2 font-bold">First Job:</span>
-                    <p>{{ $employment_details->first_job_level }}</p>
+                    <p>{{ ucfirst($employment_details->first_job_level ?? "") }}</p>
                 </div>
 
                 <div>
                     <span class="text-neutral mb-2 font-bold">Current or Present Job:</span>
-                    <p>{{ $employment_details->current_job_level }}</p>
+                    <p>{{ ucfirst($employment_details->current_job_level ?? "") }}</p>
                 </div>
             </div>
         @else
@@ -242,7 +241,7 @@
                     <div>
                         <span
                             class="text-neutral mb-2 text-sm font-bold">{{ ucfirst($response->customQuestion->label) }}:</span>
-                        <p class="text-sm">{{ $response->response_value }}</p>
+                        <p class="text-sm">{{ ucfirst($response->response_value ?? "") }}</p>
                     </div>
                 @endforeach
             </div>

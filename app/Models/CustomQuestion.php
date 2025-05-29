@@ -23,4 +23,9 @@ class CustomQuestion extends Model
     {
         return $this->belongsTo(QuestionVisibility::class, 'question_id');
     }
+
+    public function responsesWithTrashed()
+    {
+        return $this->belongsTo(QuestionVisibility::class, 'question_id')->withTrashed();
+    }
 }

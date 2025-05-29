@@ -9,6 +9,7 @@ use Livewire\Form;
 class GeneralInformationForm extends Form
 {
     public $f_name = '';
+    public $name_extension = '';
     public $l_name = '';
     public $permanent_address = '';
     public $email_address = '';
@@ -16,7 +17,7 @@ class GeneralInformationForm extends Form
     public $sex = '';
     public $civil_status = '';
     public $birthdate = '';
-    public $region = '';
+    public $region = 'REGION 12';
     public $province = '';
     public $location_of_residence = '';
     public $custom_questions = [];
@@ -24,6 +25,12 @@ class GeneralInformationForm extends Form
     protected function rules()
     {
         $civil_status_selection = ['single', 'married', 'separated', 'widow or widower', 'single parent'];
+        $provinces = [
+            'SULTAN KUDARAT',
+            'SOUTH COTABATO',
+            'SARANGANI',
+            'COTABATO',
+        ];
 
         return [
             'f_name' => [
@@ -33,6 +40,9 @@ class GeneralInformationForm extends Form
             'l_name' => [
                 'sometimes',
                 'required',
+            ],
+            'name_extension' => [
+                'nullable',
             ],
             'permanent_address' => [
                 'sometimes',
@@ -46,6 +56,7 @@ class GeneralInformationForm extends Form
             'contact_number' => [
                 'sometimes',
                 'required',
+                'regex:/^(09|\+639)\d{9}$/'
             ],
             'sex' => [
                 'sometimes',
@@ -65,12 +76,11 @@ class GeneralInformationForm extends Form
             'region' => [
                 'sometimes',
                 'required',
-                'exists:regions,region_id'
             ],
             'province' => [
                 'sometimes',
                 'required',
-                'exists:provinces,province_id'
+                Rule::in($provinces)
             ],
             'location_of_residence' => [
                 'sometimes',
@@ -81,6 +91,26 @@ class GeneralInformationForm extends Form
                 'sometimes',
                 Rule::requiredIf(count($this->custom_questions) > 0),
             ]
+        ];
+    }
+
+    protected function messages()
+    {
+        return [
+            'f_name.required' => 'The First name are required.',
+            'l_name.required' => 'The Last name is required.',
+            'permanent_address.required' => 'The Permanent address is required.',
+            'email_address.required' => 'The Email address is required.',
+            'email_address.email' => 'The Email address must be a valid email address.',
+            'contact_number.required' => 'The Contact number is required.',
+            'contact_number.regex' => 'The Contact number must be a valid mobile number.',
+            'sex.required' => 'The Sex is required.',
+            'civil_status.required' => 'The Civil status is required.',
+            'birthdate.required' => 'The Birthdate is required.',
+            'region.required' => 'The Region is required.',
+            'province.required' => 'The Province is required.',
+            'location_of_residence.required' => 'The Location of residence is required.',
+            'custom_questions.*.required' => 'The :attribute is required.',
         ];
     }
 }

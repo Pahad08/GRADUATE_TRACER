@@ -1,7 +1,7 @@
 <div class="flex min-h-screen items-center justify-center px-4">
-    <div class="card w-full max-w-md bg-white shadow-sm">
+    <div class="card bg-base-200 border-base-300 w-full max-w-md border shadow-md">
         <div class="card-body">
-            <div class="mb-6 flex items-center gap-4">
+            <div class="mb-4 flex items-center gap-4">
                 <img src="{{ asset("images/logo.png") }}" alt="Company Logo" class="h-16 w-16 object-contain" />
                 <div>
                     <h2 class="text-xl font-bold uppercase">Login</h2>
@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="form-control mt-4">
-                    <button type="submit" class="btn btn-primary w-full" wire:loading.attr="disabled">
+                    <button type="submit" class="btn btn-primary w-full">
                         <i class="fa-solid fa-right-to-bracket mr-2"></i> Login
                     </button>
                 </div>

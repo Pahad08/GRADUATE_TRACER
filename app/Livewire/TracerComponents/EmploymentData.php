@@ -117,7 +117,8 @@ class EmploymentData extends Component
         "Critical Thinking skills"
     ];
 
-    public function save()
+    #[On('form-submitted')]
+    public function employmentDataValidated()
     {
         try {
             $this->validate();
@@ -142,6 +143,8 @@ class EmploymentData extends Component
             $this->dispatch('employment-data-error', [
                 'employment_data_tab' => 'tracer-components.employment-data',
             ]);
+
+            $this->dispatch('form-error');
         }
     }
 

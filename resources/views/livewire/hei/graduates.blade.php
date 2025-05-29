@@ -22,12 +22,11 @@
                 </div>
 
                 <div class="mt-2 rounded-lg shadow-md">
-                    <div
-                        class="bg-secondary text-secondary-content flex items-center justify-between rounded-t-lg px-4 py-3">
+                    <div class="bg-base-300 text-base-content flex items-center justify-between rounded-t-lg px-4 py-3">
                         <h2 class="text-lg font-semibold">Graduates</h2>
                     </div>
 
-                    <div class="bg-base-100 rounded-b-lg">
+                    <div class="bg-base-100 border-base-300 rounded-b-lg border">
                         <div class="flex flex-col justify-between gap-2 p-4 md:flex-row md:items-center">
                             <div class="join">
                                 <input wire:model.live.debounce.250ms='search' type="text"
@@ -39,6 +38,14 @@
                             </div>
 
                             <div class="flex items-center gap-2">
+
+                                <select wire:model.live='academic_year' class="select select-sm w-full">
+                                    <option value="">Academic Year</option>
+                                    @foreach ($academic_years as $y)
+                                        <option value="{{ $y->academic_year_id }}">
+                                            {{ $y->start_year . "-" . $y->end_year }}</option>
+                                    @endforeach
+                                </select>
 
                                 <select wire:model.live='degree_level' class="select select-sm w-full">
                                     <option value="">Graduate Type</option>
@@ -58,16 +65,33 @@
                             <table class="table">
                                 <thead>
                                     <tr class="bg-neutral-content">
-                                        <th class="whitespace-nowrap">First Name</th>
-                                        <th class="whitespace-nowrap">Last Name</th>
+                                        <th class="cursor-pointer whitespace-nowrap"
+                                            wire:click='sortGraduates("f_name")'><span>First Name <i
+                                                    wire:show='order_by == "f_name"'
+                                                    class="fa-solid fa-sort-up"></i></span></th>
+                                        <th class="cursor-pointer whitespace-nowrap"
+                                            wire:click='sortGraduates("l_name")'>Last Name <i
+                                                wire:show='order_by == "l_name"' class="fa-solid fa-sort-up"></i></th>
                                         <th class="whitespace-nowrap">Permanent Address</th>
-                                        <th class="whitespace-nowrap">Email Address</th>
+                                        <th class="cursor-pointer whitespace-nowrap"
+                                            wire:click='sortGraduates("email_address")'>Email Address <i
+                                                wire:show='order_by == "email_address"' class="fa-solid fa-sort-up"></i>
+                                        </th>
                                         <th class="whitespace-nowrap">Contact Number</th>
-                                        <th class="whitespace-nowrap">Civil Status</th>
+                                        <th class="cursor-pointer whitespace-nowrap"
+                                            wire:click='sortGraduates("civil_status")'>Civil Status <i
+                                                wire:show='order_by == "civil_status"' class="fa-solid fa-sort-up"></i>
+                                        </th>
                                         <th class="whitespace-nowrap">Sex</th>
-                                        <th class="whitespace-nowrap">Birthday</th>
+                                        <th class="cursor-pointer whitespace-nowrap"
+                                            wire:click='sortGraduates("birthdate")'>Birthday <i
+                                                wire:show='order_by == "birthdate"' class="fa-solid fa-sort-up"></i>
+                                        </th>
                                         <th class="whitespace-nowrap">Region</th>
-                                        <th class="whitespace-nowrap">Province</th>
+                                        <th class="cursor-pointer whitespace-nowrap"
+                                            wire:click='sortGraduates("province_name")'>Province <i
+                                                wire:show='order_by == "province_name"' class="fa-solid fa-sort-up"></i>
+                                        </th>
                                         <th class="whitespace-nowrap">Location of Residence</th>
                                         <th class="whitespace-nowrap text-center">Action</th>
                                     </tr>

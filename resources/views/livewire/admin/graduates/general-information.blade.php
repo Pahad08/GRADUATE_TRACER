@@ -1,7 +1,9 @@
-<div class="card bg-base-100 border-base-300 w-full border shadow-sm">
+<div class="card w-full">
     <div class="card-body gap-0">
         <div>
-            <h2 class="card-title text-2xl">{{ $graduate->f_name ?? "" }} {{ $graduate->l_name }}</h2>
+            <h2 class="card-title text-2xl">{{ ucfirst($graduate->f_name ?? "") }} {{ ucfirst($graduate->l_name ?? "") }}
+                {{ ucfirst($graduate->name_extension ?? "") }}
+            </h2>
         </div>
 
         <div class="divider text-neutral-content text-xs"><span class="text-neutral">Personal Information</span></div>
@@ -9,11 +11,11 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
                 <span class="text-neutral mb-2 font-bold">Sex:</span>
-                <p>{{ $graduate->sex }}</p>
+                <p>{{ ucfirst($graduate->sex ?? "") }}</p>
             </div>
             <div>
                 <span class="text-neutral mb-2 font-bold">Civil Status:</span>
-                <p>{{ $graduate->civil_status }}</p>
+                <p>{{ ucfirst($graduate->civil_status ?? "") }}</p>
             </div>
             <div>
                 <span class="text-neutral mb-2 font-bold">Birthday:</span>
@@ -26,19 +28,19 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
                 <span class="text-neutral mb-2 font-bold">Permanent Address:</span>
-                <p>{{ $graduate->permanent_address }}</p>
+                <p>{{ ucfirst($graduate->permanent_address ?? "") }}</p>
             </div>
             <div>
                 <span class="text-neutral mb-2 font-bold">Location of Residence:</span>
-                <p>{{ $graduate->location_of_residence }}</p>
+                <p>{{ ucfirst($graduate->location_of_residence ?? "") }}</p>
             </div>
             <div>
                 <span class="text-neutral mb-2 font-bold">Region:</span>
-                <p>{{ $graduate->region->region_name ?? "-" }}</p>
+                <p>{{ ucfirst($graduate->region ?? "-") }}</p>
             </div>
             <div>
                 <span class="text-neutral mb-2 font-bold">Province:</span>
-                <p>{{ $graduate->province->province_name ?? "-" }}</p>
+                <p>{{ ucfirst($graduate->province ?? "-") }}</p>
             </div>
         </div>
 
@@ -47,11 +49,11 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
                 <span class="text-neutral mb-2 font-bold">Email Address:</span>
-                <p>{{ $graduate->email_address }}</p>
+                <p>{{ ucfirst($graduate->email_address ?? "") }}</p>
             </div>
             <div>
                 <span class="text-neutral mb-2 font-bold">Contact Number:</span>
-                <p>{{ $graduate->contact_number }}</p>
+                <p>{{ ucfirst($graduate->contact_number ?? "") }}</p>
             </div>
         </div>
 
@@ -63,8 +65,8 @@
                 @foreach ($custom_question_responses as $response)
                     <div>
                         <span
-                            class="text-neutral mb-2 font-bold">{{ ucfirst($response->customQuestion->label) }}:</span>
-                        <p>{{ $response->response_value }}</p>
+                            class="text-neutral mb-2 font-bold">{{ ucfirst($response->customQuestion->label ?? "") }}:</span>
+                        <p>{{ ucfirst($response->response_value) }}</p>
                     </div>
                 @endforeach
             </div>
