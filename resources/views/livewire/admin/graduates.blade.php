@@ -188,7 +188,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($graduates as $key => $graduate)
-                                        <livewire:components.tableRow.graduate-table-tr lazy="on-load" :num="$key"
+                                        <livewire:components.tablerow.graduate-table-tr lazy="on-load" :num="$key"
                                             :key="$graduate->graduate_id" :graduate="$graduate" />
                                     @endforeach
                                 </tbody>

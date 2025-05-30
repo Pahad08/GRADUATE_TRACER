@@ -18,6 +18,6 @@ class GraduateTableTr extends Component
 
     public function render()
     {
-        return view('livewire.components.tableRow.graduate-table-tr');
+        return view('livewire.components.tablerow.graduate-table-tr');
     }
 }

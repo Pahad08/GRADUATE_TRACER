@@ -21,7 +21,7 @@ return new class extends Migration
 
         Schema::table('educational_backgrounds', function (Blueprint $table) {
             $table->dropColumn('year_graduated');
-            $table->integer('academic_year_id')->nullable()->after('hei_id');
+            $table->integer('academic_year_id')->nullable()->after('hei');
             $table->foreign('academic_year_id')->references('academic_year_id')->on('academic_years')->nullOnDelete();
         });
     }

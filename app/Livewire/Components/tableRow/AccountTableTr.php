@@ -23,6 +23,6 @@ class AccountTableTr extends Component
 
     public function render()
     {
-        return view('livewire.components.tableRow.account-table-tr');
+        return view('livewire.components.tablerow.account-table-tr');
     }
 }

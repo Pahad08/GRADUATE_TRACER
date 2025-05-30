@@ -23,6 +23,6 @@ class AcademicYearTr extends Component
 
     public function render()
     {
-        return view('livewire.components.tableRow.academic-year-tr');
+        return view('livewire.components.tablerow.academic-year-tr');
     }
 }
