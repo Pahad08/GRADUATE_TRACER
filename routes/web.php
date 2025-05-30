@@ -12,7 +12,7 @@ use App\Livewire\Admin\ViewGraduate;
 use App\Livewire\Auth\Login;
 use App\Livewire\Hei\Graduates as HeiGraduates;
 use App\Livewire\Hei\Hei as HEIAcc;
-use App\Livewire\HEi\ViewGraduate as HEiViewGraduate;
+use App\Livewire\Hei\ViewGraduate as HEiViewGraduate;
 
 Route::get('/', TrackingForm::class);
 Route::get('/login', Login::class)->name('login')->middleware('guest');
