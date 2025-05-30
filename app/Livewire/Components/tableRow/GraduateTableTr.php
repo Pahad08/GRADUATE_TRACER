@@ -9,7 +9,6 @@ use Livewire\Component;
 class GraduateTableTr extends Component
 {
     public $graduate;
-    public $num;
 
     public function placeholder(array $params = [])
     {

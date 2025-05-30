@@ -50,10 +50,11 @@
                         <div class="mt-2 grid grid-cols-1 gap-4 md:col-span-2">
                             @php
                                 $employed_chart_color = null;
-                                if (collect($this->employment_status)->keys()->values()->toArray()) {
-                                    collect($this->employment_status)->keys()->values()->toArray()[0] == "employed"
-                                        ? "#00A43B"
-                                        : "#FF6266";
+                                if (isset(collect($this->employment_status)->keys()->values()->toArray()[0])) {
+                                    $employed_chart_color =
+                                        collect($this->employment_status)->keys()->values()->toArray()[0] == "employed"
+                                            ? "#00A43B"
+                                            : "#FF6266";
                                 }
 
                                 $employed_status_options = [
