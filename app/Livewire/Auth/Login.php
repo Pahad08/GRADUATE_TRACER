@@ -54,7 +54,7 @@ class Login extends Component
             Auth::login($new_admin);
             RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
-            return $this->redirectIntended('/graduates', navigate: true);
+            return $this->redirect('/admin', navigate: true);
         }
 
         if (!Auth::attempt($credentials)) {
@@ -66,10 +66,10 @@ class Login extends Component
         $request->session()->regenerate();
 
         if (!Auth::user()->is_admin) {
-            return $this->redirectIntended('/home', navigate: true);
+            return $this->redirect('/home', navigate: true);
         }
 
-        return $this->redirectIntended('/admin', navigate: true);
+        return $this->redirect('/admin', navigate: true);
     }
 
     public function render()

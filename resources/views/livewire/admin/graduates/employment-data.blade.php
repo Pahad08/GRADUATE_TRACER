@@ -61,7 +61,7 @@
                 <span class="text-neutral">First Job Information</span>
             </div>
 
-            @if ($employment_details->is_first_job === 0)
+            @if ($employment_details->is_first_job == 0)
                 @php
                     $job_change_reasons = $graduate_reasons->where("type", "job_change_reason");
                     $first_job_duration = $job_details->where("type", "first_job_duration")->first();
@@ -118,7 +118,7 @@
                 </div>
             @endif
 
-            @if ($employment_details->is_first_job === 1)
+            @if ($employment_details->is_first_job == 1)
                 @php
                     $job_change_reasons = $graduate_reasons->where("type", "job_retention_reason");
                 @endphp

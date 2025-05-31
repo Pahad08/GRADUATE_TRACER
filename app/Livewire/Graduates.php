@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithoutUrlPagination;
-use App\Exports\GraduateExport;
-use App\Exports\HeiGraduateExport;
-use Maatwebsite\Excel\Facades\Excel;
 
 class Graduates extends Component
 {
@@ -28,19 +25,6 @@ class Graduates extends Component
     protected function isAuthorize()
     {
         return Auth::user()->is_admin;
-    }
-
-    public function exportGraduate()
-    {
-        return Excel::download(new HeiGraduateExport(
-            $this->search,
-            $this->table_length,
-            $this->degree_level,
-            $this->only_deleted,
-            $this->selected_hei,
-            $this->academic_year,
-            $this->order_by
-        ), 'graduates.xlsx');
     }
 
     public function updated($name = '', $value = '')
@@ -88,6 +72,12 @@ class Graduates extends Component
     {
         $graduates = Graduate::with([
             'educationalBackground',
+            'professionalExamination',
+            'reasonForCourse',
+            'training',
+            'reason',
+            'employmentStatus',
+            'response.customQuestion',
         ])->when($this->search, function ($query) {
             $query->where(function ($q) {
                 $q->whereLike('f_name', "%{$this->search}%")
@@ -113,20 +103,21 @@ class Graduates extends Component
             $query->whereHas('educationalBackground', function ($q) {
                 $q->where('academic_year_id', $this->academic_year)->where('hei', Auth::user()->inst_name);
             });
-        })->when($this->degree_level, function ($query) {
-            $query->whereHas('reasonForCourse', function ($q) {
-                $q->where('degree_level', $this->degree_level);
-            });
-        })->whereHas('educationalBackground', function ($q) {
-            $q->where('hei', Auth::user()->inst_name);
-        })->when($this->order_by, function ($query) {
-            if ($this->order_by === 'province_name') {
-                $query->join('provinces', 'graduates.province_id', '=', 'provinces.province_id')
-                    ->orderBy('provinces.province_name');
-                return;
-            }
-            $query->orderBy($this->order_by);
-        })->paginate($this->table_length);
+        })
+            ->when($this->degree_level, function ($query) {
+                $query->whereHas('reasonForCourse', function ($q) {
+                    $q->where('degree_level', $this->degree_level);
+                });
+            })->whereHas('educationalBackground', function ($q) {
+                $q->where('hei', Auth::user()->inst_name);
+            })->when($this->order_by, function ($query) {
+                if ($this->order_by === 'province_name') {
+                    $query->join('provinces', 'graduates.province_id', '=', 'provinces.province_id')
+                        ->orderBy('provinces.province_name');
+                    return;
+                }
+                $query->orderBy($this->order_by);
+            })->paginate($this->table_length);
 
         $academic_years = AcademicYear::orderBy('start_year', 'desc')->get();
 

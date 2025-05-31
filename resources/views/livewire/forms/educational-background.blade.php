@@ -407,7 +407,8 @@
                             <div wire:key='{{ $question->question_key }}'>
                                 @php
                                     $label = ucfirst($question->question->label);
-                                    $field_key = str_replace("_", " ", $question->question->label);
+                                    $field_key = str_replace(" ", "_", $question->question->label);
+
                                     $options = $question->question->questionOption;
                                 @endphp
                                 <div class="divider"></div>
@@ -485,7 +486,7 @@
 
                                         @if ($errors->first("custom_questions." . $field_key))
                                             <p class="text-error mt-1">
-                                                {{ $errors->first("form.custom_questions.$field_key") }}</p>
+                                                {{ $errors->first("custom_questions." . $field_key) }}</p>
                                         @endif
                                     @endif
                                 </div>

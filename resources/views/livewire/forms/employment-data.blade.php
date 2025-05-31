@@ -761,7 +761,7 @@
                             @if ($question->question)
                                 @php
                                     $label = ucfirst($question->question->label);
-                                    $fieldKey = str_replace("_", " ", $question->question->label);
+                                    $fieldKey = str_replace(" ", "_", $question->question->label);
                                     $options = $question->question->questionOption;
                                 @endphp
 

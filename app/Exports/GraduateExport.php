@@ -1,21 +1,16 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Exports;
 
-use App\Exports\GraduateExport;
-use App\Models\AcademicYear;
 use App\Models\Graduate;
-use Illuminate\Contracts\Encryption\DecryptException;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
-use Livewire\WithPagination;
-use Livewire\WithoutUrlPagination;
-use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class Graduates extends Component
+class GraduateExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
-    use WithPagination, WithoutUrlPagination;
-
     public $search = '';
     public $table_length;
     public $degree_level = '';
@@ -24,90 +19,22 @@ class Graduates extends Component
     public $academic_year = '';
     public $order_by;
 
-    public function updated($name = '', $value = '')
+    public function __construct($search, $table_length, $degree_level, $only_deleted, $selected_hei, $academic_year, $order_by)
     {
-        $this->resetPage();
+        $this->search = $search;
+        $this->table_length = $table_length;
+        $this->degree_level = $degree_level;
+        $this->only_deleted = $only_deleted;
+        $this->selected_hei = $selected_hei;
+        $this->academic_year = $academic_year;
+        $this->order_by = $order_by;
     }
 
-    public function exportGraduate()
+    public function collection()
     {
-        return Excel::download(new GraduateExport(
-            $this->search,
-            $this->table_length,
-            $this->degree_level,
-            $this->only_deleted,
-            $this->selected_hei,
-            $this->academic_year,
-            $this->order_by
-        ), 'graduates.xlsx');
-    }
-
-    protected function isAuthorize()
-    {
-        return Auth::user()->is_admin;
-    }
-
-    public function deleteGraduate($graduate_id)
-    {
-        if (!$this->isAuthorize()) {
-            abort(403);
-            return;
-        }
-
-        try {
-            $graduate_id = decrypt($graduate_id);
-        } catch (DecryptException) {
-            abort(404);
-        }
-
-        $graduate = Graduate::findOrFail($graduate_id);
-
-        $graduate->delete();
-
-        $this->dispatch('graduate-removed', 'Graduate removed successfully.');
-    }
-
-    public function restoreGraduate($graduate_id)
-    {
-        if (!$this->isAuthorize()) {
-            abort(403);
-            return;
-        }
-
-        try {
-            $graduate_id = decrypt($graduate_id);
-        } catch (DecryptException) {
-            abort(404);
-        }
-
-        $graduate = Graduate::withTrashed()->findOrFail($graduate_id);
-        if (!$graduate->trashed()) {
-            $this->dispatch('graduate-restored', 'Graduate is not deleted.');
-            return;
-        }
-        $graduate->restore();
-        $this->dispatch('graduate-restored', 'Graduate restored successfully.');
-    }
-
-    public function sortGraduates($column_name)
-    {
-        if ($this->order_by === $column_name) {
-            $this->order_by = 'f_name';
-            return;
-        }
-
-        $this->order_by = $column_name;
-    }
-
-    public function mount()
-    {
-        $this->table_length = 10;
-        $this->order_by = 'f_name';
-    }
-
-    public function render()
-    {
-        $graduates = Graduate::when($this->search, function ($query) {
+        return Graduate::with(
+            'educationalBackground'
+        )->when($this->search, function ($query) {
             $query->where(function ($q) {
                 $q->whereLike('f_name', "%{$this->search}%")
                     ->orWhereLike('l_name', "%{$this->search}%")
@@ -149,10 +76,55 @@ class Graduates extends Component
                 return;
             }
             $query->orderBy($this->order_by);
-        })->paginate($this->table_length);
+        })->limit($this->table_length)->get();
+    }
 
-        $academic_years = AcademicYear::orderBy('start_year', 'desc')->get();
+    public function headings(): array
+    {
+        return [
+            'First Name',
+            'Last Name',
+            'Name Extension',
+            'Permanent Address',
+            'Email Address',
+            'Contact Number',
+            'Civil Status',
+            'Sex',
+            'Birthdate',
+            'Region',
+            'Province',
+            'Location of Residence',
+            'Degree',
+            'HEI',
+        ];
+    }
 
-        return view('livewire.admin.graduates', ['graduates' => $graduates, 'academic_years' => $academic_years]);
+    public function map($graduate): array
+    {
+        $education = $graduate->educationalBackground->first();
+
+        return [
+            $graduate->f_name,
+            $graduate->l_name,
+            $graduate->name_extension,
+            $graduate->permanent_address,
+            $graduate->email_address,
+            $graduate->contact_number,
+            $graduate->civil_status,
+            $graduate->sex,
+            $graduate->birthdate,
+            $graduate->region,
+            $graduate->province,
+            $graduate->location_of_residence,
+            optional($education)->degree,
+            optional($education)->hei,
+        ];
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            1 => ['font' => ['bold' => true]], // Row 1 = Headings
+        ];
     }
 }

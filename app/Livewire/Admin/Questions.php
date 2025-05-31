@@ -65,7 +65,6 @@ class Questions extends Component
 
     public function saveCustomQuestion()
     {
-
         $rules = [
             'label' => 'required',
             'section' => ['required', Rule::in(['GENERAL_INFORMATION', 'EDUCATIONAL_BACKGROUND', 'TRAININGS_STUDIES', 'EMPLOYMENT_DATA'])],
@@ -90,6 +89,14 @@ class Questions extends Component
             $prefix = strtoupper($separate_section[0][0]) . strtoupper($separate_section[1][0]);
             $generated_key = $prefix . '-' . $separate_label;
             $section_count = QuestionVisibility::where('section_name', $validated['section'])->count();
+            $if_question_exist = QuestionVisibility::where('question_key', $generated_key)->withTrashed()->first();
+
+            if ($if_question_exist && $if_question_exist->trashed()) {
+                $if_question_exist->restore();
+                $this->dispatch('question-created', 'Question created!');
+                $this->reset();
+                return;
+            }
 
             $question_visibility = QuestionVisibility::create([
                 'section_name' => $validated['section'],

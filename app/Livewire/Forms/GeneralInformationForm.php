@@ -110,7 +110,7 @@ class GeneralInformationForm extends Form
             'region.required' => 'The Region is required.',
             'province.required' => 'The Province is required.',
             'location_of_residence.required' => 'The Location of residence is required.',
-            'custom_questions.*.required' => 'The :attribute is required.',
+            'custom_questions.*.required' => 'This field is required.',
         ];
     }
 }

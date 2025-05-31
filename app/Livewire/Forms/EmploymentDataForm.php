@@ -232,7 +232,7 @@ class EmploymentDataForm extends Form
             'is_curriculum_relevant_to_job.required' => 'This field is required.',
             'skills.checkboxes.required' => 'At least one skill is required.',
             'skills.input.required' => 'Please provide a skill.',
-            'custom_questions.*.required' => 'The :attribute is required.',
+            'custom_questions.*.required' => 'This field is required.',
         ];
     }
 

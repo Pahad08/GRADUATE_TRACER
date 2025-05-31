@@ -73,6 +73,8 @@
                                     @endforeach
                                 </div>
 
+                                <p class="my-1 text-sm italic">Note: Please enter full name of the training institution.</p>
+
                                 <div class="divider"></div>
                             </div>
                         @break

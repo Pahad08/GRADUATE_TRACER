@@ -16,6 +16,8 @@ use App\Livewire\Hei\ViewGraduate as HEiViewGraduate;
 
 Route::get('/', TrackingForm::class);
 Route::get('/login', Login::class)->name('login')->middleware('guest');
+Route::get('/fetch-hei', [APIController::class, 'HEIName']);
+Route::get('/fetch-unique-hei', [APIController::class, 'UniqueHEi']);
 
 Route::middleware(['auth'])->group(function () {
     Route::middleware(['onlyadmin'])->group(function () {
@@ -25,8 +27,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/academic_years', AcademicYear::class);
         Route::get('/view_graduate/{encrypt_id}', ViewGraduate::class);
         Route::get('/hei', HEI::class);
-        Route::get('/fetch-hei', [APIController::class, 'HEIName']);
-        Route::get('/fetch-unique-hei', [APIController::class, 'UniqueHEi']);
     });
 
     Route::get('/home', HEIAcc::class);

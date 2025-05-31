@@ -56,6 +56,7 @@ class EducationalBackground extends Component
             'reasons_for_undergraduate.input' => 'Select atleast one degree level and provide atleast one reason.',
             'reasons_for_graduate.checkboxes' => 'Select atleast one degree level and provide atleast one reason.',
             'reasons_for_graduate.input' => 'Select atleast one degree level and provide atleast one reason.',
+            'custom_questions.*.required' => 'This field is required.',
         ];
     }
 
@@ -151,7 +152,6 @@ class EducationalBackground extends Component
     public function addEducationAttainmentRow()
     {
         $this->educational_attainment[] = [
-            'hei_result' => '',
             'degree' => '',
             'hei' => '',
             'academic_year_id' => '',

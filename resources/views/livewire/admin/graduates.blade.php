@@ -22,8 +22,9 @@
                         </ul>
                     </div>
 
-                    {{-- <button class="btn btn-success btn-sm"><i class="fa-solid fa-file-excel"></i>
-                        Export Excel</button> --}}
+                    <button wire:click='exportGraduate' wire:loading.attr='disabled' class="btn btn-success btn-sm"><i
+                            class="fa-solid fa-file-excel"></i>
+                        Export Excel</button>
                 </div>
 
                 <div class="mt-2 rounded-lg shadow-md">

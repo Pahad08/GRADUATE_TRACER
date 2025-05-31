@@ -49,6 +49,7 @@ class StudiesInformation extends Component
         return [
             'reasons_for_study.checkboxes' => 'Provide atleast one reason',
             'reasons_for_study.input' => 'Provide atleast one reason',
+            'custom_questions.*.required' => 'This field is required.',
         ];
     }
 

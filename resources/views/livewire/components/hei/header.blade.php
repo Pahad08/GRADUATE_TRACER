@@ -45,6 +45,14 @@
                             </i>&nbsp{{ $link["title"] }}</a>
                     </li>
                 @endforeach
+                <li>
+                    <p x-on:click="isProfileModalOpen = true" class="tab justify-start font-semibold"><i
+                            class="fa-solid fa-user"></i> Profile</p>
+                </li>
+                <li>
+                    <p x-on:click="isLogoutModalOpen = true" class="tab justify-start font-semibold"><i
+                            class="fa-solid fa-right-from-bracket"></i> Logout</p>
+                </li>
             </ul>
         </div>
 

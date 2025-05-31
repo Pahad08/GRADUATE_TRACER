@@ -4,21 +4,27 @@
     <div class="mt-0" x-data="{ active: 'admin.questions.general-information' }">
         <div class="rounded-lg px-3">
             <div class="md:w-300 mx-auto my-5 w-full max-w-full rounded">
-                <div class="breadcrumbs text-sm">
-                    <ul>
-                        <li>
-                            <a wire:navigate href="/home">
-                                <i class="fa-solid fa-chart-simple"></i>
-                                Analytics
-                            </a>
-                        </li>
-                        <li>
-                            <span class="inline-flex items-center gap-2">
-                                <i class="fa-solid fa-user-graduate"></i>
-                                Graduates
-                            </span>
-                        </li>
-                    </ul>
+                <div class="flex flex-col justify-between gap-y-3 md:flex-row md:items-center">
+                    <div class="breadcrumbs text-sm">
+                        <ul>
+                            <li>
+                                <a wire:navigate href="/home">
+                                    <i class="fa-solid fa-chart-simple"></i>
+                                    Analytics
+                                </a>
+                            </li>
+                            <li>
+                                <span class="inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-user-graduate"></i>
+                                    Graduates
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button wire:click='exportGraduate' wire:loading.attr='disabled' class="btn btn-success btn-sm"><i
+                            class="fa-solid fa-file-excel"></i>
+                        Export Excel</button>
                 </div>
 
                 <div class="mt-2 rounded-lg shadow-md">
